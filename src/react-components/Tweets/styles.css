@@ -1,0 +1,18 @@
+.tweets {
+    float: right;
+    width: 20%;
+    height: calc(100vh - 95px);
+    font-size: 1vw;
+    /* background-color: skyblue; */
+    /* border: solid black; */
+    /* border-radius: 10px; */
+}
+
+#id {
+
+}
+
+.tweet_form{
+    justify-content: center;
+    text-align: center;
+}

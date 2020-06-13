@@ -1,0 +1,38 @@
+.menu {
+    float: left;
+    background: rgb(45, 45, 114);
+    width: 20%;
+    height: calc(100vh - 90px);
+    font-size: 1.5vw;
+}
+
+
+/* reset ul li style */
+
+ul,
+li {
+    list-style: none;
+}
+
+
+/* ul that contains menu */
+
+ul {
+    margin: 0; 
+    padding: 0;
+}
+
+
+/* li of every menu components */
+
+li {
+    margin: 0 auto;
+    padding: 2px;
+}
+li a{
+    color: white;
+    text-decoration: none;
+}
+li a:hover{
+    color: greenyellow;
+}

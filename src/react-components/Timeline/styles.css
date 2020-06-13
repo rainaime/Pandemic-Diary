@@ -1,0 +1,7 @@
+.timeline {
+    top: calc(100vh - 35px);
+    left: 0;
+    position: fixed;
+    width: 100vw;
+    height: 30px;
+}

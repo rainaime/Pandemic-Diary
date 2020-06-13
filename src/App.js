@@ -1,20 +1,24 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import SiteHeader from './react-components/SiteHeader';
+import Menu from './react-components/Menu';
+import Map from './react-components/Map';
+import Tweets from './react-components/Tweets';
+import Timeline from './react-components/Timeline';
 
-function App() {
-  return (
-    <div className="App">
-      <div className="mainScreen">
-        <div className="header"></div>
-        <div className="menuBar"></div>
-        <div className="map"></div>
-        <div className="timeLine"></div>
+class App extends React.Component {
+  render(){
+    return (
+      <div className="App">
+        <SiteHeader />
+        <Menu />
+        <Tweets />
+        <Map />
+        <Timeline />
+        
       </div>
-      <div className="tweets"></div>
-      
-    </div>
-  );
+    );
+  }
 }
 
 export default App;
