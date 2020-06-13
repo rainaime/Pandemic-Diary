@@ -1,0 +1,103 @@
+.App {
+  text-align: center;
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* .App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} */
+
+/*
+* App css for Pandemic Diary/////////////////////////////////////////////////////
+*/
+
+/*
+* main screen
+*/
+.mainScreen {
+  float: left;
+  width: 80%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/*
+* tweets section
+*/
+.tweets {
+  float: left;
+  background: blue;
+  width: 20%;
+  height: 100%;
+}
+
+/*
+* main screen
+*/
+.header {
+  background-color: rgb(53, 121, 148);
+  width: 100%;
+  height: 10%;
+}
+
+
+/*
+* menu bar section
+*/
+.menuBar {
+  float: left;
+  background: rgb(45, 45, 114);
+  width: 20%;
+  height: 80%;
+}
+/*
+* main screen
+*/
+.map {
+  float: right;
+  background-color: skyblue;
+  width: 80%;
+  height: 80%;
+}
+
+/*
+* tweets section
+*/
+.timeLine {
+  float: left;
+  background: rgb(23, 23, 99);
+  width: 100%;
+  height: 10%;
+}
