@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import './styles.css';
 
 class Timeline extends React.Component {
@@ -10,7 +10,8 @@ class Timeline extends React.Component {
             end: new Date("December 31 2020"),
             current: new Date(),
             selected: '',
-            hover: false,
+            emptyTimeline: '',
+            hover: true,
             width: 0,
             height: 0
         }
@@ -56,24 +57,31 @@ class Timeline extends React.Component {
         // Draw vertical ticks every 5px of the timeline width.
         for (let i = 0; i < Math.floor(width / xspace); i += xspace) {
             ctx.fillRect(2+i*5, 0, 0.5, height);
-            
-            // console.log(i*5);
         }
         ctx.fillRect(0, height/2, width, 3);
-        this.forceUpdate();
+
+        this.emptyTimeline = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+        console.log(this.emptyTimeline);
+        
     }
 
-    toggleHover() {
-        this.setState({
-            hover: !this.state.hover
-        });
-        console.log(this.state.hover);
+    handleClick() {
+        console.log("clicked!");
+    }
+
+    handleMouseOver() {
+        console.log("mouse over!");
         
     }
 
     render() {
         return(
-            <canvas ref="timeline" onMouseEnter={this.toggleHover} className="timeline"/>
+            <canvas 
+                ref="timeline"
+                onMouseMove={this.handleMouseOver}
+                onClick={this.handleClick}
+                className="timeline"
+            />
         );
     };
 }

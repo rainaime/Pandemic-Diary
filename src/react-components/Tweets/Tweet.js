@@ -18,11 +18,13 @@ const tweetBorder = {
 	borderBottom: '1px solid grey'
 }
 const tweetStyle = {
-    textAlign: 'left'
+    // textAlign: 'left'
     // padding: '4px'
 }
 
 const userStyle = {
-    fontSize: '12px'
+    fontSize: '12px',
+    textAlign: 'left',
+    padding: '0.5em'
 }
 export default Tweet;

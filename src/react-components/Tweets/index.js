@@ -31,12 +31,13 @@ class Tweets extends React.Component {
     render() {
         return(
             <div className='tweets'>
-                <div style={titleStyle}> 
-                    <h1>Tweets</h1>
+                <div style={inlineStyle}>
+                    <h1 style={titleStyle}>Tweets</h1>
                 </div>
-                <div style={titleStyle}>
-                    <h1>News</h1>
+                <div style={inlineStyle}>   
+                    <h1 style={titleStyle}>News</h1>
                 </div>
+
 
                 {/* print a tweet component for every tweet */}
                 {this.state.tweets.map( (tweet) => (<Tweet tweet={tweet}/>))}
@@ -45,13 +46,18 @@ class Tweets extends React.Component {
     };
 }
 
+const inlineStyle = {
+    display: 'inline-block',
+    width: '50%'
+    // marginBottom: '2px'
+}
 const titleStyle = {
-    display: 'inline',
+    float: 'none',
     textAlign: 'center',
-    width : '50%',
     marginBlockStart : '0',
     marginBlockEnd: '0',
-    margin: '0'
+    margin: '0',
+    border: 'solid 1px'
 }
 
 export default Tweets;
