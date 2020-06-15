@@ -2,6 +2,8 @@ import React from "react";
 import './styles.css';
 
 import Tweet from './Tweet'
+import TweetsForm from './TweetsForm'
+import { addTweet } from './tweetQueue';
 
 class Tweets extends React.Component {
     state = {
@@ -24,8 +26,6 @@ class Tweets extends React.Component {
         ]
     }
 
-    /* function to add new tweet */
-
     /* update tweet */
 
     render() {
@@ -38,9 +38,13 @@ class Tweets extends React.Component {
                     <h1 style={titleStyle}>News</h1>
                 </div>
 
-
-                {/* print a tweet component for every tweet */}
-                {this.state.tweets.map( (tweet) => (<Tweet tweet={tweet}/>))}
+                <div className='old_tweets'>
+                    {/* print a tweet component for every tweet */}
+                    {this.state.tweets.map( (tweet) => (<Tweet tweet={tweet}/>))}
+                </div>
+                <div className='new_tweets'>
+                    <TweetsForm tweetState= {this.state} addTweet = {() => addTweet(this)}></TweetsForm>
+                </div>
             </div>
         );
     };

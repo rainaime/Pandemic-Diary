@@ -1,29 +1,40 @@
 import React from "react";
 import './styles.css';
-
-import Tweet from './Tweet'
+import index from './index.js';
 
 class TweetsForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = this.props;
+        this.addNewTweet = this.addNewTweet.bind(this);
+      }
+
+    addNewTweet(){
+        this.state.tweetState.tweets.push({
+            tweetId: 0,
+            content: "hello", 
+            username: "new_tweet"
+        });
+        {console.log("this is index")}
+        {console.log(this.props)}
+    }
+
     render(){
         const {
-            userName,
-            tweetContent,
-            handleChange
-        } = this.props;
+            tweetState,
+            addTweet,
+          } = this.props;
 
         return (
-            <Grid className="tweet_form"> 
-                <input>
-                    name = "userName"
-                    value = {userName}
-                    onChange = {handleChange}
-                </input>
-                <input>
-                    name = "tweetContent"
-                    value = {tweetContent}
-                    onChange = {handleChange}
-                </input>
-            </Grid>
+            <div>
+                <input id ="tweet_context" type='text' name='new_tweet' alt='add comments' />
+                {tweetState.tweets.push({
+                    tweetId: 0,
+                    content: "hi",
+                    username: "n"
+                })}
+                <button className="addButton" onClick={addTweet}> add tweet </button>
+            </div>
         );
     }
 }
