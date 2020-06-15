@@ -1,7 +1,5 @@
 .timeline {
-    top: calc(100vh - 35px);
-    left: 0;
-    position: fixed;
+    position: inline-block;
     width: 100vw;
     height: 30px;
 }
