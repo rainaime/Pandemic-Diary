@@ -11,6 +11,31 @@ button {
     outline: inherit;
 }
 
+button:hover {
+    color: white;
+}
+
 .userStatus {
     margin-right: 20px;
+}
+
+.message {
+    font-size: 1.25vw;
+}
+
+.login {
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    top: calc(10vh);
+    right: 20vw;
+    border: 1px solid black
+}
+
+label {
+    /* display: inline-block; */
+    float: left;
+    width: 25%;
+    margin-top: 6px;
+    font-size: 1vw;
 }
