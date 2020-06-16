@@ -9,7 +9,7 @@ class Timeline extends React.Component {
             start: new Date("December 1 2019"),
             end: new Date("December 31 2020"),
             current: new Date(),
-            hover: true,
+            placed: true, 
             canvasSettings: {
                 xspace: 10,
                 lineWidth: 1,
@@ -63,7 +63,8 @@ class Timeline extends React.Component {
         const daysBetween = Math.round(Math.abs((this.state.end - this.state.start) / (24*60*60*1000)));
 
         ctx.fillStyle="#FF0000";
-        ctx.fillRect(xpos, 0, 2, ctx.canvas.height);
+        console.log(xpos, ctx.canvas.height);
+        ctx.fillRect(xpos, 0, 3, ctx.canvas.height);
     }
 
     handleClick() {
@@ -74,7 +75,7 @@ class Timeline extends React.Component {
         const ctx = this.refs.timeline.getContext("2d");
         const settings = this.state.canvasSettings;
         // Logic to calculate the target date.
-        let x = e.screenX;
+        let x = e.clientX - e.target.getBoundingClientRect().left;
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         this.initializeCanvas();
         this.updateCurrent(x);
