@@ -4,6 +4,16 @@ import "./styles.css";
 import UserStatus from "../UserStatus";
 
 class SiteHeader extends React.Component {
+    //need somewhere for access with user info
+    state ={
+        users: {
+            0: {
+                username: "john"
+            }
+        },
+        currentUser: null
+    }
+
     render() {
         return (
             <header>
