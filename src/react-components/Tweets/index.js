@@ -3,7 +3,7 @@ import './styles.css';
 
 import Tweet from './Tweet'
 import TweetsForm from './TweetsForm'
-import { addTweet } from './tweetQueue';
+import { addTweet } from './TweetQueue';
 
 class Tweets extends React.Component {
     state = {
@@ -38,7 +38,7 @@ class Tweets extends React.Component {
                     <h1 style={titleStyle}>News</h1>
                 </div>
 
-                <div className='old_tweets'>
+                <div className='tweet_container'>
                     {/* print a tweet component for every tweet */}
                     {this.state.tweets.map( (tweet) => (<Tweet tweet={tweet}/>))}
                 </div>
