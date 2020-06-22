@@ -1,7 +1,7 @@
 .tweets {
     float: right;
     width: 20%;
-    height: calc(100vh - 95px);
+    height: calc(100vh - 60px);
     font-size: 1vw;
     /* background-color: skyblue; */
     /* border: solid black; */
@@ -28,17 +28,16 @@
     /* background-color: #333; */
     overflow: auto;
     white-space: nowrap;
-    height: 75vh;
-  }
-  
+}
+
 /* .tweet_container a {
-    display: inline-block;
-    color: white;
-    text-align: center;
-    padding: 14px;
-    text-decoration: none;
-  } */
-  
-/* .tweet_container a:hover {
+display: inline-block;
+color: white;
+text-align: center;
+padding: 14px;
+text-decoration: none;
+} */
+
+    /* .tweet_container a:hover {
     background-color: #777;
-  } */
+    } */

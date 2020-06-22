@@ -13,8 +13,12 @@ class App extends React.Component {
       <div className="App">
         <SiteHeader />
         <Menu />
+        <div style={{ display: 'inline-block', flexGrow: 1 }}>
+            <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                <Maps />
+            </div>
+        </div>
         <Tweets />
-        <Maps />
         <Timeline />
         
       </div>

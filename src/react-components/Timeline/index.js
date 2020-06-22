@@ -20,30 +20,8 @@ class Timeline extends React.Component {
     }
 
     render() {
-        /*return (
-            <div>
-                <TimelineDate 
-                    date={this.state.start} 
-                    xpos={30}
-                />
-                <TimelineDate 
-                    date={this.state.current} 
-                    xpos={this.state.currentPos}
-                />
-                <TimelineDate 
-                    date={this.state.end} 
-                    xpos={window.innerWidth - 120}
-                />
-                <canvas
-                ref="timeline"
-                className="timeline"
-                onMouseMove={this.handleMouseOver.bind(this)}
-                onClick={this.handleClick}
-                />
-            </div>
-        );*/
         return (
-            <div>
+            <div >
                 <TimelineDate 
                     date={this.state.current} 
                     xpos={this.state.currentPos}

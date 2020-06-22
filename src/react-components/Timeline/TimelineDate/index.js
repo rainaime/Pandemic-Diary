@@ -7,7 +7,7 @@ class TimelineDate extends React.Component {
         console.log(this.props.date.toDateString())
         return (
             <span style={{
-                top: 'calc(100vh - 90px)',
+                top: 'calc(100% - 75px)',
                 left: xpos,
                 position: 'fixed',
                 display: 'inline',
