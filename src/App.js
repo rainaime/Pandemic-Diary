@@ -8,22 +8,33 @@ import Timeline from './react-components/Timeline';
 import AddContent from './react-components/AddContent';
 
 class App extends React.Component {
-  render(){
-    return (
-      <div className="App">
-        <SiteHeader />
-        <Menu />
-        <div style={{ display: 'inline-block', flexGrow: 1 }}>
+    render(){
+        return (
+            <div className="App">
+            <SiteHeader />
+            <Menu f={this.handleCollapse}/>
+            {/* This div was added due to an extra wrapper div being created by
+              * the Maps component from google-maps-react. */}
+            <div style={{ display: 'inline-block', flexGrow: 1, minWidth: '1px' }}>
             <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                <Maps />
+            <Maps />
             </div>
-        </div>
-        <Tweets />
-        <Timeline />
-        
-      </div>
-    );
-  }
+            </div>
+            <Tweets f={this.handleCollapse}/>
+            <Timeline />
+
+            </div>
+        );
+    }
+
+    handleCollapse() {
+        if (this.state.collapsed) {
+            this.setState({ width: this.state.maximizedSize });
+        } else {
+            this.setState({ width: 1 });
+        }
+        this.setState({ collapsed: !this.state.collapsed });
+    }
 }
 
 export default App;

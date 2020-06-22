@@ -12,6 +12,7 @@ class Timeline extends React.Component {
             current: new Date(),
             currentPos: -120,
             placed: true, 
+            currentPlaced: new Date(),
             canvasSettings: {
                 xspace: 7,
                 lineWidth: 1,
@@ -83,7 +84,7 @@ class Timeline extends React.Component {
     }
 
     handleClick() {
-        console.log("clicked!");
+        this.setState({currentPlaced: this.state.current});
     }
 
     handleMouseOver(e) {

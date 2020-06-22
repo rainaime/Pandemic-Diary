@@ -4,7 +4,6 @@ import "./styles.css";
 class TimelineDate extends React.Component {
     render() {
         const xpos = this.props.xpos;
-        console.log(this.props.date.toDateString())
         return (
             <span style={{
                 top: 'calc(100% - 75px)',
