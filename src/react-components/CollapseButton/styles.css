@@ -1,0 +1,10 @@
+.collapse-button {
+    position: absolute;
+    top: 50%;
+    width: 12px;
+    height: 40px;
+    background-color: white;
+    border: 1px black solid;
+    line-height: 40px;
+    z-index: 9999;
+}

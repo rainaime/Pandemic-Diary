@@ -1,4 +1,5 @@
 .menu {
+    position: relative;
     float: left;
     background: rgb(45, 45, 114);
     width: 20%;

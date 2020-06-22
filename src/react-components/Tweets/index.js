@@ -1,4 +1,5 @@
 import React from "react";
+import CollapseButton from "../CollapseButton";
 import './styles.css';
 
 import Tweet from './Tweet'
@@ -23,14 +24,16 @@ class Tweets extends React.Component {
                 content: "hello2",
                 username: "woojin"
             }
-        ]
+        ],
+        collapsed: false,
+        maximizedSize: '20%'
     }
 
     /* update tweet */
 
     render() {
         return(
-            <div className='tweets'>
+            <div className='tweets' style={{width: this.state.width}}>
                 <div style={inlineStyle}>
                     <h1 style={titleStyle}>Tweets</h1>
                 </div>
@@ -45,6 +48,7 @@ class Tweets extends React.Component {
                 <div className='new_tweets'>
                     <TweetsForm tweetState= {this.state} addTweet = {() => addTweet(this)}></TweetsForm>
                 </div>
+                <CollapseButton position='left' onClick={this.props.f.bind(this)}/>
             </div>
         );
     };
