@@ -4,6 +4,7 @@
     width: 20%;
     height: calc(100vh - 60px);
     font-size: 1vw;
+    transition: all 0.3s;
     /* background-color: skyblue; */
     /* border: solid black; */
     /* border-radius: 10px; */

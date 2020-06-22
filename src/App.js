@@ -30,12 +30,14 @@ class App extends React.Component {
     }
 
     handleCollapse() {
-        if (this.state.collapsed) {
-            this.setState({ width: this.state.maximizedSize });
-        } else {
-            this.setState({ width: 1 });
-        }
-        this.setState({ collapsed: !this.state.collapsed });
+        requestAnimationFrame(() => {
+            if (this.state.collapsed) {
+                this.setState({ width: this.state.maximizedSize });
+            } else {
+                this.setState({ width: 1 });
+            }
+            this.setState({ collapsed: !this.state.collapsed });
+        });
     }
 }
 
