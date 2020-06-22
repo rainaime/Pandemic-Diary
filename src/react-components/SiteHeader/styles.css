@@ -2,7 +2,7 @@ header {
     background-color: #FF0000;
     width: 100%;
     height: 24px;
-    padding: 3px 0;
+    padding: 8px 0;
     box-sizing: content-box;
     display: flex;
     flex-direction: row;

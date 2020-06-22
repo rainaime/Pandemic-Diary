@@ -5,8 +5,10 @@
     min-width: 480px;
 
     display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     align-items: stretch;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 
     margin: 0;
     padding: 0;

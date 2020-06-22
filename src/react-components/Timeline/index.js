@@ -22,7 +22,7 @@ class Timeline extends React.Component {
 
     render() {
         return (
-            <div >
+            <div style={{height: '30px'}}>
                 <TimelineDate 
                     date={this.state.current} 
                     xpos={this.state.currentPos}

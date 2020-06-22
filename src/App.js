@@ -12,7 +12,7 @@ class App extends React.Component {
         return (
             <div className="App">
             <SiteHeader />
-            <div style={{width: '100%', height: 'calc(100% - 60px)', display: 'flex'}}>
+            <div style={{width: '100%', minHeight: '1px', display: 'flex', flexGrow: 1}}>
                 <Menu f={this.handleCollapse}/>
                 {/* This div was added due to an extra wrapper div being created by
                   * the Maps component from google-maps-react. */}
