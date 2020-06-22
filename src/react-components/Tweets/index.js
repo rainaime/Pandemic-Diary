@@ -48,7 +48,7 @@ class Tweets extends React.Component {
                 <div className='new_tweets'>
                     <TweetsForm tweetState= {this.state} addTweet = {() => addTweet(this)}></TweetsForm>
                 </div>
-                <CollapseButton position='left' onClick={this.props.f.bind(this)}/>
+                <CollapseButton position='left' collapsed={this.state.collapsed} onClick={this.props.f.bind(this)}/>
             </div>
         );
     };

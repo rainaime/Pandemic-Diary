@@ -3,7 +3,7 @@
     float: left;
     background: rgb(45, 45, 114);
     width: 20%;
-    height: calc(100% - 60px);
+    height: 100%;
     font-size: 1.5vw;
 }
 

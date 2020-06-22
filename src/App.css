@@ -5,6 +5,7 @@
     min-width: 480px;
 
     display: flex;
+    align-items: stretch;
     flex-wrap: wrap;
 
     margin: 0;

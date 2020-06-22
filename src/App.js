@@ -12,15 +12,17 @@ class App extends React.Component {
         return (
             <div className="App">
             <SiteHeader />
-            <Menu f={this.handleCollapse}/>
-            {/* This div was added due to an extra wrapper div being created by
-              * the Maps component from google-maps-react. */}
-            <div style={{ display: 'inline-block', flexGrow: 1, minWidth: '1px' }}>
-            <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-            <Maps />
+            <div style={{width: '100%', height: 'calc(100% - 60px)', display: 'flex'}}>
+                <Menu f={this.handleCollapse}/>
+                {/* This div was added due to an extra wrapper div being created by
+                  * the Maps component from google-maps-react. */}
+                <div style={{ display: 'inline-block', flexGrow: 1, minWidth: '1px' }}>
+                <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                <Maps />
+                </div>
+                </div>
+                <Tweets f={this.handleCollapse}/>
             </div>
-            </div>
-            <Tweets f={this.handleCollapse}/>
             <Timeline />
 
             </div>

@@ -31,7 +31,7 @@ class Timeline extends React.Component {
                 ref="timeline"
                 className="timeline"
                 onMouseMove={this.handleMouseOver.bind(this)}
-                onClick={this.handleClick}
+                onClick={this.handleClick.bind(this)}
                 />
             </div>
         );
@@ -59,7 +59,7 @@ class Timeline extends React.Component {
         const ctx = this.refs.timeline.getContext("2d");
         const settings = this.state.canvasSettings;
 
-        ctx.canvas.width = window.outerWidth;
+        ctx.canvas.width = window.innerWidth;
 
         ctx.strokeStyle = "#FF0000";
         for (let i = 0; i < ctx.canvas.width; i += settings.xspace) {
