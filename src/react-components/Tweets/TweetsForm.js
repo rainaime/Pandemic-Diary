@@ -5,35 +5,45 @@ import index from './index.js';
 class TweetsForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = this.props;
-        this.addNewTweet = this.addNewTweet.bind(this);
-      }
+        this.state = {
+            username: '',
+            text: ''
+        };
+        this.getUserName.bind(this) //bind to this class
+        this.getUserName() //initialize the username
+     }
 
-    addNewTweet(){
-        this.state.tweetState.tweets.push({
+    //use server call to get name of the user making this tweet later
+    getUserName(){
+        this.state.username = 'Woojin'
+    }
+    
+    //update new Tweet by making servercall later
+    addNewTweet(pstate, tstate, parent){
+        pstate.tweets.push({
             tweetId: 0,
-            content: "hello", 
-            username: "new_tweet"
+            content: tstate.text, 
+            username: tstate.username
         });
-        {console.log("this is index")}
-        {console.log(this.props)}
+        parent.setState({update: '1'});
+    }
+
+    //update the text in tweets when user leaves the input box
+    textInput(e) {
+        this.setState({text: e.target.value})
     }
 
     render(){
-        const {
-            tweetState,
-            addTweet,
-          } = this.props;
 
         return (
             <div>
-                <input id ="tweet_context" type='text' name='new_tweet' alt='add comments' />
-                {tweetState.tweets.push({
-                    tweetId: 0,
-                    content: "hi",
-                    username: "n"
-                })}
-                <button className="addButton" onClick={addTweet}> add tweet </button>
+                <input id ="tweet_context" type='text' name='new_tweet' alt='add comments' onBlur={this.textInput.bind(this)}/>
+                <button className="addButton" onClick={() => {
+                    this.addNewTweet(this.props.tweetState, this.state, this.props.parentRef); //add new tweet
+                    document.getElementById('tweet_context').value = ''; //clear the input text when clicked
+                    }}>
+                    add tweet 
+                </button>
             </div>
         );
     }
