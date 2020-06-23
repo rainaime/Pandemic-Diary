@@ -11,13 +11,15 @@ class CollapseButton extends React.Component {
         if (this.props.position === "left") {
             orientationStyle.left = '-6px';
             if (this.props.collapsed) {
-                orientationStyle.transform = 'rotate(180deg)';
+                orientationStyle.transform = 'scaleX(-1)';
+                orientationStyle.left = 'calc(100% - 12px)';
             }
         } else {
             if (!this.props.collapsed) {
-                orientationStyle.transform = 'rotate(180deg)'
+                orientationStyle.transform = 'scaleX(-1)';
             } else {
-                orientationStyle.transform = 'none'
+                orientationStyle.transform = 'none';
+                orientationStyle.left = 'calc(100%)';
             }
         }
 

@@ -8,4 +8,5 @@
     border: 1px black solid;
     line-height: 40px;
     z-index: 9999;
+    transition: 0.3s all;
 }
