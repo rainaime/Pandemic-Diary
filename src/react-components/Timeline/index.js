@@ -73,7 +73,7 @@ class Timeline extends React.Component {
         const daysBetween = Math.round(Math.abs((this.state.end - this.state.start) / (24*60*60*1000)));
 
         const tempDate = new Date(this.state.start);
-        tempDate.setDate(this.state.current.getDate() + (xpos/ctx.canvas.width)*daysBetween);
+        tempDate.setDate(this.state.start.getDate() + (xpos/ctx.canvas.width)*daysBetween);
         this.setState({
             current: tempDate,
             currentPos: xpos - 50 
