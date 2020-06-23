@@ -39,7 +39,7 @@ class App extends React.Component {
             if (this.state.collapsed) {
                 this.setState({ width: this.state.maximizedSize });
             } else {
-                this.setState({ width: 1 });
+                this.setState({ width: 0 });
             }
             this.setState({ collapsed: !this.state.collapsed });
         });
