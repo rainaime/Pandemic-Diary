@@ -8,17 +8,22 @@ import Timeline from './react-components/Timeline';
 import AddContent from './react-components/AddContent';
 
 class App extends React.Component {
+    state = {
+        switchToAddContent: 1,
+        ref: this
+    }
+
     render(){
         return (
             <div className="App">
             <SiteHeader />
             <div style={{width: '100%', minHeight: '1px', display: 'flex', flexGrow: 1}}>
-                <Menu f={this.handleCollapse}/>
+                <Menu f={this.handleCollapse} addContent={this.switchToAddContent} state={this.state}/>
                 {/* This div was added due to an extra wrapper div being created by
                   * the Maps component from google-maps-react. */}
                 <div style={{ display: 'inline-block', flexGrow: 1, minWidth: '1px' }}>
                 <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                <Maps />
+                {this.state.switchToAddContent ? <Maps /> : <AddContent/>}
                 </div>
                 </div>
                 <Tweets f={this.handleCollapse}/>
@@ -38,6 +43,11 @@ class App extends React.Component {
             }
             this.setState({ collapsed: !this.state.collapsed });
         });
+    }
+
+    // switched between map component and AddContents component
+    switchToAddContent() {
+        this.setState({switchToAddContent: 0});
     }
 }
 
