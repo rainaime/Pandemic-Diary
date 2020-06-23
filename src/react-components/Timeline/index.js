@@ -18,6 +18,7 @@ class Timeline extends React.Component {
                 lineWidth: 1,
             }
         }
+        this.canvasRef = React.createRef();
     }
 
     render() {
@@ -28,7 +29,7 @@ class Timeline extends React.Component {
                     xpos={this.state.currentPos}
                 />
                 <canvas
-                ref="timeline"
+                ref={this.canvasRef}
                 className="timeline"
                 onMouseMove={this.handleMouseOver.bind(this)}
                 onClick={this.handleClick.bind(this)}
@@ -56,7 +57,7 @@ class Timeline extends React.Component {
 
     // Draw an empty canvas with only the bar on it.
     initializeCanvas = () => {
-        const ctx = this.refs.timeline.getContext("2d");
+        const ctx = this.canvasRef.current.getContext("2d");
         const settings = this.state.canvasSettings;
 
         ctx.canvas.width = window.innerWidth;
@@ -69,7 +70,7 @@ class Timeline extends React.Component {
     }
 
     updateCurrent(xpos) {
-        const ctx = this.refs.timeline.getContext("2d");
+        const ctx = this.canvasRef.current.getContext("2d");
         const daysBetween = Math.round(Math.abs((this.state.end - this.state.start) / (24*60*60*1000)));
 
         const tempDate = new Date(this.state.start);
@@ -88,7 +89,7 @@ class Timeline extends React.Component {
     }
 
     handleMouseOver(e) {
-        const ctx = this.refs.timeline.getContext("2d");
+        const ctx = this.canvasRef.current.getContext("2d");
 
         let x = e.clientX - e.target.getBoundingClientRect().left;
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
