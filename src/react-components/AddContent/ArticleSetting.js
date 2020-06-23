@@ -14,7 +14,7 @@ class ArticleSetting extends React.Component {
                             <option value="Comic">Comic</option>
                         </select>
                     </li>
-                    <li>bold</li>
+                    <li><button>bold</button></li>
                     <li>size</li>
                     <li>color</li>
                 </ul>
