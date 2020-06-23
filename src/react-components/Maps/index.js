@@ -1,25 +1,28 @@
 import React from "react";
-import './styles.css';
-import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
+import ScrollContainer from 'react-indiana-drag-scroll';
+
+import mapImg from './map.png';
+import "./styles.css";
 
 class Maps extends React.Component {
-    api_key = 'AIzaSyCEheP30PI_xivf3iqo6zpcaQ9zRBt558Y';
+    constructor(props) {
+        super(props);
+
+        this.imgRef = React.createRef();
+    }
+
+    handleClick(e) {
+        const imgRect = this.imgRef.current.getBoundingClientRect();
+        console.log(e.pageX - imgRect.x, e.pageY - imgRect.y)
+    }
 
     render() {
-        return(
-            /*Here we used google map api */
-            <Map google={this.props.google} zoom={14} >
-                <Marker onClick={this.onMarkerClick}
-                name={'Current location'} />
-
-                <InfoWindow onClose={this.onInfoWindowClose}>
-                </InfoWindow>
-            </Map>
-            /*Here we used google map api */
+        return (
+            <ScrollContainer className="scroll-container">
+            <img ref={this.imgRef} onClick={this.handleClick.bind(this)} src={mapImg}/>
+            </ScrollContainer>
         );
     };
 }
 
-export default GoogleApiWrapper({
-    apiKey: ('AIzaSyCEheP30PI_xivf3iqo6zpcaQ9zRBt558Y')
-})(Maps)
+export default Maps;
