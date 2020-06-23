@@ -1,10 +1,10 @@
-export const addTweet = tweet => {
-    const tweetList = tweet.state.tweets;
+// export const addTweet = tweet => {
+//     const tweetList = tweet.state.tweets;
 
-    console.log("tweetList");
-    console.log(tweetList);
+//     console.log("tweetList");
+//     console.log(tweetList);
   
-    tweet.setState({
-        tweets: tweetList
-    });
-  };
+//     tweet.setState({
+//         tweets: tweetList
+//     });
+//   };

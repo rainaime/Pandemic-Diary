@@ -26,10 +26,15 @@ class Tweets extends React.Component {
             }
         ],
         collapsed: false,
-        maximizedSize: '20%'
+        maximizedSize: '20%',
+        update: ''
     }
 
     /* update tweet */
+    update() {
+        console.log("this runs")
+        this.setState({update: '1'});
+    }
 
     render() {
         return(
@@ -46,7 +51,7 @@ class Tweets extends React.Component {
                     {this.state.tweets.map( (tweet) => (<Tweet tweet={tweet}/>))}
                 </div>
                 <div className='new_tweets'>
-                    <TweetsForm tweetState= {this.state} addTweet = {() => addTweet(this)}></TweetsForm>
+                    <TweetsForm tweetState= {this.state} parentRef={this} update={this.update}></TweetsForm>
                 </div>
                 <CollapseButton position='left' collapsed={this.state.collapsed} onClick={this.props.f.bind(this)}/>
             </div>
