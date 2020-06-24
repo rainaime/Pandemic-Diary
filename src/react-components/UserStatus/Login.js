@@ -34,6 +34,7 @@ export class Login extends Component {
     }
 
     render() {
+
         return (
             <div className="login" style={{backgroundColor: Colors.backgroundLightAccent}}>
                 <button type="button" onClick={this.getUsername.bind(this)}>Exit</button>
