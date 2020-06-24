@@ -11,7 +11,7 @@ class UserStatus extends React.Component {
     }
     
     loginPrompt = () => {
-        this.setState({loggedIn: true})
+        // this.setState({loggedIn: true})
         this.setState({loginDiv: this.login()})
     }
     

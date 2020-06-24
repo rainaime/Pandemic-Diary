@@ -29,7 +29,8 @@ button:hover {
     position: absolute;
     top: calc(10vh);
     right: 20vw;
-    border: 1px solid black
+    border: 1px solid black;
+    z-index: 9999;
 }
 
 label {

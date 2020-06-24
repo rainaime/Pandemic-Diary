@@ -1,17 +1,18 @@
 import React from "react";
-import "./styles.css";
 
 class TimelineDate extends React.Component {
     render() {
-        const xpos = this.props.xpos;
         return (
-            <span style={{
-                top: 'calc(100% - 75px)',
-                left: xpos,
+            <span style={{...this.props.style,
+                top: 'calc(100% - 70px)',
+                left: this.props.xpos,
                 position: 'fixed',
                 display: 'inline',
                 width: 100,
-                backgroundColor: 'white'
+                color: '#1D3557',
+                backgroundColor: '#F1FAEE',
+                border: '1px solid #1D3557',
+                borderRadius: '5px'
             }}>
             { this.props.date.toDateString() }
             </span>

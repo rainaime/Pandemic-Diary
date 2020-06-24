@@ -39,11 +39,13 @@ class Tweets extends React.Component {
     render() {
         return(
             <div className='tweets' style={{width: this.state.width}}>
-                <div style={inlineStyle}>
-                    <h1 style={titleStyle}>Tweets</h1>
-                </div>
-                <div style={inlineStyle}>   
-                    <h1 style={titleStyle}>News</h1>
+                <div>
+                    <div style={inlineStyle}>
+                        <h1 style={titleStyle}>Tweets</h1>
+                    </div>
+                    <div style={inlineStyle}>   
+                        <h1 style={titleStyle}>News</h1>
+                    </div>
                 </div>
 
                 <div className='tweet_container'>

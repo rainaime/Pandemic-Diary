@@ -1,7 +1,8 @@
 .menu {
     position: relative;
     float: left;
-    background: rgb(45, 45, 114);
+    background: #A8DADC;
+    border-right: 1px dashed #1D3557;
     width: 20%;
     height: 100%;
     font-size: 1.5vw;

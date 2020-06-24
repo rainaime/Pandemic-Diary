@@ -23,8 +23,9 @@ class Timeline extends React.Component {
 
     render() {
         return (
-            <div style={{height: '30px'}}>
+            <div style={{height: '20px'}}>
                 <TimelineDate 
+                    style={{ visibility: !this.state.placed ? 'hidden' : 'visible' }}
                     date={this.state.current} 
                     xpos={this.state.currentPos}
                 />
@@ -33,6 +34,8 @@ class Timeline extends React.Component {
                 className="timeline"
                 onMouseMove={this.handleMouseOver.bind(this)}
                 onClick={this.handleClick.bind(this)}
+                onMouseEnter={() => {this.setState({placed: true})}}
+                onMouseLeave={() => {this.setState({placed: false})}}
                 />
             </div>
         );
@@ -62,11 +65,21 @@ class Timeline extends React.Component {
 
         ctx.canvas.width = window.innerWidth;
 
-        ctx.strokeStyle = "#FF0000";
+        ctx.strokeStyle = '#A8DADC';
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 0.1;
         for (let i = 0; i < ctx.canvas.width; i += settings.xspace) {
-            ctx.fillRect(i, 0, 0.5, ctx.canvas.height);
+            ctx.beginPath();
+            ctx.moveTo(i, 0);
+            ctx.lineTo(i, ctx.canvas.height);
+            ctx.closePath();
+            ctx.stroke();
         }
-        ctx.fillRect(0, ctx.canvas.height/2, ctx.canvas.width, 5);
+        ctx.beginPath();
+        ctx.moveTo(0, ctx.canvas.height/2);
+        ctx.lineTo(ctx.canvas.width, ctx.canvas.height/2);
+        ctx.closePath();
+        ctx.stroke();
     }
 
     updateCurrent(xpos) {
@@ -80,8 +93,14 @@ class Timeline extends React.Component {
             currentPos: xpos - 50 
         });
 
-        ctx.fillStyle="#FF0000";
-        ctx.fillRect(xpos, 0, 3, ctx.canvas.height);
+        ctx.strokeStyle = '#E63946';
+        ctx.lineWidth = 5;
+
+        ctx.beginPath();
+        ctx.moveTo(xpos, 0);
+        ctx.lineTo(xpos, ctx.canvas.height);
+        ctx.closePath();
+        ctx.stroke();
     }
 
     handleClick() {
@@ -90,7 +109,6 @@ class Timeline extends React.Component {
 
     handleMouseOver(e) {
         const ctx = this.canvasRef.current.getContext("2d");
-
         let x = e.clientX - e.target.getBoundingClientRect().left;
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         this.initializeCanvas();
