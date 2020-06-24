@@ -1,8 +1,6 @@
 .menu {
     position: relative;
     float: left;
-    background: #A8DADC;
-    border-right: 1px dashed #1D3557;
     width: 20%;
     height: 100%;
     font-size: 1.5vw;
@@ -33,9 +31,7 @@ li {
     padding: 2px;
 }
 li a{
-    color: white;
     text-decoration: none;
 }
 li a:hover{
-    color: greenyellow;
 }

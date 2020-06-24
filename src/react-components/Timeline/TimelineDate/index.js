@@ -9,9 +9,6 @@ class TimelineDate extends React.Component {
                 position: 'fixed',
                 display: 'inline',
                 width: 100,
-                color: '#1D3557',
-                backgroundColor: '#F1FAEE',
-                border: '1px solid #1D3557',
                 borderRadius: '5px'
             }}>
             { this.props.date.toDateString() }
