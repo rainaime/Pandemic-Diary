@@ -14,3 +14,15 @@
     padding: 0;
 }
 
+:root {
+    --background:               '#2f2c33';
+    --background-dark-accent:   '#4d384d';
+    --background-light-accent:  '#74425f';
+    --foreground:               '#9e4965';
+    --foreground-accent:        '#c65460';
+    --text-highlight:           '#e66750';
+    --text-accent1:             '#fa8337';
+    --text-accent2:             '#ffa600';
+    --text-color-dark:          'gray';
+    --text-color-light:         'white';
+}

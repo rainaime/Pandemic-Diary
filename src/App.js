@@ -51,17 +51,5 @@ class App extends React.Component {
     }
 }
 
-const siteStyles = {
-    background :            '#2f2c33',
-    backgroundDarkAccent :  '#4d384d',
-    backgroundLightAccent : '#74425f',
-    foreground :            '#9e4965',
-    foregroundAccent :      '#c65460',
-    textHighlight :         '#e66750',
-    textAccent1 :           '#fa8337',
-    textAccent2 :           '#ffa600',
-    textColorDark :         'gray',
-    textColorLight :        'white'
-}
 
 export default App;
