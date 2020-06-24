@@ -54,7 +54,6 @@ class UserStatus extends React.Component {
         else 
             loginComp = null;
 
-            // console.log(this.state.username)
         return (
             <div className="userStatus">
                 {message}
