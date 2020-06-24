@@ -1,37 +1,13 @@
 .menu {
     position: relative;
-    float: left;
     width: 20%;
     height: 100%;
+
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    flex-wrap: nowrap;
+
     font-size: 1.5vw;
     transition: all 0.3s;
-}
-
-
-/* reset ul li style */
-
-ul,
-li {
-    list-style: none;
-}
-
-
-/* ul that contains menu */
-
-ul {
-    margin: 0; 
-    padding: 0;
-}
-
-
-/* li of every menu components */
-
-li {
-    margin: 0 auto;
-    padding: 2px;
-}
-li a{
-    text-decoration: none;
-}
-li a:hover{
 }

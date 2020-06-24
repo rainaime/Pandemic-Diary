@@ -1,4 +1,5 @@
 import React from "react";
+import Colors from '../../site-styles/Colors';
 import CollapseButton from "../CollapseButton";
 import './styles.css';
 
@@ -38,13 +39,20 @@ class Tweets extends React.Component {
 
     render() {
         return(
-            <div className='tweets' style={{width: this.state.width}}>
+            <div className='tweets' style={{
+                    width: this.state.width,
+                    backgroundColor: Colors.background,
+                    color: Colors.textColorLight,
+                    borderLeftColor: Colors.backgroundLightAccent,
+                    borderLeftWidth: 2,
+                    borderLeftStyle: 'dotted'
+                }}>
                 <div>
                     <div style={inlineStyle}>
-                        <h1 style={titleStyle}>Tweets</h1>
+                        <h1 style={{...titleStyle, color: Colors.textAccent1}}>Tweets</h1>
                     </div>
                     <div style={inlineStyle}>   
-                        <h1 style={titleStyle}>News</h1>
+                        <h1 style={{...titleStyle, color: Colors.textAccent1}}>News</h1>
                     </div>
                 </div>
 
@@ -72,7 +80,6 @@ const titleStyle = {
     marginBlockStart : '0',
     marginBlockEnd: '0',
     margin: '0',
-    border: 'solid 1px'
 }
 
 export default Tweets;

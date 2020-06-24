@@ -16,19 +16,19 @@ class App extends React.Component {
     render(){
         return (
             <div className="App">
-            <SiteHeader />
-            <div style={{width: '100%', minHeight: '1px', display: 'flex', flexGrow: 1}}>
-                <Menu f={this.handleCollapse} addContent={this.switchToAddContent} state={this.state}/>
-                {/* This div was added due to an extra wrapper div being created by
-                  * the Maps component from google-maps-react. */}
-                <div style={{ display: 'inline-block', flexGrow: 1, minWidth: '1px' }}>
-                <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                {this.state.switchToAddContent ? <Maps /> : <AddContent/>}
+                <SiteHeader />
+                <div style={{width: '100%', minHeight: '1px', display: 'flex', flexGrow: 1}}>
+                    <Menu f={this.handleCollapse} addContent={this.switchToAddContent} state={this.state}/>
+                    {/* This div was added due to an extra wrapper div being created by
+                      * the Maps component from google-maps-react. */}
+                    <div style={{ display: 'inline-block', flexGrow: 1, minWidth: '1px' }}>
+                        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                            {this.state.switchToAddContent ? <Maps /> : <AddContent/>}
+                        </div>
+                    </div>
+                    <Tweets f={this.handleCollapse}/>
                 </div>
-                </div>
-                <Tweets f={this.handleCollapse}/>
-            </div>
-            <Timeline />
+                <Timeline />
 
             </div>
         );

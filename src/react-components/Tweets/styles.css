@@ -16,8 +16,6 @@
     text-align: center;
 }
 
-
-
 .tweet_container::-webkit-scrollbar{
     width: 1em;
 }

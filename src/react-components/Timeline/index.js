@@ -1,4 +1,5 @@
 import React from "react";
+import Colors from '../../site-styles/Colors';
 import TimelineDate from "./TimelineDate";
 import './styles.css';
 
@@ -11,10 +12,10 @@ class Timeline extends React.Component {
             end: new Date("December 31 2020"),
             current: new Date(),
             currentPos: -120,
-            placed: true, 
+            hover: true, 
             currentPlaced: new Date(),
             canvasSettings: {
-                xspace: 7,
+                xspace: 12,
                 lineWidth: 1,
             }
         }
@@ -23,9 +24,13 @@ class Timeline extends React.Component {
 
     render() {
         return (
-            <div style={{height: '20px'}}>
+            <div style={{
+                    height: '20px',
+                    backgroundColor: !this.state.hover ? Colors.background : Colors.backgroundDarkAccent, 
+                    transition: 'all 0.3s'
+                }}>
                 <TimelineDate 
-                    style={{ visibility: !this.state.placed ? 'hidden' : 'visible' }}
+                    style={{ visibility: !this.state.hover ? 'hidden' : 'visible' }}
                     date={this.state.current} 
                     xpos={this.state.currentPos}
                 />
@@ -34,8 +39,8 @@ class Timeline extends React.Component {
                 className="timeline"
                 onMouseMove={this.handleMouseOver.bind(this)}
                 onClick={this.handleClick.bind(this)}
-                onMouseEnter={() => {this.setState({placed: true})}}
-                onMouseLeave={() => {this.setState({placed: false})}}
+                onMouseEnter={() => {this.setState({hover: true})}}
+                onMouseLeave={() => {this.setState({hover: false})}}
                 />
             </div>
         );
@@ -65,9 +70,9 @@ class Timeline extends React.Component {
 
         ctx.canvas.width = window.innerWidth;
 
-        ctx.strokeStyle = '#A8DADC';
+        ctx.strokeStyle = Colors.backgroundLightAccent;
         ctx.lineCap = 'round';
-        ctx.lineWidth = 0.1;
+        ctx.lineWidth = 0.2;
         for (let i = 0; i < ctx.canvas.width; i += settings.xspace) {
             ctx.beginPath();
             ctx.moveTo(i, 0);
@@ -93,7 +98,7 @@ class Timeline extends React.Component {
             currentPos: xpos - 50 
         });
 
-        ctx.strokeStyle = '#E63946';
+        ctx.strokeStyle = Colors.textAccent1;
         ctx.lineWidth = 5;
 
         ctx.beginPath();

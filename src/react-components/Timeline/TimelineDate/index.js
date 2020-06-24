@@ -1,4 +1,5 @@
 import React from "react";
+import Colors from '../../../site-styles/Colors';
 
 class TimelineDate extends React.Component {
     render() {
@@ -9,7 +10,9 @@ class TimelineDate extends React.Component {
                 position: 'fixed',
                 display: 'inline',
                 width: 100,
-                borderRadius: '5px'
+                borderRadius: '5px',
+                backgroundColor: Colors.backgroundDarkAccent,
+                color: Colors.textColorLight
             }}>
             { this.props.date.toDateString() }
             </span>

@@ -4,6 +4,7 @@ h2 {
 
 button {
     background: none;
+    color: inherit;
 	border: none;
 	font: inherit;
 	cursor: pointer;
