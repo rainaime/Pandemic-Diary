@@ -19,7 +19,7 @@ class UserStatus extends React.Component {
     updateUsername(username) {
         this.setState({username: username})
     }
-    
+
     loginPrompt = () => {
         if (!this.state.loginAttempt)
             this.setState({loginAttempt: true})
