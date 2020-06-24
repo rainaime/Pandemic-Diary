@@ -1,21 +1,57 @@
 import React, { Component } from 'react'
+import Colors from '../../site-styles/Colors';
 
 export class Login extends Component {
+    constructor(props){
+        super(props);
+
+        this.state = {
+            username:'',
+            password:''
+        }
+
+        this.handleChange = this.handleChange.bind(this);
+
+    }
+
+    getUsername = () => {
+        console.log(this.state.password)
+    }
+
+    handleClick(e){
+        this.loginAttempt()
+    }
+
+    handleChange(event){
+        if (event.target.name == "username")
+            this.setState({username: event.target.value})
+        else if (event.target.name == "password")
+            this.setState({password: event.target.value})
+    }
+
+    loginAttempt = () => {
+        this.props.loginCallback(this.state.username, this.state.password)
+    }
+
     render() {
         return (
-            <div className="login">
+            <div className="login" style={{backgroundColor: Colors.backgroundLightAccent}}>
+                <button type="button" onClick={this.getUsername.bind(this)}>Exit</button>
                 <form>
-
-          
         
-                <label for="username">Username: </label>
-                <input type="text" name="username" placeholder="Username" required style={formStyle}></input>
+                <label htmlFor="username">Username: </label>
+                <input type="text" name="username" placeholder="Username" 
+                    onChange = {this.handleChange}
+                    required style={formStyle}></input>
 
-                <label for="password">Password: </label>
-                <input type="password" name="password" placeholder="Password" required style={formStyle}></input>
+                <label htmlFor="password">Password: </label>
+                <input type="password" name="password" placeholder="Password" 
+                    onChange = {this.handleChange}
+                    required style={formStyle}></input>
 
-                <input type="submit" value="Login" style={buttonStyle}></input>
-                <input type="submit" value="Register" style={buttonStyle}></input>
+                <button type="button" value="Login" style={buttonStyle}
+                onClick={(event) => this.handleClick(event)}>Login</button>
+                {/* <input type="submit" value="Register" style={buttonStyle}></input> */}
 
                 </form>
 
@@ -38,6 +74,8 @@ const formStyle = {
 const buttonStyle = {
     position: 'center',
     width: '30%',
+    backgroundColor: Colors.backgroundDarkAccent,
+    color: Colors.textAccent1,
     // marginLeft: 'auto',
     // marginRight: 'auto',
     padding: '12px',
