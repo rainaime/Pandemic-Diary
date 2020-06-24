@@ -15,7 +15,7 @@ class PopoutButton extends React.Component {
     }
 
     getChildPos(i) {
-        const radius = this.distToChild;
+        const radius = this.distToChild + 24;
         const angle = (Math.PI/2)/(this.props.children.length-1)*i;
         return [Math.cos(angle)*radius, Math.sin(angle)*radius];
     }
