@@ -18,7 +18,6 @@ class UserStatus extends React.Component {
 
     //have to add a way to remove this html after login successful
     login = () => {
-        console.log("hello")
         return (
             <Login/>
         );

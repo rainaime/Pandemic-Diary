@@ -60,7 +60,7 @@ class App extends React.Component {
 
     // switched between map component and AddContents component
     switchToAddContent() {
-        if(this.state.switchToAddContent == 1){
+        if(this.state.switchToAddContent === 1){
             this.setState({switchToAddContent: 0});
         }
         else{

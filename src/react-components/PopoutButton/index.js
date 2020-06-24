@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Colors from '../../site-styles/Colors';
 import './styles.css';
 
@@ -48,8 +47,7 @@ class PopoutButton extends React.Component {
             right: 0,
         }
         return (
-            <div class="popout-button" 
-                style={{
+            <div style={{
                     position: 'absolute',
                     width: 48,
                     height: 48,

@@ -2,7 +2,6 @@ import React from "react";
 import "./styles.css";
 import Colors from '../../site-styles/Colors';
 import UserStatus from "../UserStatus";
-console.log(Colors)
 
 class SiteHeader extends React.Component {
     //need somewhere for access with user info

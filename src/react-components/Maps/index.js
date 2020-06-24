@@ -13,13 +13,15 @@ class Maps extends React.Component {
 
     handleClick(e) {
         const imgRect = this.imgRef.current.getBoundingClientRect();
-        console.log(e.pageX - imgRect.x, e.pageY - imgRect.y)
     }
 
     render() {
         return (
             <ScrollContainer className="scroll-container">
-            <img ref={this.imgRef} onClick={this.handleClick.bind(this)} src={mapImg}/>
+            <img ref={this.imgRef} 
+                onClick={this.handleClick.bind(this)} 
+                src={mapImg}
+                alt='Temporary map for Phase 1.'/>
             </ScrollContainer>
         );
     };

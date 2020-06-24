@@ -5,7 +5,6 @@ import './styles.css';
 
 import Tweet from './Tweet'
 import TweetsForm from './TweetsForm'
-import { addTweet } from './TweetQueue';
 
 class Tweets extends React.Component {
     state = {
@@ -33,7 +32,6 @@ class Tweets extends React.Component {
 
     /* update tweet */
     update() {
-        console.log("this runs")
         this.setState({update: '1'});
     }
 
