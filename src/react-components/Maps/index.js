@@ -16,8 +16,15 @@ class Maps extends React.Component {
     }
 
     render() {
+        let popUp;
+        if (this.props.state.articlePopUp == 1) {
+            popUp = <div className = "articlePopUp">
+                <strong className="strongg">{this.props.state.articleToSend.text}</strong>
+            </div>
+        }
         return (
             <ScrollContainer className="scroll-container">
+            {popUp}
             <img ref={this.imgRef} 
                 onClick={this.handleClick.bind(this)} 
                 src={mapImg}

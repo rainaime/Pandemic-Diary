@@ -6,8 +6,13 @@ class Article extends React.Component {
         super(props)
         this.state = {
             text: '',
+            date: 'Sun Feb 16 2020',
             font: ''
         }
+    }
+
+    DateInput(e) {
+        this.setState({date: e.target.value})
     }
 
     //update text state whenever user leaves the textarea section
@@ -15,15 +20,28 @@ class Article extends React.Component {
         this.setState({text: e.target.value})
     }
 
+    //submit Article that this user wrote
+    //this is where server call happens
+    submitAriticle(curr) {
+        curr.props.state.articles.push(
+            {
+                date: curr.state.date,
+                text: curr.state.text
+            }
+        )
+        console.log(curr.props.state)
+    }
+
     //font change
 
     render() {
         return (
             <div className="articleInput">
-                <textarea className = "articleHeader" placeholder="Enter Header" onBlur={this.textInput.bind(this)}>
+                <textarea className = "articleHeader" placeholder="Enter Header" onBlur={this.DateInput.bind(this)}>
                 </textarea>
                 <textarea className = "article" placeholder="Enter your story..." onBlur={this.textInput.bind(this)}>
                 </textarea>
+                <button onClick={() => {this.submitAriticle(this)}}>submit</button>
             </div>
         );
     }

@@ -9,7 +9,7 @@ class AddContent extends React.Component {
         return(
             <div className = "addContent">
                 <Image/>
-                <Ariticle />
+                <Ariticle state = {this.props.state}/>
                 <AriticleSetting/>
             </div>
         );

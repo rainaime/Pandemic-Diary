@@ -14,10 +14,11 @@ class TimelineDate extends React.Component {
                 backgroundColor: Colors.backgroundDarkAccent,
                 color: Colors.textColorLight
             }}>
-            { this.props.date.toDateString() }
+            {this.props.date.toDateString()}
+            {/* {this.props.state.timeLine = this.props.date.toDateString()} */}
             </span>
         );
     }
 }
 
-export default TimelineDate;
+export default TimelineDate; 

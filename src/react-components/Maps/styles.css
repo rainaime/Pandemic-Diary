@@ -25,3 +25,19 @@ h1 {
     margin-left: 20px;
     margin-left: 1em;
 }
+
+.articlePopUp{
+    left: 50px;
+    width: 300px;
+    height: 300px;
+    background-color: aqua;
+    border-radius: 50%;
+}
+
+.articlePopUp .strongg{
+    position: relative;
+    display: inline-block;
+    top: 150px;
+    vertical-align: middle;
+    text-align: center;
+}

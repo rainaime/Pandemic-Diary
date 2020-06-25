@@ -33,13 +33,15 @@ class Timeline extends React.Component {
                     style={{ visibility: !this.state.hover ? 'hidden' : 'visible' }}
                     date={this.state.current} 
                     xpos={this.state.currentPos}
+                    state = {this.props.state}
+                    changeTimeLine = {this.props.changeTimeLine}
                 />
                 <canvas
                 ref={this.canvasRef}
                 className="timeline"
                 onMouseMove={this.handleMouseOver.bind(this)}
                 onClick={this.handleClick.bind(this)}
-                onMouseEnter={() => {this.setState({hover: true})}}
+                onMouseEnter={() => {this.setState({hover: true});}}
                 onMouseLeave={() => {this.setState({hover: false})}}
                 />
             </div>
@@ -97,6 +99,8 @@ class Timeline extends React.Component {
             current: tempDate,
             currentPos: xpos - 50 
         });
+
+        this.props.changeTimeLine(this.state.current.toDateString(), this.props.state.ref);
 
         ctx.strokeStyle = Colors.textAccent1;
         ctx.lineWidth = 5;
