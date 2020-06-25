@@ -6,7 +6,7 @@ class PopoutButton extends React.Component {
     constructor(props) {
         super(props);
 
-        this.distToChild = 100;
+        this.distToChild = 64;
         this.childRadius = 8;
 
         this.state = {
@@ -30,8 +30,9 @@ class PopoutButton extends React.Component {
                     pos: this.getChildPos(i),
                     style: {...child.props.style,
                         position: 'absolute',
-                        right: childPos[0],
-                        bottom: childPos[1],
+                        right: this.state.hover ? childPos[0] : 16,
+                        bottom: this.state.hover ? childPos[1] : 16,
+                        transition: 'all 0.3s',
                         visibility: this.state.hover ? 'visible' : 'hidden'
                     }
                 });
@@ -43,8 +44,8 @@ class PopoutButton extends React.Component {
         // TODO: change these styles to allow for different locations on map
         const popoutButtonStyles = {
             position: 'absolute',
-            bottom: 0,
-            right: 0,
+            bottom: 16,
+            right: 16,
         }
         return (
             <div style={{
@@ -70,7 +71,6 @@ class PopoutButton extends React.Component {
                     verticalAlign: 'center',
                     backgroundColor: Colors.background,
                     borderRadius: 24,
-                    transform: 'translate(-50%, -50%)',
                     color: Colors.textColorLight,
                 }}>dsa</span>
                 {this.renderChildren()}

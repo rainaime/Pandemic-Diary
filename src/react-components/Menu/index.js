@@ -20,9 +20,9 @@ class Menu extends React.Component {
                     width: this.state.width,
                     backgroundColor: Colors.background,
                     color: Colors.textColorLight,
-                    borderRightColor: Colors.backgroundLightAccent,
-                    borderRightWidth: 2,
-                    borderRightStyle: 'dotted'
+                borderRightColor: this.state.collapsed ? 'none' : Colors.backgroundLightAccent,
+                    borderRightWidth: this.state.collapsed ? 'none' : 2,
+                    borderRightStyle: this.state.collapsed ? 'none' : 'dotted'
                 }}>
 
                 <MenuItem link='#' text='News'/>

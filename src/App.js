@@ -25,9 +25,9 @@ class App extends React.Component {
     render() {
         const tempCircles = {
             background: Colors.background,
-            width: 16,
-            height: 16,
-            borderRadius: 8
+            width: 24,
+            height: 24,
+            borderRadius: 12
         }
         return (
             <div className="App">
@@ -43,7 +43,6 @@ class App extends React.Component {
                             {this.state.switchToAddContent ? <Maps state = {this.state}/> : <AddContent state = {this.state}/>}
                         </div>
                         <PopoutButton>
-                            <span style={tempCircles}></span>
                             <span style={tempCircles}></span>
                             <span style={tempCircles}></span>
                             <span style={tempCircles}></span>

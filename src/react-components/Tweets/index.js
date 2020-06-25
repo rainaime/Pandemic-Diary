@@ -41,9 +41,9 @@ class Tweets extends React.Component {
                     width: this.state.width,
                     backgroundColor: Colors.background,
                     color: Colors.textColorLight,
-                    borderLeftColor: Colors.backgroundLightAccent,
-                    borderLeftWidth: 2,
-                    borderLeftStyle: 'dotted'
+                    borderLeftColor: this.state.collapsed ? 'none' : Colors.backgroundLightAccent,
+                    borderLeftWidth: this.state.collapsed ? 'none' : 2,
+                    borderLeftStyle: this.state.collapsed ? 'none' : 'dotted'
                 }}>
                 <div>
                     <div style={inlineStyle}>
