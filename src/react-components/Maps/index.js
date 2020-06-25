@@ -1,12 +1,13 @@
 import React from "react";
 import ScrollContainer from 'react-indiana-drag-scroll';
 
-import mapImg from './map.png';
-import markerImg from './marker.png';
-
 import "./styles.css";
-import Marker from "./Marker";
+// import Marker from "./Marker";
 
+const markerDimensions = {
+    width: 16,
+    height: 26
+}
 class Maps extends React.Component {
     constructor(props) {
         super(props);
@@ -18,27 +19,42 @@ class Maps extends React.Component {
             markers: [
                 {x : 220, y: 220, content: "marker 1"},
                 {x: 100, y: 50, content: "hello marker 2"},
-                {x : 200, y: 200, content: "marker 3"}
+                {x : 200, y: 200, content: "marker 3"},
+                {x: 300, y:1000, content: "hehe"}
             ],
             update: '' //need to fix this it is a janky way to update state
+        }
+    }
+
+    getMarkerAtLocation(e) {
+        const imgRect = this.canvasRef.current.getBoundingClientRect();
+        const adjX = e.pageX - imgRect.x;
+        const adjY = e.pageY - imgRect.y
+        for (const marker of this.state.markers) {
+            if (marker.x <= adjX && adjX <= marker.x + markerDimensions.width &&
+                marker.y <= adjY && adjY <= marker.y + markerDimensions.height) {
+                return marker;
+            }
         }
     }
 
     //current issues: 
     //doesnt allow you to click on same spot because youre clicking marker img instead of the actual map image now
     handleClick(e) {
-        const imgRect = this.canvasRef.current.getBoundingClientRect();
-        // this.state.markers.push({x: e.pageX - imgRect.x, y: e.pageY - imgRect.y, content: "placeholder content"})
-        this.state.markers.push({x: e.clientX - imgRect.left, y: e.clientY - imgRect.top, content: "placeholder content"})
-        this.setState({update: '1'})
-
+        const marker = this.getMarkerAtLocation(e);
+        console.log(marker.content);
     }
 
     componentDidMount() {
         const ctx = this.canvasRef.current.getContext('2d');
         const img = new Image();
-        img.onload = () => {ctx.drawImage(img, 0, 0)};
+        const markerImg = new Image();
+        img.onload = () => {
+            ctx.drawImage(img, 0, 0)
+            this.state.markers.forEach((marker, i) => {ctx.drawImage(markerImg, marker.x, marker.y, markerDimensions.width, markerDimensions.height)});
+        };
         img.src = '/map.png'
+        markerImg.src = '/marker.png';
     }
 
     render() {

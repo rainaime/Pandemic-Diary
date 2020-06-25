@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import markerImg from './marker.png';
 
 export class Marker extends Component {
     constructor(props){
