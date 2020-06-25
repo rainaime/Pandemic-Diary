@@ -11,7 +11,7 @@ class Maps extends React.Component {
     constructor(props) {
         super(props);
 
-        this.imgRef = React.createRef();
+        this.canvasRef = React.createRef();
         this.markRef = React.createRef();
 
         this.state = {
@@ -27,11 +27,18 @@ class Maps extends React.Component {
     //current issues: 
     //doesnt allow you to click on same spot because youre clicking marker img instead of the actual map image now
     handleClick(e) {
-        const imgRect = this.imgRef.current.getBoundingClientRect();
+        const imgRect = this.canvasRef.current.getBoundingClientRect();
         // this.state.markers.push({x: e.pageX - imgRect.x, y: e.pageY - imgRect.y, content: "placeholder content"})
         this.state.markers.push({x: e.clientX - imgRect.left, y: e.clientY - imgRect.top, content: "placeholder content"})
         this.setState({update: '1'})
 
+    }
+
+    componentDidMount() {
+        const ctx = this.canvasRef.current.getContext('2d');
+        const img = new Image();
+        img.onload = () => {ctx.drawImage(img, 0, 0)};
+        img.src = '/map.png'
     }
 
     render() {
@@ -44,10 +51,15 @@ class Maps extends React.Component {
         return (
             <ScrollContainer className="scroll-container">
             {popUp}
-            <img ref={this.imgRef} 
+                <canvas ref={this.canvasRef}
+                onClick={this.handleClick.bind(this)}
+                width={3740}
+                height={1700}
+                alt='Tempory map for Phase 1.'/>
+            {/*<img ref={this.imgRef} 
                 onClick={this.handleClick.bind(this)} 
                 src={mapImg}
-                alt='Temporary map for Phase 1.'/>
+                alt='Temporary map for Phase 1.'/>*/}
             {/* this will let markers be pushed */}
             {/* {this.state.markers.map( (marker) => (<Marker x={marker.x} y={marker.y} content={marker.content}/>))} */}
             </ScrollContainer>
