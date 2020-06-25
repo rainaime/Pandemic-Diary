@@ -29,7 +29,7 @@ class SiteHeader extends React.Component {
 
     updateCurrentUser(user){
         this.setState({currentUser: user}, () => {
-            console.log(this.state.currentUser)
+            // console.log(this.state.currentUser)
         })
         this.userstatusRef.current.updateUsername(user.username)
     }
