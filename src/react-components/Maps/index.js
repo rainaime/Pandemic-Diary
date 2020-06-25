@@ -42,6 +42,9 @@ class Maps extends React.Component {
     //doesnt allow you to click on same spot because youre clicking marker img instead of the actual map image now
     handleClick(e) {
         const marker = this.getMarkerAtLocation(e);
+        if (!marker) {
+            return;
+        }
         console.log(marker.content);
     }
 
