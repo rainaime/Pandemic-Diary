@@ -42,7 +42,12 @@ class App extends React.Component {
                         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
                             {this.state.switchToAddContent ? <Maps state = {this.state}/> : <AddContent state = {this.state}/>}
                         </div>
-                        <PopoutButton>
+                        <PopoutButton position='top-right'>
+                            <span style={tempCircles}></span>
+                            <span style={tempCircles}></span>
+                            <span style={tempCircles}></span>
+                        </PopoutButton>
+                        <PopoutButton position='bottom-right'>
                             <span style={tempCircles}></span>
                             <span style={tempCircles}></span>
                             <span style={tempCircles}></span>
