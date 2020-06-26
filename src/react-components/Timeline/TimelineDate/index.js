@@ -12,7 +12,8 @@ class TimelineDate extends React.Component {
                 width: 100,
                 borderRadius: '5px',
                 backgroundColor: Colors.backgroundDarkAccent,
-                color: Colors.textColorLight
+                color: Colors.textColorLight,
+                userSelect: 'none'
             }}>
             {this.props.date.toDateString()}
             {/* {this.props.state.timeLine = this.props.date.toDateString()} */}

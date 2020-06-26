@@ -34,7 +34,6 @@ class Timeline extends React.Component {
                     date={this.state.current} 
                     xpos={this.state.currentPos}
                     state = {this.props.state}
-                    changeTimeLine = {this.props.changeTimeLine}
                 />
                 <canvas
                 ref={this.canvasRef}
@@ -100,7 +99,7 @@ class Timeline extends React.Component {
             currentPos: xpos - 50 
         });
 
-        this.props.changeTimeLine(this.state.current.toDateString(), this.props.state.ref);
+        this.props.changeTimeline(this.state.current.toDateString());
 
         ctx.strokeStyle = Colors.textAccent1;
         ctx.lineWidth = 5;
