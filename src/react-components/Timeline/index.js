@@ -99,7 +99,7 @@ class Timeline extends React.Component {
             currentPos: xpos - 50 
         });
 
-        this.props.changeTimeline(this.state.current.toDateString());
+        this.props.updateCurrentDate(this.state.current);
 
         ctx.strokeStyle = Colors.textAccent1;
         ctx.lineWidth = 5;

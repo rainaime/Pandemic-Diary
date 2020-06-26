@@ -47,7 +47,7 @@ class PopoutButton extends React.Component {
         const nChildren = this.props.children.length;
         let angle;
         if (nChildren > 1) {
-            angle = ((Math.PI / 2) / (nChildren - 1)) * i;
+            angle = (Math.PI / 2 / (nChildren - 1)) * i;
         } else {
             angle = 45;
         }
@@ -70,10 +70,10 @@ class PopoutButton extends React.Component {
                     position: "absolute",
                     right: this.state.hover ? childPos[0] : 16,
                     bottom: this.state.hover
-                    ? childPos[1]
-                    : this.props.position === "top-right"
-                    ? containerStyles.distToViewport + childSettings.distToChild
-                    : containerStyles.distToViewport,
+                        ? childPos[1]
+                        : this.props.position === "top-right"
+                        ? containerStyles.distToViewport + childSettings.distToChild
+                        : containerStyles.distToViewport,
                     transition: "all 0.3s",
                     userSelect: "none",
                     visibility: this.state.hover ? "visible" : "hidden",
