@@ -1,34 +1,39 @@
 import React from "react";
 
 class MarkerIcon extends React.Component {
-    Marker = {
+    state = {
         type: "marker",
         img: new Image(),
         width: 16,
         height: 24,
-        content: 'todo: allow user to change text of these markers'
+        content: "todo: allow user to change text of these markers",
     };
 
     componentWillUnmount() {
         Image.img = undefined;
     }
 
-    render () {
+    render() {
         const marker = (
-            <img style={this.props.style} src='/marker.png' onClick={() => {
-                this.props.onClick(this.Marker);
-            }}/>);
-        const img = this.Marker.img;
+            <img
+                style={this.props.style}
+                src="/marker.png"
+                onClick={() => {
+                    this.props.onClick(this.state);
+                }}
+            />
+        );
+        const img = this.state.img;
         if (img.src) {
             return marker;
         } else {
             if (!img.complete) {
                 img.onload = () => {
-                    img.src = '/marker.png';
+                    img.src = "/marker.png";
                     return marker;
-                }
+                };
             } else {
-                img.src = '/marker.png';
+                img.src = "/marker.png";
                 return marker;
             }
         }
@@ -37,8 +42,25 @@ class MarkerIcon extends React.Component {
 
 class MarkerMenu extends React.Component {
     render() {
-        return <div>This should be a div to customize markers.</div>
+        return (
+            <div>
+                <h1>Edit your marker!</h1>
+                <p>
+                    You may enter text you'd like your marker to display here. There is a limit of
+                    100 characters.
+                </p>
+                <input
+                    type="text"
+                    maxLength="100"
+                    width="100%"
+                    onChange={(e) => {
+                        console.log(this.props.state)
+                        this.props.state.content = e.target.value
+                    }}
+                />
+            </div>
+        );
     }
 }
 
-export {MarkerIcon, MarkerMenu};
+export { MarkerIcon, MarkerMenu };

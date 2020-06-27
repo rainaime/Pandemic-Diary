@@ -43,9 +43,9 @@ class App extends React.Component {
     renderPopup(currentPopup) {
         switch (currentPopup) {
             case "marker":
-                return <MarkerMenu/>;
+                return <MarkerMenu state={this.state.currentShareable}/>;
             case "image":
-                return <ImageMenu />;
+                return <ImageMenu image={this.state.currentShareable}/>;
             default:
                 return null;
         }
