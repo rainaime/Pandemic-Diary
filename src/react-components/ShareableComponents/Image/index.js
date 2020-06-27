@@ -16,7 +16,7 @@ class ImageIcon extends React.Component {
     render () {
         const marker = (
             <img style={this.props.style} src='/image.png' onClick={() => {
-                this.props.onClick(this.Image, 'image')
+                this.props.onClick(this.Image)
             }}/>);
         const img = this.Image.img;
         if (img.src) {
@@ -35,4 +35,10 @@ class ImageIcon extends React.Component {
     }
 }
 
-export default ImageIcon;
+class ImageMenu extends React.Component {
+    render() {
+        return <div>This should be a div to customize images.</div>
+    }
+}
+
+export { ImageIcon, ImageMenu };

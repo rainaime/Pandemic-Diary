@@ -16,7 +16,7 @@ class MarkerIcon extends React.Component {
     render () {
         const marker = (
             <img style={this.props.style} src='/marker.png' onClick={() => {
-                this.props.onClick(this.Marker, 'marker');
+                this.props.onClick(this.Marker);
             }}/>);
         const img = this.Marker.img;
         if (img.src) {
@@ -35,4 +35,10 @@ class MarkerIcon extends React.Component {
     }
 }
 
-export default MarkerIcon;
+class MarkerMenu extends React.Component {
+    render() {
+        return <div>This should be a div to customize markers.</div>
+    }
+}
+
+export {MarkerIcon, MarkerMenu};

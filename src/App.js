@@ -7,8 +7,8 @@ import Maps from "./react-components/Maps";
 import Tweets from "./react-components/Tweets";
 import Timeline from "./react-components/Timeline";
 import PopoutButton from "./react-components/PopoutButton";
-import ImageIcon from "./react-components/ShareableComponents/Image";
-import MarkerIcon from "./react-components/ShareableComponents/Marker";
+import { ImageIcon, ImageMenu } from "./react-components/ShareableComponents/Image";
+import { MarkerIcon, MarkerMenu } from "./react-components/ShareableComponents/Marker";
 
 const markerIconStyle = {
     height: 24,
@@ -17,7 +17,7 @@ const markerIconStyle = {
 
 class App extends React.Component {
     state = {
-        inAddMode: false,
+        currentMode: "normal",
         shareables: [],
         selectedShareable: {
             x: 0,
@@ -43,9 +43,9 @@ class App extends React.Component {
     renderPopup(currentPopup) {
         switch (currentPopup) {
             case "marker":
-                return null;
+                return <MarkerMenu/>;
             case "image":
-                return <span>test</span>;
+                return <ImageMenu />;
             default:
                 return null;
         }
@@ -56,15 +56,15 @@ class App extends React.Component {
             <div
                 className="App"
                 style={{
-                    cursor: this.state.inAddMode ? "crosshair" : "auto",
+                    cursor:
+                        this.state.currentMode === "normal" ||
+                        this.state.currentMode === "editingShareable"
+                            ? "auto"
+                            : "crosshair",
                 }}>
                 <SiteHeader />
                 <div style={{ width: "100%", minHeight: "1px", display: "flex", flexGrow: 1 }}>
-                    <Menu
-                        f={this.handleCollapse}
-                        addContent={this.switchToAddContent}
-                        state={this.state}
-                    />
+                    <Menu f={this.handleCollapse} />
                     {/* This div was added due to an extra wrapper div being created by
                      * the Maps component from google-maps-react. */}
                     <div
@@ -84,23 +84,36 @@ class App extends React.Component {
                                 left: "5%",
                                 zIndex: 9999,
                                 visibility:
-                                    this.state.currentPopup === "" && !this.state.inAddMode
+                                    this.state.currentMode === "normal" ||
+                                    this.state.currentMode === "placingShareable"
                                         ? "hidden"
                                         : "visible",
                             }}>
+                            <span
+                                style={{
+                                    position: "absolute",
+                                    top: 16,
+                                    right: 16,
+                                    background: Colors.background,
+                                    width: 24,
+                                    height: 24,
+                                    borderRadius: 12,
+                                    color: 'white'
+                                }} onClick={() => {this.setState({currentMode: "normal"})}}>
+                                x
+                            </span>
                             {this.renderPopup(this.state.currentPopup)}
                         </div>
                         <div style={{ position: "relative", width: "100%", height: "100%" }}>
                             <Maps
                                 shareables={this.state.shareables}
-                                selectedShareable={this.state.selectedShareable}
                                 currentShareable={this.state.currentShareable}
                                 addToShareableArray={this.addToShareableArray.bind(this)}
                                 updateSelectedShareable={(marker) =>
                                     this.setState({ selectedShareable: marker })
                                 }
-                                inAddMode={this.state.inAddMode}
-                                onContentAdded={this.onContentAdded.bind(this)}>
+                                inAddMode={this.state.currentMode === "placingShareable"}
+                                onShareablePlaced={this.onShareablePlaced.bind(this)}>
                                 <span
                                     style={{
                                         position: "absolute",
@@ -114,11 +127,11 @@ class App extends React.Component {
                         <PopoutButton position="bottom-right">
                             <MarkerIcon
                                 style={markerIconStyle}
-                                onClick={this.updateAddingStatus.bind(this)}
+                                onClick={this.enterAddingMode.bind(this)}
                             />
                             <ImageIcon
                                 style={markerIconStyle}
-                                onClick={this.updateAddingStatus.bind(this)}
+                                onClick={this.enterAddingMode.bind(this)}
                             />
                         </PopoutButton>
                     </div>
@@ -145,32 +158,25 @@ class App extends React.Component {
         this.setState({ collapsed: !this.state.collapsed });
     }
 
-    updateAddingStatus(shareableType, popupType) {
+    enterAddingMode(shareableType) {
         this.setState({
-            inAddMode: true,
-            currentShareable: shareableType,
-        });
+            currentMode: "placingShareable",
+            currentShareable: shareableType
+        })
+    }
+
+    onShareablePlaced(popupType) {
+        this.setState({
+            currentMode: "editingShareable",
+            currentPopup: this.state.currentShareable.type,
+        })
     }
 
     onContentAdded() {
-        this.setState({ inAddMode: false });
         this.setState({
-        });
-    }
-
-    updateCurrentShareable(shareableType) {
-        this.setState({
-            currentShareable: shareableType,
-        });
-    }
-
-    // switched between map component and AddContents component
-    switchToAddContent() {
-        if (this.state.switchToAddContent === 1) {
-            this.setState({ switchToAddContent: 0 });
-        } else {
-            this.setState({ switchToAddContent: 1 });
-        }
+            currentMode: "normal",
+            currentPopup: "",
+        })
     }
 
     //change Time Line

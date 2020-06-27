@@ -33,15 +33,14 @@ class Maps extends React.Component {
     handleClick(e) {
         const shareable = this.getShareableAtLocation(e);
 
-        // TODO: Make this actually do something by passing the appropriate parameters.
         if (!shareable && this.props.inAddMode) {
             const imgRect = this.canvasRef.current.getBoundingClientRect();
             const n = Object.assign({}, this.props.currentShareable);
             n.x = e.pageX - imgRect.x;
             n.y = e.pageY - imgRect.y;
             this.props.addToShareableArray(n);
+            this.props.onShareablePlaced(n.type);
         }
-        this.props.onContentAdded();
     }
 
     componentDidMount() {

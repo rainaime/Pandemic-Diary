@@ -27,7 +27,6 @@ class Menu extends React.Component {
 
                 <MenuItem link='#' text='News'/>
                 <MenuItem link='#' text='Vacation'/>
-                <MenuItem link='#' text='Add Component' onClick={this.props.addContent.bind(this.props.state.ref)}/>
                 <MenuItem link='#' text='Other Stuff'/>
                 <CollapseButton position='right' collapsed={this.state.collapsed} onClick={this.props.f.bind(this)}/>
             </div>
