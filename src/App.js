@@ -1,5 +1,4 @@
 import React from "react";
-import Draggable from "react-draggable";
 import "./App.css";
 import Colors from "./site-styles/Colors";
 import SiteHeader from "./react-components/SiteHeader";
@@ -7,7 +6,6 @@ import Menu from "./react-components/Menu";
 import Maps from "./react-components/Maps";
 import Tweets from "./react-components/Tweets";
 import Timeline from "./react-components/Timeline";
-import AddContent from "./react-components/AddContent";
 import PopoutButton from "./react-components/PopoutButton";
 import ImageIcon from "./react-components/ShareableComponents/Image";
 import MarkerIcon from "./react-components/ShareableComponents/Marker";
@@ -15,7 +13,7 @@ import MarkerIcon from "./react-components/ShareableComponents/Marker";
 const markerIconStyle = {
     height: 24,
     width: 16,
-}
+};
 
 class App extends React.Component {
     state = {
@@ -24,12 +22,13 @@ class App extends React.Component {
         selectedShareable: {
             x: 0,
             y: 0,
-            content: ''
+            content: "",
         },
         currentShareable: undefined,
         currentDate: new Date(),
+        currentPopup: "",
 
-        // TODO: I think some of these are unnecessary. 
+        // TODO: I think some of these are unnecessary.
         switchToAddContent: 1,
         ref: this,
         articles: [],
@@ -41,16 +40,23 @@ class App extends React.Component {
         dummy: 0,
     };
 
+    renderPopup(currentPopup) {
+        switch (currentPopup) {
+            case "marker":
+                return null;
+            case "image":
+                return <span>test</span>;
+            default:
+                return null;
+        }
+    }
+
     render() {
-        const tempCircles = {
-            background: Colors.background,
-            width: 24,
-            height: 24,
-            borderRadius: 12,
-        };
         return (
-            <div className="App" style={{
-                cursor: this.state.inAddMode ? 'crosshair' : 'auto',
+            <div
+                className="App"
+                style={{
+                    cursor: this.state.inAddMode ? "crosshair" : "auto",
                 }}>
                 <SiteHeader />
                 <div style={{ width: "100%", minHeight: "1px", display: "flex", flexGrow: 1 }}>
@@ -67,31 +73,53 @@ class App extends React.Component {
                             display: "inline-block",
                             flexGrow: 1,
                             minWidth: "1px",
-                        }}
-                    >
+                        }}>
+                        <div
+                            style={{
+                                position: "absolute",
+                                width: "90%",
+                                height: "90%",
+                                backgroundColor: "red",
+                                top: "5%",
+                                left: "5%",
+                                zIndex: 9999,
+                                visibility:
+                                    this.state.currentPopup === "" && !this.state.inAddMode
+                                        ? "hidden"
+                                        : "visible",
+                            }}>
+                            {this.renderPopup(this.state.currentPopup)}
+                        </div>
                         <div style={{ position: "relative", width: "100%", height: "100%" }}>
-                            <Maps 
+                            <Maps
                                 shareables={this.state.shareables}
                                 selectedShareable={this.state.selectedShareable}
                                 currentShareable={this.state.currentShareable}
                                 addToShareableArray={this.addToShareableArray.bind(this)}
-                                updateSelectedShareable={(marker) => this.setState({selectedShareable: marker})} 
+                                updateSelectedShareable={(marker) =>
+                                    this.setState({ selectedShareable: marker })
+                                }
                                 inAddMode={this.state.inAddMode}
-                                onContentAdded={this.onContentAdded.bind(this)}
-                                >
-                                <span style={{
-                                    position: 'absolute',
-                                    top: this.state.selectedShareable.y,
-                                    left: this.state.selectedShareable.x,
-                                }}>{this.state.selectedShareable.content}</span>
+                                onContentAdded={this.onContentAdded.bind(this)}>
+                                <span
+                                    style={{
+                                        position: "absolute",
+                                        top: this.state.selectedShareable.y,
+                                        left: this.state.selectedShareable.x,
+                                    }}>
+                                    {this.state.selectedShareable.content}
+                                </span>
                             </Maps>
                         </div>
                         <PopoutButton position="bottom-right">
-                            <MarkerIcon style={markerIconStyle} onClick={this.updateAddingStatus.bind(this)}/>
-                            <ImageIcon style={markerIconStyle} onClick={this.updateAddingStatus.bind(this)}/>
-                            <span style={tempCircles} onClick={this.switchToAddContent.bind(this)}></span>
-                            <span style={tempCircles}></span>
-                            <span style={tempCircles} onClick={() => {this.setState({selectingLocation: true})}}></span>
+                            <MarkerIcon
+                                style={markerIconStyle}
+                                onClick={this.updateAddingStatus.bind(this)}
+                            />
+                            <ImageIcon
+                                style={markerIconStyle}
+                                onClick={this.updateAddingStatus.bind(this)}
+                            />
                         </PopoutButton>
                     </div>
                     <Tweets f={this.handleCollapse} />
@@ -104,33 +132,35 @@ class App extends React.Component {
     addToShareableArray(shareable) {
         // We need to create a new shareables array to ensure ComponentDidUpdate receives correct props.
         this.setState({
-            shareables: [...this.state.shareables, shareable]
-        })
-    }
-
-    handleCollapse() {
-        requestAnimationFrame(() => {
-            if (this.state.collapsed) {
-                this.setState({ width: this.state.maximizedSize });
-            } else {
-                this.setState({ width: 0 });
-            }
-            this.setState({ collapsed: !this.state.collapsed });
+            shareables: [...this.state.shareables, shareable],
         });
     }
 
-    updateAddingStatus(shareableType) {
-        this.setState({inAddMode: true});
-        this.setState({currentShareable: shareableType})
+    handleCollapse() {
+        if (this.state.collapsed) {
+            this.setState({ width: this.state.maximizedSize });
+        } else {
+            this.setState({ width: 0 });
+        }
+        this.setState({ collapsed: !this.state.collapsed });
+    }
+
+    updateAddingStatus(shareableType, popupType) {
+        this.setState({
+            inAddMode: true,
+            currentShareable: shareableType,
+        });
     }
 
     onContentAdded() {
-        this.setState({inAddMode: false});
+        this.setState({ inAddMode: false });
+        this.setState({
+        });
     }
 
     updateCurrentShareable(shareableType) {
         this.setState({
-            currentShareable: shareableType 
+            currentShareable: shareableType,
         });
     }
 

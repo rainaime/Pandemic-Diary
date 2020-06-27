@@ -9,19 +9,28 @@ class ImageIcon extends React.Component {
         content: 'todo: pop up file explorer window to choose image'
     }
 
+    componentWillUnmount() {
+        Image.img = undefined;
+    }
+
     render () {
         const marker = (
-            <img style={this.props.style} src='/image.png' onClick={() => {this.props.onClick(
-                this.Image
-            )}}/>);
-        if (!this.Image.img.complete) {
-            this.Image.img.onload = () => {
-                this.Image.img.src = '/happy_face.png';
-                return marker;
-            };
-        } else {
-            this.Image.img.src = '/happy_face.png';
+            <img style={this.props.style} src='/image.png' onClick={() => {
+                this.props.onClick(this.Image, 'image')
+            }}/>);
+        const img = this.Image.img;
+        if (img.src) {
             return marker;
+        } else {
+            if (!img.complete) {
+                img.onload = () => {
+                    img.src = '/happy_face.png';
+                    return marker;
+                }
+            } else {
+                img.src = 'happy_face.png';
+                return marker;
+            }
         }
     }
 }

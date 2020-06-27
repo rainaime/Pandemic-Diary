@@ -9,19 +9,28 @@ class MarkerIcon extends React.Component {
         content: 'todo: allow user to change text of these markers'
     };
 
+    componentWillUnmount() {
+        Image.img = undefined;
+    }
+
     render () {
         const marker = (
-            <img style={this.props.style} src='/marker.png' onClick={() => {this.props.onClick(
-                this.Marker
-            )}}/>);
-        if (!this.Marker.img.complete) {
-            this.Marker.img.onload = () => {
-                this.Marker.img.src = '/marker.png';
-                return marker;
-            };
-        } else {
-            this.Marker.img.src = '/marker.png';
+            <img style={this.props.style} src='/marker.png' onClick={() => {
+                this.props.onClick(this.Marker, 'marker');
+            }}/>);
+        const img = this.Marker.img;
+        if (img.src) {
             return marker;
+        } else {
+            if (!img.complete) {
+                img.onload = () => {
+                    img.src = '/marker.png';
+                    return marker;
+                }
+            } else {
+                img.src = '/marker.png';
+                return marker;
+            }
         }
     }
 }
