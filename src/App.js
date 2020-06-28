@@ -28,25 +28,14 @@ class App extends React.Component {
         currentDate: new Date(),
         currentPopup: "",
         idcounts: 1,
-
-        // TODO: I think some of these are unnecessary.
-        switchToAddContent: 1,
-        ref: this,
-        articles: [],
-        timeLine: "",
-        articlePopUp: 0,
-        articleToSend: {
-            text: "",
-        },
-        dummy: 0,
     };
 
     renderPopup(currentPopup) {
         switch (currentPopup) {
             case "marker":
-                return <MarkerMenu state={this.state.currentShareable}/>;
+                return <MarkerMenu state={this.state.currentShareable} />;
             case "image":
-                return <ImageMenu image={this.state.currentShareable}/>;
+                return <ImageMenu image={this.state.currentShareable} />;
             default:
                 return null;
         }
@@ -99,8 +88,11 @@ class App extends React.Component {
                                     width: 24,
                                     height: 24,
                                     borderRadius: 12,
-                                    color: 'white'
-                                }} onClick={() => {this.setState({currentMode: "normal"})}}>
+                                    color: "white",
+                                }}
+                                onClick={() => {
+                                    this.setState({ currentMode: "normal" });
+                                }}>
                                 x
                             </span>
                             {this.renderPopup(this.state.currentPopup)}
@@ -123,11 +115,18 @@ class App extends React.Component {
                                         zIndex: 9998,
                                     }}>
                                     <div>
-                                        <button className='deleteButton'onClick={() => {this.deleteMarker.bind(this);
-                                        this.deleteMarker(this.state.selectedShareable);}}></button>
-                                        <button className='editButton' onClick={this.editMarker.bind(this)}></button>
-                                    </div><br/> 
-                                    <div className='text'>
+                                        <button
+                                            className="deleteButton"
+                                            onClick={() => {
+                                                this.deleteMarker.bind(this);
+                                                this.deleteMarker(this.state.selectedShareable);
+                                            }}></button>
+                                        <button
+                                            className="editButton"
+                                            onClick={this.editMarker.bind(this)}></button>
+                                    </div>
+                                    <br />
+                                    <div className="text">
                                         <span>{this.state.selectedShareable.content}</span>
                                     </div>
                                 </div>
@@ -152,13 +151,13 @@ class App extends React.Component {
     }
 
     editMarker() {
-        this.setState({ currentShareable: this.state.selectedShareable })
-        this.setState({ currentMode: 'editingShareable'})
+        this.setState({ currentShareable: this.state.selectedShareable });
+        this.setState({ currentMode: "editingShareable" });
     }
 
     deleteMarker(shareable) {
-        this.setState(prevState => ({
-            shareables: prevState.shareables.filter(element => element.id !== shareable.id)
+        this.setState((prevState) => ({
+            shareables: prevState.shareables.filter((element) => element.id !== shareable.id),
         }));
         shareable.x = -200;
         shareable.y = -200;
@@ -171,6 +170,7 @@ class App extends React.Component {
         // We need to create a new shareables array to ensure ComponentDidUpdate receives correct props.
         this.setState({
             shareables: [...this.state.shareables, shareable],
+            currentShareable: shareable,
         });
     }
 
@@ -186,28 +186,28 @@ class App extends React.Component {
     enterAddingMode(shareableType) {
         this.setState({
             currentMode: "placingShareable",
-            currentShareable: shareableType
-        })
+            currentShareable: shareableType,
+        });
     }
 
     onShareablePlaced(popupType) {
         this.setState({
             currentMode: "editingShareable",
             currentPopup: this.state.currentShareable.type,
-        })
+        });
     }
 
     onContentAdded() {
         this.setState({
             currentMode: "normal",
             currentPopup: "",
-        })
+        });
     }
 
     //change Time Line
     updateCurrentDate(time) {
         this.setState({ currentDate: time });
-        console.log(time.toDateString())
+        console.log(time.toDateString());
     }
 
     //check to see if there is a post with the given timeline

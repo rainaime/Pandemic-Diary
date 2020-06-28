@@ -78,7 +78,6 @@ class Maps extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         const ctx = this.canvasRef.current.getContext("2d");
         const shareable = this.props.shareables[this.props.shareables.length - 1];
-        console.log(shareable, prevProps.shareables.length, this.props.shareables.length);
         if (prevProps.shareables.length > this.props.shareables.length) {
             this.clearMap();
             // this.drawMap();
