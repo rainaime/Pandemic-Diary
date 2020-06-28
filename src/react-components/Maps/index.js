@@ -59,6 +59,7 @@ class Maps extends React.Component {
         if (!shareable || prevProps.shareables.length === this.props.shareables.length) {
             return;
         }
+
         const draw = () => {ctx.drawImage(shareable.img, shareable.x, shareable.y, shareable.width, shareable.height)}
         if (!shareable.img.complete) {
             shareable.img.onload = () => {
@@ -67,6 +68,15 @@ class Maps extends React.Component {
         } else {
             draw();
         }
+        // for(const shareable of this.props.shareables){
+        //     if (!shareable.img.complete) {
+        //         shareable.img.onload = () => {
+        //             draw();
+        //         }
+        //     } else {
+        //         draw();
+        //     }
+        // }
     }
 
     render() {
@@ -87,7 +97,8 @@ class Maps extends React.Component {
                     width={3740}
                     height={1700}
                     alt="Temporary map for Phase 1."
-                />
+                >
+                </canvas>
             </ScrollContainer>
         );
     }

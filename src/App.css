@@ -13,3 +13,26 @@
     margin: 0;
     padding: 0;
 }
+
+.editButton{
+    float: right;
+    width: 20px;
+    height: 20px;
+    right: 60px;
+    background-color: red;
+}
+
+.deleteButton{
+    float: right;
+    width: 20px;
+    height: 20px;
+    right: 0px;
+    background-color: blue;
+}
+
+.text{
+    background:white;
+    width: 200px;
+    height: 100px;
+    overflow-y: scroll;
+}
