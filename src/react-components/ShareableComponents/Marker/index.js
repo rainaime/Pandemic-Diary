@@ -1,4 +1,5 @@
 import React from "react";
+import "./style.css";
 
 class MarkerIcon extends React.Component {
     state = {
@@ -6,7 +7,9 @@ class MarkerIcon extends React.Component {
         img: new Image(),
         width: 16,
         height: 24,
-        content: "todo: allow user to change text of these markers",
+        content: "",
+        date: new Date(), 
+        id: '',
     };
 
     componentWillUnmount() {
@@ -43,7 +46,7 @@ class MarkerIcon extends React.Component {
 class MarkerMenu extends React.Component {
     render() {
         return (
-            <div>
+            <div className ="addContext">
                 <h1>Edit your marker!</h1>
                 <p>
                     You may enter text you'd like your marker to display here. There is a limit of
@@ -52,12 +55,14 @@ class MarkerMenu extends React.Component {
                 <input
                     type="text"
                     maxLength="100"
-                    width="100%"
                     onChange={(e) => {
-                        console.log(this.props.state)
                         this.props.state.content = e.target.value
                     }}
                 />
+
+                <div className="dateSection">
+                    <input type="date" value="2019-01-01" min="2019-01-01" max="2020-12-31"/>
+                </div>
             </div>
         );
     }

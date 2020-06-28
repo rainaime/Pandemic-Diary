@@ -44,28 +44,49 @@ class Maps extends React.Component {
     }
 
     componentDidMount() {
+        // this.drawMap();
+    }
+
+    drawMap() {
         const ctx = this.canvasRef.current.getContext("2d");
         const map = new Image();
         map.onload = () => {
             ctx.drawImage(map, 0, 0);
         };
         map.src = "/map.png";
+    }
 
+    clearMap() {
+        const ctx = this.canvasRef.current.getContext("2d");
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
+    
+    drawMarkers(shareables) {
+        const ctx = this.canvasRef.current.getContext("2d");
+        for (let s of this.props.shareables) {
+            const draw = () => {ctx.drawImage(s.img, s.x, s.y, s.width, s.height)}
+            if (!s.img.complete) {
+                s.img.onload = () => {
+                    draw();
+                }
+            } else {
+                draw();
+            }
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
         const ctx = this.canvasRef.current.getContext("2d");
         const shareable = this.props.shareables[this.props.shareables.length - 1];
-        if (!shareable || prevProps.shareables.length === this.props.shareables.length) {
+        console.log(shareable, prevProps.shareables.length, this.props.shareables.length);
+        if (prevProps.shareables.length > this.props.shareables.length) {
+            this.clearMap();
+            // this.drawMap();
+            this.drawMarkers(this.props.shareables);
+        } else if (!shareable || prevProps.shareables.length === this.props.shareables.length) {
             return;
-        }
-        const draw = () => {ctx.drawImage(shareable.img, shareable.x, shareable.y, shareable.width, shareable.height)}
-        if (!shareable.img.complete) {
-            shareable.img.onload = () => {
-                draw();
-            }
         } else {
-            draw();
+            this.drawMarkers([this.props.shareables[this.props.shareables.length - 1]]);
         }
     }
 
@@ -84,10 +105,23 @@ class Maps extends React.Component {
                             this.props.updateSelectedShareable(shareable);
                         }
                     }}
+                    style={{
+                        zIndex: 1,
+                        position: 'absolute',
+                        top: 0,
+                        left: 0
+                    }}
                     width={3740}
                     height={1700}
                     alt="Temporary map for Phase 1."
-                />
+                >
+                </canvas>
+                <img style={{
+                    zIndex: 0,
+                    position: 'absolute',
+                    top: 0,
+                    left: 0
+                }} src='/map.png' width={3740} height={1700}/>
             </ScrollContainer>
         );
     }

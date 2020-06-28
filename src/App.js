@@ -20,13 +20,14 @@ class App extends React.Component {
         currentMode: "normal",
         shareables: [],
         selectedShareable: {
-            x: 0,
-            y: 0,
+            x: -200,
+            y: -200,
             content: "",
         },
         currentShareable: undefined,
         currentDate: new Date(),
         currentPopup: "",
+        idcounts: 1,
 
         // TODO: I think some of these are unnecessary.
         switchToAddContent: 1,
@@ -114,14 +115,22 @@ class App extends React.Component {
                                 }
                                 inAddMode={this.state.currentMode === "placingShareable"}
                                 onShareablePlaced={this.onShareablePlaced.bind(this)}>
-                                <span
+                                <div
                                     style={{
                                         position: "absolute",
                                         top: this.state.selectedShareable.y,
                                         left: this.state.selectedShareable.x,
+                                        zIndex: 9998,
                                     }}>
-                                    {this.state.selectedShareable.content}
-                                </span>
+                                    <div>
+                                        <button className='deleteButton'onClick={() => {this.deleteMarker.bind(this);
+                                        this.deleteMarker(this.state.selectedShareable);}}></button>
+                                        <button className='editButton' onClick={this.editMarker.bind(this)}></button>
+                                    </div><br/> 
+                                    <div className='text'>
+                                        <span>{this.state.selectedShareable.content}</span>
+                                    </div>
+                                </div>
                             </Maps>
                         </div>
                         <PopoutButton position="bottom-right">
@@ -142,7 +151,23 @@ class App extends React.Component {
         );
     }
 
+    editMarker() {
+        this.setState({ currentShareable: this.state.selectedShareable })
+        this.setState({ currentMode: 'editingShareable'})
+    }
+
+    deleteMarker(shareable) {
+        this.setState(prevState => ({
+            shareables: prevState.shareables.filter(element => element.id !== shareable.id)
+        }));
+        shareable.x = -200;
+        shareable.y = -200;
+    }
+
     addToShareableArray(shareable) {
+        shareable.id = this.state.idcounts;
+        this.state.idcounts++;
+
         // We need to create a new shareables array to ensure ComponentDidUpdate receives correct props.
         this.setState({
             shareables: [...this.state.shareables, shareable],
@@ -182,6 +207,7 @@ class App extends React.Component {
     //change Time Line
     updateCurrentDate(time) {
         this.setState({ currentDate: time });
+        console.log(time.toDateString())
     }
 
     //check to see if there is a post with the given timeline
