@@ -61,7 +61,7 @@ class MarkerMenu extends React.Component {
                 />
 
                 <div className="dateSection">
-                    <input type="date" value="2019-01-01" min="2019-01-01" max="2020-12-31"/>
+                    <input type="date" defaultValue="2019-01-01" min="2019-01-01" max="2020-12-31"/>
                 </div>
             </div>
         );

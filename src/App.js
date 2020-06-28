@@ -53,43 +53,22 @@ class App extends React.Component {
                             : "crosshair",
                 }}>
                 <SiteHeader />
-                <div style={{ width: "100%", minHeight: "1px", display: "flex", flexGrow: 1 }}>
+                <div className="mainBody">
                     <Menu f={this.handleCollapse} />
-                    {/* This div was added due to an extra wrapper div being created by
-                     * the Maps component from google-maps-react. */}
-                    <div
-                        style={{
-                            position: "relative",
-                            display: "inline-block",
-                            flexGrow: 1,
-                            minWidth: "1px",
-                        }}>
+                    {/* These divs were added due to an extra wrapper div being created by
+                     * the Maps component from google-map-react which conflict with flexboxes */}
+                    <div className="outerMapDiv">
                         <div
                             style={{
-                                position: "absolute",
-                                width: "90%",
-                                height: "90%",
-                                backgroundColor: "red",
-                                top: "5%",
-                                left: "5%",
-                                zIndex: 9999,
+                                ...this.popupBoxStyle,
                                 visibility:
                                     this.state.currentMode === "normal" ||
                                     this.state.currentMode === "placingShareable"
                                         ? "hidden"
                                         : "visible",
-                            }}>
+                            }}
+                            className="popupBox">
                             <span
-                                style={{
-                                    position: "absolute",
-                                    top: 16,
-                                    right: 16,
-                                    background: Colors.background,
-                                    width: 24,
-                                    height: 24,
-                                    borderRadius: 12,
-                                    color: "white",
-                                }}
                                 onClick={() => {
                                     this.setState({ currentMode: "normal" });
                                 }}>
@@ -97,7 +76,7 @@ class App extends React.Component {
                             </span>
                             {this.renderPopup(this.state.currentPopup)}
                         </div>
-                        <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                        <div className="innerMapDiv">
                             <Maps
                                 shareables={this.state.shareables}
                                 currentShareable={this.state.currentShareable}
@@ -108,25 +87,24 @@ class App extends React.Component {
                                 inAddMode={this.state.currentMode === "placingShareable"}
                                 onShareablePlaced={this.onShareablePlaced.bind(this)}>
                                 <div
+                                    className="selectedMarker"
                                     style={{
-                                        position: "absolute",
-                                        top: this.state.selectedShareable.y,
+                                        top: this.state.selectedShareable.y + 25,
                                         left: this.state.selectedShareable.x,
-                                        zIndex: 9998,
+                                        backgroundColor: Colors.background,
+                                        color: Colors.textColorLight,
                                     }}>
                                     <div>
                                         <button
                                             className="deleteButton"
                                             onClick={() => {
-                                                this.deleteMarker.bind(this);
-                                                this.deleteMarker(this.state.selectedShareable);
+                                                this.deleteMarker(this.state.currentShareable);
                                             }}></button>
                                         <button
                                             className="editButton"
                                             onClick={this.editMarker.bind(this)}></button>
                                     </div>
-                                    <br />
-                                    <div className="text">
+                                    <div style={{borderTopStyle: 'solid', borderTopWidth: 3, borderTopColor: Colors.textColorLight}}>
                                         <span>{this.state.selectedShareable.content}</span>
                                     </div>
                                 </div>
@@ -150,37 +128,16 @@ class App extends React.Component {
         );
     }
 
-    editMarker() {
-        this.setState({ currentShareable: this.state.selectedShareable });
-        this.setState({ currentMode: "editingShareable" });
-    }
-
-    deleteMarker(shareable) {
-        this.setState((prevState) => ({
-            shareables: prevState.shareables.filter((element) => element.id !== shareable.id),
-        }));
-        shareable.x = -200;
-        shareable.y = -200;
-    }
-
     addToShareableArray(shareable) {
         shareable.id = this.state.idcounts;
-        this.state.idcounts++;
+        this.setState({
+            idcounts: this.state.idcounts + 1,
+        });
 
-        // We need to create a new shareables array to ensure ComponentDidUpdate receives correct props.
         this.setState({
             shareables: [...this.state.shareables, shareable],
             currentShareable: shareable,
         });
-    }
-
-    handleCollapse() {
-        if (this.state.collapsed) {
-            this.setState({ width: this.state.maximizedSize });
-        } else {
-            this.setState({ width: 0 });
-        }
-        this.setState({ collapsed: !this.state.collapsed });
     }
 
     enterAddingMode(shareableType) {
@@ -204,24 +161,37 @@ class App extends React.Component {
         });
     }
 
+    editMarker() {
+        this.setState({ currentShareable: this.state.selectedShareable });
+        this.setState({ currentMode: "editingShareable" });
+    }
+
+    deleteMarker(shareable) {
+        this.setState((prevState) => ({
+            shareables: prevState.shareables.filter((element) => element.id !== shareable.id),
+        }));
+        shareable.x = -200;
+        shareable.y = -200;
+    }
+
+    handleCollapse() {
+        if (this.state.collapsed) {
+            this.setState({ width: this.state.maximizedSize });
+        } else {
+            this.setState({ width: 0 });
+        }
+        this.setState({ collapsed: !this.state.collapsed });
+    }
+
     //change Time Line
     updateCurrentDate(time) {
         this.setState({ currentDate: time });
-        console.log(time.toDateString());
     }
 
-    //check to see if there is a post with the given timeline
-    checkTimeline() {
-        for (let i = 0; i < this.state.articles.length; i++) {
-            if (this.state.articles[i].date === this.state.timeLine) {
-                this.state.articlePopUp = 1;
-                this.state.articleToSend.text = this.state.articles[i].text;
-                break;
-            } else {
-                this.state.articlePopUp = 0;
-            }
-        }
-    }
+    popupBoxStyle = {
+        backgroundColor: Colors.background,
+        color: Colors.textColorLight,
+    };
 }
 
 export default App;
