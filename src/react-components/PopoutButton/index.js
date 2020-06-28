@@ -15,6 +15,7 @@ const containerStyles = {
     paddingTop: childSettings.distToChild,
     paddingLeft: childSettings.distToChild,
     backgroundClip: "content-box",
+    zIndex: 9999
 };
 
 const buttonStyles = {

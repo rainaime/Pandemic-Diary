@@ -120,6 +120,7 @@ class App extends React.Component {
                                         position: "absolute",
                                         top: this.state.selectedShareable.y,
                                         left: this.state.selectedShareable.x,
+                                        zIndex: 9998,
                                     }}>
                                     <div>
                                         <button className='deleteButton'onClick={() => {this.deleteMarker.bind(this);
@@ -159,6 +160,8 @@ class App extends React.Component {
         this.setState(prevState => ({
             shareables: prevState.shareables.filter(element => element.id !== shareable.id)
         }));
+        shareable.x = -200;
+        shareable.y = -200;
     }
 
     addToShareableArray(shareable) {
