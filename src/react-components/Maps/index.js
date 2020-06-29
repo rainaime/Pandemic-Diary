@@ -64,13 +64,15 @@ class Maps extends React.Component {
     drawMarkers(shareables) {
         const ctx = this.canvasRef.current.getContext("2d");
         for (let s of this.props.shareables) {
-            const draw = () => {ctx.drawImage(s.img, s.x, s.y, s.width, s.height)}
-            if (!s.img.complete) {
-                s.img.onload = () => {
+            if (this.props.currentDate.toDateString() == s.date.toDateString()){
+                const draw = () => {ctx.drawImage(s.img, s.x, s.y, s.width, s.height)}
+                if (!s.img.complete) {
+                    s.img.onload = () => {
+                        draw();
+                    }
+                } else {
                     draw();
                 }
-            } else {
-                draw();
             }
         }
     }
@@ -78,15 +80,16 @@ class Maps extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         const ctx = this.canvasRef.current.getContext("2d");
         const shareable = this.props.shareables[this.props.shareables.length - 1];
-        if (prevProps.shareables.length > this.props.shareables.length) {
-            this.clearMap();
-            // this.drawMap();
-            this.drawMarkers(this.props.shareables);
-        } else if (!shareable || prevProps.shareables.length === this.props.shareables.length) {
-            return;
-        } else {
-            this.drawMarkers([this.props.shareables[this.props.shareables.length - 1]]);
-        }
+        // if (prevProps.shareables.length > this.props.shareables.length) {
+        //     this.clearMap();
+        //     this.drawMarkers(this.props.shareables);
+        // } else if (!shareable || prevProps.shareables.length === this.props.shareables.length) {
+        //     return;
+        // } else {
+        //     this.drawMarkers([this.props.shareables[this.props.shareables.length - 1]]);
+        // }
+        this.clearMap();
+        this.drawMarkers(this.props.shareables);
     }
 
     render() {

@@ -10,13 +10,19 @@ class MarkerIcon extends React.Component {
         content: "",
         date: new Date(), 
         id: '',
+        updateDate: this.updateDate
     };
 
     componentWillUnmount() {
         Image.img = undefined;
     }
 
+    updateDate(date) {
+        this.date = date
+    }
+
     render() {
+        this.updateDate.bind(this);
         const marker = (
             <img
                 style={this.props.style}
@@ -66,7 +72,11 @@ class MarkerMenu extends React.Component {
                 />
 
                 <div className="dateSection">
-                    <input type="date" defaultValue="2019-01-01" min="2019-01-01" max="2020-12-31"/>
+                    <input type="date" DefaultValue="2019-12-01" min="2019-12-01" max="2020-12-31"
+                    onChange={(e) => {
+                        this.setState({value: e.target.valueAsDate});
+                        this.props.updateDate(e.target.valueAsDate);
+                    }}/>
                 </div>
             </div>
         );

@@ -33,7 +33,9 @@ class App extends React.Component {
     renderPopup(currentPopup) {
         switch (currentPopup) {
             case "marker":
-                return <MarkerMenu state={this.state.currentShareable} />;
+                return <MarkerMenu state={this.state.currentShareable} 
+                    updateDate={this.updateShareableDate.bind(this)}
+                    shareableDate={this.state.shareableDate}/>;
             case "image":
                 return <ImageMenu image={this.state.currentShareable} />;
             default:
@@ -78,6 +80,8 @@ class App extends React.Component {
                         </div>
                         <div className="innerMapDiv">
                             <Maps
+                                state={this.state}//
+                                currentDate={this.state.currentDate}
                                 shareables={this.state.shareables}
                                 currentShareable={this.state.currentShareable}
                                 addToShareableArray={this.addToShareableArray.bind(this)}
@@ -98,7 +102,7 @@ class App extends React.Component {
                                         <button
                                             className="deleteButton"
                                             onClick={() => {
-                                                this.deleteMarker(this.state.currentShareable);
+                                                this.deleteMarker();
                                             }}></button>
                                         <button
                                             className="editButton"
@@ -126,6 +130,11 @@ class App extends React.Component {
                 <Timeline updateCurrentDate={this.updateCurrentDate.bind(this)} />
             </div>
         );
+    }
+
+    updateShareableDate(time){
+        time.setTime(time.getTime()+time.getTimezoneOffset()*60*1000)//change from est to gmt
+        this.state.currentShareable.updateDate(time)
     }
 
     addToShareableArray(shareable) {
@@ -168,10 +177,10 @@ class App extends React.Component {
 
     deleteMarker(shareable) {
         this.setState((prevState) => ({
-            shareables: prevState.shareables.filter((element) => element.id !== shareable.id),
+            shareables: prevState.shareables.filter((element) => element.id !== this.state.selectedShareable.id),
         }));
-        shareable.x = -200;
-        shareable.y = -200;
+        this.state.selectedShareable.x = -200;
+        this.state.selectedShareable.y = -200;
     }
 
     handleCollapse() {
@@ -185,7 +194,13 @@ class App extends React.Component {
 
     //change Time Line
     updateCurrentDate(time) {
+        time.setTime(time.getTime()+time.getTimezoneOffset()*60*1000)
         this.setState({ currentDate: time });
+        this.setState({ selectedShareable: {
+            x: -200,
+            y: -200,
+            content: "",
+        }});
     }
 
     popupBoxStyle = {
