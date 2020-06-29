@@ -22,10 +22,15 @@ export class Login extends Component {
         this.loginAttempt()
     }
 
+    keyPressed(e){
+        if (e.key === "Enter"){
+            this.loginAttempt()
+        }
+    }
     handleChange(event){
-        if (event.target.name == "username")
+        if (event.target.name === "username")
             this.setState({username: event.target.value})
-        else if (event.target.name == "password")
+        else if (event.target.name === "password")
             this.setState({password: event.target.value})
     }
 
@@ -37,7 +42,7 @@ export class Login extends Component {
 
         return (
             <div className="login" style={{backgroundColor: Colors.backgroundLightAccent}}>
-                <button type="button" onClick={this.getUsername.bind(this)}>Exit</button>
+                <button type="button" onClick={this.props.loginExit}>Exit</button>
                 <form>
         
                 <label htmlFor="username">Username: </label>
@@ -48,6 +53,7 @@ export class Login extends Component {
                 <label htmlFor="password">Password: </label>
                 <input type="password" name="password" placeholder="Password" 
                     onChange = {this.handleChange}
+                    onKeyPress = {(event) => this.keyPressed(event)}
                     required style={formStyle}></input>
 
                 <button type="button" value="Login" style={buttonStyle}

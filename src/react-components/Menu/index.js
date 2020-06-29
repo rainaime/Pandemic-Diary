@@ -14,6 +14,10 @@ class Menu extends React.Component {
         }
     }
 
+    updateSelection = (e) => {
+        this.props.selectType(e.target.text)
+    }
+
     render() {
         return (
             <div className="menu" style={{
@@ -25,9 +29,11 @@ class Menu extends React.Component {
                     borderRightStyle: this.state.collapsed ? 'none' : 'dotted'
                 }}>
 
-                <MenuItem link='#' text='News'/>
-                <MenuItem link='#' text='Vacation'/>
-                <MenuItem link='#' text='Other Stuff'/>
+                <MenuItem link='#' text='News' onClick={this.updateSelection}/>
+                <MenuItem link='#' text='Vacation' onClick={this.updateSelection}/>
+                <MenuItem link='#' text='Other Stuff' onClick={this.updateSelection}/>
+                {/* REMOVE: this is here just for debugging */}
+                <MenuItem link='#' text={this.props.date.toDateString()}/>
                 <CollapseButton position='right' collapsed={this.state.collapsed} onClick={this.props.f.bind(this)}/>
             </div>
         );

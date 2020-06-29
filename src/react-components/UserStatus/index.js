@@ -8,7 +8,6 @@ class UserStatus extends React.Component {
         super(props)
 
         this.state = {
-            // username: 'bob',
             username: this.props.username,
 
             loggedIn: false,
@@ -33,6 +32,12 @@ class UserStatus extends React.Component {
             this.setState({loggedIn: true, loginAttempt: false})
         }
     }
+    attemptLogout = () => {
+        if (this.state.loggedIn){
+            this.setState({loggedIn: false, loginAttempt: false})
+            this.props.logout()
+        }
+    }
 
     // updateUser = () => {
     //     this.setState({username: this.props.username})
@@ -40,7 +45,7 @@ class UserStatus extends React.Component {
 
     render() {
         // TODO: Get user status from server (phase 2)
-        const messageStyle = { color: Colors.textAccent1, fontWeight: 'bold' };
+        const messageStyle = { color: Colors.textAccent1, fontWeight: 'bold', display: "inline" };
         let message = this.state.loggedIn ? 
             <h2 className="message" style={messageStyle}>
                 Welcome back, {this.state.username}!
@@ -50,13 +55,19 @@ class UserStatus extends React.Component {
             </button>;
         let loginComp;
         if (this.state.loginAttempt)
-            loginComp = <Login loginCallback={this.loginCallback}/>
+            loginComp = <Login loginCallback={this.loginCallback} loginExit={this.loginPrompt}/>
         else 
             loginComp = null;
+        let logOut;
+        if (this.state.loggedIn)
+            logOut = <button onClick={this.attemptLogout}>Log Out</button>
+        else
+            logOut = null
 
         return (
             <div className="userStatus">
                 {message}
+                {logOut}
                 {loginComp}
             </div>
         );

@@ -12,6 +12,7 @@ class Maps extends React.Component {
         super(props);
 
         this.canvasRef = React.createRef();
+
     }
 
     getShareableAtLocation(e) {
@@ -32,12 +33,14 @@ class Maps extends React.Component {
 
     handleClick(e) {
         const shareable = this.getShareableAtLocation(e);
-
+        
         if (!shareable && this.props.inAddMode) {
             const imgRect = this.canvasRef.current.getBoundingClientRect();
             const n = Object.assign({}, this.props.currentShareable);
             n.x = e.pageX - imgRect.x;
             n.y = e.pageY - imgRect.y;
+            n.user = null;
+            n.selectedType = this.props.selectedType;
             this.props.addToShareableArray(n);
             this.props.onShareablePlaced(n.type);
         }
@@ -64,7 +67,9 @@ class Maps extends React.Component {
     drawMarkers(shareables) {
         const ctx = this.canvasRef.current.getContext("2d");
         for (let s of this.props.shareables) {
-            if (this.props.currentDate.toDateString() == s.date.toDateString()){
+            // if (this.props.currentDate.toDateString() == s.date.toDateString()){
+            // console.log(this.props.currentDate)
+            if (s.date < this.props.currentDate && s.selectedType === this.props.selectedType){
                 const draw = () => {ctx.drawImage(s.img, s.x, s.y, s.width, s.height)}
                 if (!s.img.complete) {
                     s.img.onload = () => {
@@ -91,6 +96,7 @@ class Maps extends React.Component {
         this.clearMap();
         this.drawMarkers(this.props.shareables);
     }
+
 
     render() {
         return (

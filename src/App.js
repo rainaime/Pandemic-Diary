@@ -23,11 +23,16 @@ class App extends React.Component {
             x: -200,
             y: -200,
             content: "",
+            user: null,
+            type: null
         },
         currentShareable: undefined,
         currentDate: new Date(),
+        selectedDate: new Date(),
+        selectedShareableType: null,
         currentPopup: "",
         idcounts: 1,
+        currentUser: null
     };
 
     renderPopup(currentPopup) {
@@ -35,7 +40,13 @@ class App extends React.Component {
             case "marker":
                 return <MarkerMenu state={this.state.currentShareable} 
                     updateDate={this.updateShareableDate.bind(this)}
+                    enterPressed={this.setCurrentMode.bind(this)}
+                    updateArticleType={this.updateArticleType.bind(this)}
                     shareableDate={this.state.shareableDate}/>;
+                // return <MarkerMenu 
+                //     state={this.state.currentShareable} 
+                //     updateDate={this.updateSelectedShareableDate}
+                //     enterPressed={this.setCurrentMode.bind(this)}/>;
             case "image":
                 return <ImageMenu image={this.state.currentShareable} />;
             default:
@@ -54,9 +65,12 @@ class App extends React.Component {
                             ? "auto"
                             : "crosshair",
                 }}>
-                <SiteHeader />
+                <SiteHeader updateCurrentUser={this.updateCurrentUser.bind(this)}/>
                 <div className="mainBody">
-                    <Menu f={this.handleCollapse} />
+                    <Menu f={this.handleCollapse} 
+                    selectType={this.selectCallback.bind(this)}
+                    //REMOVE: here just for debugging
+                    date={this.state.currentDate} />
                     {/* These divs were added due to an extra wrapper div being created by
                      * the Maps component from google-map-react which conflict with flexboxes */}
                     <div className="outerMapDiv">
@@ -71,9 +85,10 @@ class App extends React.Component {
                             }}
                             className="popupBox">
                             <span
-                                onClick={() => {
+                                onClick={this.setCurrentMode.bind(this)}> 
+                                {/* onClick={() => {
                                     this.setState({ currentMode: "normal" });
-                                }}>
+                                }}> */}
                                 x
                             </span>
                             {this.renderPopup(this.state.currentPopup)}
@@ -89,6 +104,8 @@ class App extends React.Component {
                                     this.setState({ selectedShareable: marker })
                                 }
                                 inAddMode={this.state.currentMode === "placingShareable"}
+                                currentDate={this.state.currentDate}
+                                selectedType={this.state.selectedShareableType}
                                 onShareablePlaced={this.onShareablePlaced.bind(this)}>
                                 <div
                                     className="selectedMarker"
@@ -99,13 +116,25 @@ class App extends React.Component {
                                         color: Colors.textColorLight,
                                     }}>
                                     <div>
+                                    <h3 style={{
+                                                fontSize: "1.5vh",
+                                                display: "inline",
+                                                margin: "0",
+                                                float: "left",
+                                                paddingLeft: "10px"}}>
+                                             {this.getShareableUser()}: 
+                                            {this.getMarkerDate()}
+                                            </h3>
                                         <button
                                             className="deleteButton"
+                                            style={this.userCanEdit()}
                                             onClick={() => {
                                                 this.deleteMarker();
+                                                // this.deleteMarker(this.state.selectedShareable);
                                             }}></button>
                                         <button
                                             className="editButton"
+                                            style={this.userCanEdit()}
                                             onClick={this.editMarker.bind(this)}></button>
                                     </div>
                                     <div style={{borderTopStyle: 'solid', borderTopWidth: 3, borderTopColor: Colors.textColorLight}}>
@@ -117,6 +146,7 @@ class App extends React.Component {
                         <PopoutButton position="bottom-right">
                             <MarkerIcon
                                 style={markerIconStyle}
+                                date={this.state.currentDate}
                                 onClick={this.enterAddingMode.bind(this)}
                             />
                             <ImageIcon
@@ -137,8 +167,15 @@ class App extends React.Component {
         this.state.currentShareable.updateDate(time)
     }
 
+    updateArticleType(type){
+        this.state.selectedShareable.selectedType = type;
+        this.setState({selectedType: this.state.selectedType})
+    }
+
     addToShareableArray(shareable) {
         shareable.id = this.state.idcounts;
+        shareable.user = this.state.currentUser;
+
         this.setState({
             idcounts: this.state.idcounts + 1,
         });
@@ -183,6 +220,11 @@ class App extends React.Component {
         this.state.selectedShareable.y = -200;
     }
 
+    updateSelectedShareableDate(shareable, date){
+        // shareable.date = date
+        // this.setS
+    }
+
     handleCollapse() {
         if (this.state.collapsed) {
             this.setState({ width: this.state.maximizedSize });
@@ -190,6 +232,45 @@ class App extends React.Component {
             this.setState({ width: 0 });
         }
         this.setState({ collapsed: !this.state.collapsed });
+    }
+
+    setCurrentMode(){
+        this.setState({ currentMode: "normal" })
+    }
+
+    updateCurrentUser(user){
+        this.setState({currentUser: user})
+    }
+
+    userCanEdit(){
+        if (this.state.selectedShareable.user != this.state.currentUser){
+            if (this.state.currentUser != null && this.state.currentUser.username != "admin"){
+                return ({
+                    visibility: "hidden"
+                });
+            }
+
+            return ({
+                visibility: "hidden"
+            });
+        }
+            
+    }
+
+    getShareableUser(){
+        if (this.state.selectedShareable.user === null)
+            return null
+        else 
+            return this.state.selectedShareable.user.username
+    }
+
+    getMarkerDate(){
+        if (this.state.selectedShareable != null && this.state.selectedShareable.date != null)
+            return this.state.selectedShareable.date.toDateString()
+    }
+
+    selectCallback(type){
+        this.setState({selectedShareableType: type})
     }
 
     //change Time Line
@@ -200,6 +281,8 @@ class App extends React.Component {
             x: -200,
             y: -200,
             content: "",
+            user: null,
+            shareableType: null
         }});
     }
 

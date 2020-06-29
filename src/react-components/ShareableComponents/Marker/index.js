@@ -8,7 +8,7 @@ class MarkerIcon extends React.Component {
         width: 16,
         height: 24,
         content: "",
-        date: new Date(), 
+        date: this.props.date, //do we need this here
         id: '',
         updateDate: this.updateDate
     };
@@ -34,6 +34,7 @@ class MarkerIcon extends React.Component {
         );
         const img = this.state.img;
         if (img.src) {
+            // console.log("this")
             return marker;
         } else {
             if (!img.complete) {
@@ -69,14 +70,36 @@ class MarkerMenu extends React.Component {
                         this.setState({value: e.target.value});
                         this.props.state.content = e.target.value
                     }}
+                    onKeyPress= {(event) => {
+                        if (event.key === "Enter"){
+                            this.props.enterPressed()
+                        }
+                    }}
                 />
 
                 <div className="dateSection">
-                    <input type="date" DefaultValue="2019-12-01" min="2019-12-01" max="2020-12-31"
+                    <input type="date" defaultValue="2019-12-01" min="2019-12-01" max="2020-12-31"
                     onChange={(e) => {
                         this.setState({value: e.target.valueAsDate});
                         this.props.updateDate(e.target.valueAsDate);
+                        //TODO old
+                    // <input type="date" defaultValue="2019-01-01" min="2019-01-01" max="2020-12-31"
+                    // onChange={(e) => {
+                    //     this.setState({date: new Date(e.target.value)});
+                    //     this.props.state.date = new Date(e.target.value);
+                    //     //this only adjusts the year-month-date
                     }}/>
+                </div>
+
+                <div className="articleType">
+                <select name="article" id="cars" onChange={(e) => {
+                        // this.setState({value: e.target.value});
+                        this.props.updateArticleType(e.target.value);
+                    }}>
+                    <option value="News">News</option>
+                    <option value="Vacation">Vacation</option>
+                    <option value="Other Stuff">Other Stuff</option>
+                </select>
                 </div>
             </div>
         );

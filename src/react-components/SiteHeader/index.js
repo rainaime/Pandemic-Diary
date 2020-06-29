@@ -10,16 +10,10 @@ class SiteHeader extends React.Component {
 
         this.state = {
             users: [
-                { username: "john", password: "1234" },
-                { username: "will", password: "5678" },
+                { username: "admin", password: "admin" },
+                { username: "user", password: "user" },
+                { username: "user2", password: "user2" },
             ],
-            //this an object of objects used if each user corresponds to an actual ID rather than username
-            // users: {
-            //     0: {
-            //         username: "john",
-            //         password: "1234"
-            //     }
-            // },
             currentUser: null,
         };
         this.userstatusRef = React.createRef();
@@ -27,11 +21,23 @@ class SiteHeader extends React.Component {
         this.updateCurrentUser = this.updateCurrentUser.bind(this);
     }
 
+    // componentDidMount(){
+    //     console.log("mount")
+    //     this.setState({currentUser: this.state.users[1]})
+    //     console.log(this.state.currentUser)
+    // }
+
     updateCurrentUser(user) {
-        this.setState({ currentUser: user }, () => {
-            // console.log(this.state.currentUser)
-        });
-        this.userstatusRef.current.updateUsername(user.username);
+        if (user === null){
+            this.setState({currentUser: null})
+            this.props.updateCurrentUser(user)
+        } else {
+            this.setState({ currentUser: user }, () => {
+                // console.log(this.state.currentUser)
+            });
+            this.userstatusRef.current.updateUsername(user.username);
+            this.props.updateCurrentUser(user)
+        }
     }
 
     loginCallback = (username, password) => {
@@ -48,6 +54,10 @@ class SiteHeader extends React.Component {
         }
     };
 
+    logoutCallback = () =>{
+        this.updateCurrentUser(null)
+    }
+
     render() {
         return (
             <header
@@ -61,6 +71,7 @@ class SiteHeader extends React.Component {
                     ref={this.userstatusRef}
                     loginAttempt={this.loginCallback}
                     username={this.state.currentUser}
+                    logout={this.logoutCallback}
                 />
             </header>
         );
