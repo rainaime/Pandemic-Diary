@@ -10,6 +10,7 @@ class MarkerIcon extends React.Component {
         content: "",
         date: this.props.date, //do we need this here
         id: '',
+        dateText: '',
         updateDate: this.updateDate
     };
 
@@ -78,9 +79,11 @@ class MarkerMenu extends React.Component {
                 />
 
                 <div className="dateSection">
-                    <input type="date" defaultValue="2019-12-01" min="2019-12-01" max="2020-12-31"
+                    <input type="date" value={this.props.state.dateText} min="2019-12-01" max="2020-12-31"
                     onChange={(e) => {
-                        this.setState({value: e.target.valueAsDate});
+                        // this.setState({value: e.target.valueAsDate});
+                        this.props.state.dateText = e.target.value;
+                        this.setState({value: e.target.value});
                         this.props.updateDate(e.target.valueAsDate);
                         //TODO old
                     // <input type="date" defaultValue="2019-01-01" min="2019-01-01" max="2020-12-31"
