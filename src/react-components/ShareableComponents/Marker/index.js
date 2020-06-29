@@ -44,6 +44,7 @@ class MarkerIcon extends React.Component {
 }
 
 class MarkerMenu extends React.Component {
+
     render() {
         return (
             <div className ="addContext">
@@ -52,10 +53,14 @@ class MarkerMenu extends React.Component {
                     You may enter text you'd like your marker to display here. There is a limit of
                     100 characters.
                 </p>
-                <input
+                <textarea
+                    value={this.props.state.content}
+                    id="textArea"
+                    className="text_area"
                     type="text"
                     maxLength="100"
                     onChange={(e) => {
+                        this.setState({value: e.target.value});
                         this.props.state.content = e.target.value
                     }}
                 />

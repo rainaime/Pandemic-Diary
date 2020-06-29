@@ -6,3 +6,9 @@
 .dateSection{
     top: 400px;
 }
+
+.text_area{
+    width: 90%;
+    height: 300px;
+    resize: none;
+}
