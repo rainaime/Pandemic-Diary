@@ -27,6 +27,12 @@ class SiteHeader extends React.Component {
     //     console.log(this.state.currentUser)
     // }
 
+    addUser(user) {
+        console.log(user)
+        this.state.users.push(user);
+        console.log(this.state)
+    }
+
     updateCurrentUser(user) {
         if (user === null){
             this.setState({currentUser: null})
@@ -72,6 +78,7 @@ class SiteHeader extends React.Component {
                     loginAttempt={this.loginCallback}
                     username={this.state.currentUser}
                     logout={this.logoutCallback}
+                    addUser={this.addUser.bind(this)}
                 />
             </header>
         );

@@ -34,6 +34,16 @@ button:hover {
     background-color: #2f5b7c;
 }
 
+.signUp {
+    width: 400px;
+    height: 200px;
+    position: absolute;
+    top: calc(10vh);
+    right: 20vw;
+    z-index: 9999;
+    background-color: #2f5b7c;
+}
+
 .loginValidMessage{
     display: inline-block;
     margin-top: 10px;
