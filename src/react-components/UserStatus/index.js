@@ -12,6 +12,7 @@ class UserStatus extends React.Component {
 
             loggedIn: false,
             loginAttempt: false,
+            InvalidLoginMessage: false,
         }
     }
 
@@ -30,6 +31,10 @@ class UserStatus extends React.Component {
         if (this.props.loginAttempt(username, password)){
             //update username as well
             this.setState({loggedIn: true, loginAttempt: false})
+            this.setState({InvalidLoginMessage: false})
+        }
+        else{
+            this.setState({InvalidLoginMessage: true})
         }
     }
     attemptLogout = () => {
@@ -55,7 +60,8 @@ class UserStatus extends React.Component {
             </button>;
         let loginComp;
         if (this.state.loginAttempt)
-            loginComp = <Login loginCallback={this.loginCallback} loginExit={this.loginPrompt}/>
+            loginComp = <Login loginCallback={this.loginCallback} loginExit={this.loginPrompt} 
+            loginValid={this.state.InvalidLoginMessage}/>
         else 
             loginComp = null;
         let logOut;

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Colors from '../../site-styles/Colors';
+import './styles.css';
 
 export class Login extends Component {
     constructor(props){
@@ -39,26 +40,37 @@ export class Login extends Component {
     }
 
     render() {
+        let loginValid;
+        if (this.props.loginValid)
+            loginValid = <span className="loginValidMessage">Invalid UserName or Passward</span>
+        else
+            loginValid = null
 
         return (
-            <div className="login" style={{backgroundColor: Colors.backgroundLightAccent}}>
+            <div className="login">
                 <button type="button" onClick={this.props.loginExit}>Exit</button>
                 <form>
         
                 <label htmlFor="username">Username: </label>
                 <input type="text" name="username" placeholder="Username" 
                     onChange = {this.handleChange}
-                    required style={formStyle}></input>
+                    className="userInput"></input>
 
                 <label htmlFor="password">Password: </label>
                 <input type="password" name="password" placeholder="Password" 
                     onChange = {this.handleChange}
                     onKeyPress = {(event) => this.keyPressed(event)}
-                    required style={formStyle}></input>
+                    className="userInput"></input>
+                
+                <br/>
+                {loginValid}
+                <br/>
 
-                <button type="button" value="Login" style={buttonStyle}
+                <button type="button" value="Login" className="loginButton"
                 onClick={(event) => this.handleClick(event)}>Login</button>
-                {/* <input type="submit" value="Register" style={buttonStyle}></input> */}
+
+                <button type="button" value="Sign In" className="SignInButton"
+                >Sign In</button>
 
                 </form>
 
@@ -70,31 +82,23 @@ export class Login extends Component {
 
 //add on click functions verifying the values of login when login is clicked
 
-const formStyle = {
-    display: 'inline-block',
-    float: 'right',
-    width: '65%',
-    marginTop: '6px',
-    marginRight: '1vw'
-}
+// const formStyle = {
+//     display: 'inline-block',
+//     float: 'right',
+//     width: '65%',
+//     marginTop: '6px',
+//     marginRight: '1vw'
+// }
 
-const buttonStyle = {
-    position: 'center',
-    width: '30%',
-    backgroundColor: Colors.backgroundDarkAccent,
-    color: Colors.textAccent1,
-    // marginLeft: 'auto',
-    // marginRight: 'auto',
-    padding: '12px',
-    margin: '8%',
-    // border: none,
-    // border-radius: 4px,
-    // margin: 5px 0,
-    // opacity: 0.85,
-    display: 'inline-block'
-    // float: 'left'
-    // font-size: 17px,
-}
+// const buttonStyle = {
+//     position: 'center',
+//     width: '30%',
+//     backgroundColor: Colors.backgroundDarkAccent,
+//     color: Colors.textAccent1,
+//     padding: '12px',
+//     margin: '8%',
+//     display: 'inline-block'
+// }
 
 
 export default Login

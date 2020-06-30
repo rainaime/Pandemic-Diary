@@ -6,12 +6,14 @@ button {
     background: none;
     color: inherit;
 	border: none;
-	font: inherit;
+	/* font: inherit; */
 	cursor: pointer;
     outline: inherit;
+    font-size: 1.2vw;
 }
 
 button:hover {
+    color:red;
 }
 
 .userStatus {
@@ -24,17 +26,50 @@ button:hover {
 
 .login {
     width: 400px;
-    height: 400px;
+    height: 200px;
     position: absolute;
     top: calc(10vh);
     right: 20vw;
     z-index: 9999;
+    background-color: #2f5b7c;
+}
+
+.loginValidMessage{
+    display: inline-block;
+    margin-top: 10px;
+    color: white;
+}
+
+.userInput{
+    display: inline-block;
+    width: 65%;
+    margin-top: 6px;
+    margin-right: 1vw;
+}
+
+.loginButton{
+    width: 30%;
+    background-color: #009e9e;
+    color: 	white;
+    padding: 12px;
+    margin: 8%;
+    display: inline-block;
+}
+
+.SignInButton{
+    width: 30%;
+    background-color: #009e9e;
+    color: 	white;
+    padding: 12px;
+    margin: 8%;
+    display: inline-block;
 }
 
 label {
     /* display: inline-block; */
     float: left;
+    color: white;
     width: 25%;
     margin-top: 6px;
-    font-size: 1vw;
+    font-size: 1.2vw;
 }
