@@ -41,6 +41,8 @@ class Maps extends React.Component {
             n.y = e.pageY - imgRect.y;
             n.user = null;
             n.selectedType = this.props.selectedType;
+            console.log(this.props.currentDate)
+            n.date = this.props.currentDate;
             this.props.addToShareableArray(n);
             this.props.onShareablePlaced(n.type);
         }
@@ -67,9 +69,9 @@ class Maps extends React.Component {
     drawMarkers(shareables) {
         const ctx = this.canvasRef.current.getContext("2d");
         for (let s of this.props.shareables) {
-            // if (this.props.currentDate.toDateString() == s.date.toDateString()){
-            // console.log(this.props.currentDate)
-            if (s.date < this.props.currentDate && s.selectedType === this.props.selectedType){
+            // TODO: Once selectedType is implemented, replace the condition
+            // if (s.date.getDate() === this.props.currentDate.getDate() && s.type === this.props.selectedType){
+            if (s.date.getDate() === this.props.currentDate.getDate()){
                 const draw = () => {ctx.drawImage(s.img, s.x, s.y, s.width, s.height)}
                 if (!s.img.complete) {
                     s.img.onload = () => {
@@ -84,7 +86,11 @@ class Maps extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         const ctx = this.canvasRef.current.getContext("2d");
-        const shareable = this.props.shareables[this.props.shareables.length - 1];
+
+        // -------------------------------------------------------------------------------- 
+        // TODO: Avoid unneeded canvas rendering by checking the previous props and state.|
+        // --------------------------------------------------------------------------------
+        // const shareable = this.props.shareables[this.props.shareables.length - 1];
         // if (prevProps.shareables.length > this.props.shareables.length) {
         //     this.clearMap();
         //     this.drawMarkers(this.props.shareables);

@@ -7,6 +7,7 @@ import Maps from "./react-components/Maps";
 import Tweets from "./react-components/Tweets";
 import Timeline from "./react-components/Timeline";
 import PopoutButton from "./react-components/PopoutButton";
+import { UserStatus, UserStatusMenu } from "./react-components/UserStatus";
 import { ImageIcon, ImageMenu } from "./react-components/ShareableComponents/Image";
 import { MarkerIcon, MarkerMenu } from "./react-components/ShareableComponents/Marker";
 
@@ -14,6 +15,17 @@ const markerIconStyle = {
     height: 24,
     width: 16,
 };
+
+const appSettings = {
+    minDate: new Date("December 1 2019"),
+    maxDate: new Date("December 31 2020"),
+};
+
+const users = [
+    { username: "admin", password: "admin" },
+    { username: "user", password: "user" },
+    { username: "user2", password: "user2" },
+];
 
 class App extends React.Component {
     state = {
@@ -24,7 +36,7 @@ class App extends React.Component {
             y: -200,
             content: "",
             user: null,
-            type: null
+            type: null,
         },
         currentShareable: undefined,
         currentDate: new Date(),
@@ -32,23 +44,36 @@ class App extends React.Component {
         selectedShareableType: null,
         currentPopup: "",
         idcounts: 1,
-        currentUser: null
+        currentUser: null,
     };
 
     renderPopup(currentPopup) {
         switch (currentPopup) {
             case "marker":
-                return <MarkerMenu state={this.state.currentShareable} 
-                    updateDate={this.updateShareableDate.bind(this)}
-                    enterPressed={this.setCurrentMode.bind(this)}
-                    updateArticleType={this.updateArticleType.bind(this)}
-                    shareableDate={this.state.shareableDate}/>;
-                // return <MarkerMenu 
-                //     state={this.state.currentShareable} 
-                //     updateDate={this.updateSelectedShareableDate}
-                //     enterPressed={this.setCurrentMode.bind(this)}/>;
+                return (
+                    <MarkerMenu
+                        state={this.state.currentShareable}
+                        updateDate={this.updateShareableDate.bind(this)}
+                        enterPressed={this.setCurrentMode.bind(this)}
+                        updateArticleType={this.updateArticleType.bind(this)}
+                        shareableDate={this.state.shareableDate}
+                    />
+                );
+            // return <MarkerMenu
+            //     state={this.state.currentShareable}
+            //     updateDate={this.updateSelectedShareableDate}
+            //     enterPressed={this.setCurrentMode.bind(this)}/>;
             case "image":
                 return <ImageMenu image={this.state.currentShareable} />;
+            case "login":
+                return (
+                    <UserStatusMenu
+                        updateCurrentUser={this.updateCurrentUser.bind(this)}
+                        onSuccess={() => {this.setState({currentMode: "normal"})}}
+                        addUser={(newUser) => {users.push(newUser)}}
+                        users={users}
+                    />
+                );
             default:
                 return null;
         }
@@ -59,19 +84,23 @@ class App extends React.Component {
             <div
                 className="App"
                 style={{
-                    cursor:
-                        this.state.currentMode === "normal" ||
-                        this.state.currentMode === "editingShareable"
-                            ? "auto"
-                            : "crosshair",
+                    cursor: this.state.currentMode === "placingShareable" ? "crosshair" : "auto",
                 }}>
-                <SiteHeader updateCurrentUser={this.updateCurrentUser.bind(this)}/>
+                <SiteHeader>
+                    {this.state.currentDate.toDateString()}
+                    <UserStatus
+                        currentUser={this.state.currentUser}
+                        openLoginMenu={() => {
+                            this.setState({ currentMode: "login", currentPopup: "login" });
+                        }}
+                        logout={() => {
+                            this.setState({ currentUser: null });
+                        }}
+                    />
+                </SiteHeader>
                 <div className="mainBody">
-                    <Menu f={this.handleCollapse} 
-                    selectType={this.selectCallback.bind(this)}
-                    //REMOVE: here just for debugging
-                    date={this.state.currentDate} />
-                    {/* These divs were added due to an extra wrapper div being created by
+                    <Menu f={this.handleCollapse} selectType={this.selectCallback.bind(this)} />
+                    {/* outerMapDiv and innerMapDiv were added due to an extra wrapper div being created by
                      * the Maps component from google-map-react which conflict with flexboxes */}
                     <div className="outerMapDiv">
                         <div
@@ -84,8 +113,7 @@ class App extends React.Component {
                                         : "visible",
                             }}
                             className="popupBox">
-                            <span
-                                onClick={this.setCurrentMode.bind(this)}> 
+                            <span onClick={this.setCurrentMode.bind(this)}>
                                 {/* onClick={() => {
                                     this.setState({ currentMode: "normal" });
                                 }}> */}
@@ -95,7 +123,7 @@ class App extends React.Component {
                         </div>
                         <div className="innerMapDiv">
                             <Maps
-                                state={this.state}//
+                                state={this.state}
                                 currentDate={this.state.currentDate}
                                 shareables={this.state.shareables}
                                 currentShareable={this.state.currentShareable}
@@ -104,7 +132,6 @@ class App extends React.Component {
                                     this.setState({ selectedShareable: marker })
                                 }
                                 inAddMode={this.state.currentMode === "placingShareable"}
-                                currentDate={this.state.currentDate}
                                 selectedType={this.state.selectedShareableType}
                                 onShareablePlaced={this.onShareablePlaced.bind(this)}>
                                 <div
@@ -116,15 +143,16 @@ class App extends React.Component {
                                         color: Colors.textColorLight,
                                     }}>
                                     <div>
-                                    <h3 style={{
+                                        <h3
+                                            style={{
                                                 fontSize: "1.5vh",
                                                 display: "inline",
                                                 margin: "0",
                                                 float: "left",
-                                                paddingLeft: "10px"}}>
-                                             {this.getShareableUser()}: 
-                                            {this.getMarkerDate()}
-                                            </h3>
+                                                paddingLeft: "10px",
+                                            }}>
+                                            {this.getShareableUser()}:{this.getMarkerDate()}
+                                        </h3>
                                         <button
                                             className="deleteButton"
                                             style={this.userCanEdit()}
@@ -137,7 +165,12 @@ class App extends React.Component {
                                             style={this.userCanEdit()}
                                             onClick={this.editMarker.bind(this)}></button>
                                     </div>
-                                    <div style={{borderTopStyle: 'solid', borderTopWidth: 3, borderTopColor: Colors.textColorLight}}>
+                                    <div
+                                        style={{
+                                            borderTopStyle: "solid",
+                                            borderTopWidth: 3,
+                                            borderTopColor: Colors.textColorLight,
+                                        }}>
                                         <span>{this.state.selectedShareable.content}</span>
                                     </div>
                                 </div>
@@ -157,19 +190,23 @@ class App extends React.Component {
                     </div>
                     <Tweets f={this.handleCollapse} />
                 </div>
-                <Timeline updateCurrentDate={this.updateCurrentDate.bind(this)} />
+                <Timeline
+                    minDate={appSettings.minDate}
+                    currentDate={this.state.currentDate}
+                    maxDate={appSettings.maxDate}
+                    updateCurrentDate={this.updateCurrentDate.bind(this)}
+                />
             </div>
         );
     }
 
-    updateShareableDate(time){
-        time.setTime(time.getTime()+time.getTimezoneOffset()*60*1000)//change from est to gmt
-        this.state.currentShareable.updateDate(time)
+    updateShareableDate(time) {
+        time.setTime(time.getTime() + time.getTimezoneOffset() * 60 * 1000); //change from est to gmt
+        this.state.currentShareable.updateDate(time);
     }
 
-    updateArticleType(type){
-        this.state.selectedShareable.selectedType = type;
-        this.setState({selectedType: this.state.selectedType})
+    updateArticleType(type) {
+        this.setState({ selectedType: this.state.selectedType });
     }
 
     addToShareableArray(shareable) {
@@ -214,13 +251,15 @@ class App extends React.Component {
 
     deleteMarker(shareable) {
         this.setState((prevState) => ({
-            shareables: prevState.shareables.filter((element) => element.id !== this.state.selectedShareable.id),
+            shareables: prevState.shareables.filter(
+                (element) => element.id !== this.state.selectedShareable.id
+            ),
         }));
         this.state.selectedShareable.x = -200;
         this.state.selectedShareable.y = -200;
     }
 
-    updateSelectedShareableDate(shareable, date){
+    updateSelectedShareableDate(shareable, date) {
         // shareable.date = date
         // this.setS
     }
@@ -234,56 +273,56 @@ class App extends React.Component {
         this.setState({ collapsed: !this.state.collapsed });
     }
 
-    setCurrentMode(){
-        this.setState({ currentMode: "normal" })
+    setCurrentMode() {
+        this.setState({ currentMode: "normal" });
     }
 
-    updateCurrentUser(user){
-        this.setState({currentUser: user})
+    updateCurrentUser(user) {
+        this.setState({ currentUser: user });
+        console.log(this.state.currentUser);
     }
 
-    userCanEdit(){
-        if (this.state.selectedShareable.user != this.state.currentUser){
-            if (this.state.currentUser != null && this.state.currentUser.username != "admin"){
-                return ({
-                    visibility: "hidden"
-                });
+    userCanEdit() {
+        if (this.state.selectedShareable.user != this.state.currentUser) {
+            if (this.state.currentUser != null && this.state.currentUser.username != "admin") {
+                return {
+                    visibility: "hidden",
+                };
             }
 
-            return ({
-                visibility: "hidden"
-            });
+            return {
+                visibility: "hidden",
+            };
         }
-            
     }
 
-    getShareableUser(){
-        if (this.state.selectedShareable.user === null)
-            return null
-        else 
-            return this.state.selectedShareable.user.username
+    getShareableUser() {
+        if (this.state.selectedShareable.user === null) return null;
+        else return this.state.selectedShareable.user.username;
     }
 
-    getMarkerDate(){
+    getMarkerDate() {
         if (this.state.selectedShareable != null && this.state.selectedShareable.date != null)
-            return this.state.selectedShareable.date.toDateString()
+            return this.state.selectedShareable.date.toDateString();
     }
 
-    selectCallback(type){
-        this.setState({selectedShareableType: type})
+    selectCallback(type) {
+        this.setState({ selectedShareableType: type });
     }
 
     //change Time Line
     updateCurrentDate(time) {
-        time.setTime(time.getTime()+time.getTimezoneOffset()*60*1000)
+        time.setTime(time.getTime() + time.getTimezoneOffset() * 60 * 1000);
         this.setState({ currentDate: time });
-        this.setState({ selectedShareable: {
-            x: -200,
-            y: -200,
-            content: "",
-            user: null,
-            shareableType: null
-        }});
+        this.setState({
+            selectedShareable: {
+                x: -200,
+                y: -200,
+                content: "",
+                user: null,
+                shareableType: null,
+            },
+        });
     }
 
     popupBoxStyle = {

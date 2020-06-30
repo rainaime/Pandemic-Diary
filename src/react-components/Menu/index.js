@@ -33,7 +33,6 @@ class Menu extends React.Component {
                 <MenuItem link='#' text='Vacation' onClick={this.updateSelection}/>
                 <MenuItem link='#' text='Other Stuff' onClick={this.updateSelection}/>
                 {/* REMOVE: this is here just for debugging */}
-                <MenuItem link='#' text={this.props.date.toDateString()}/>
                 <CollapseButton position='right' collapsed={this.state.collapsed} onClick={this.props.f.bind(this)}/>
             </div>
         );
