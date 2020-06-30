@@ -18,6 +18,7 @@ class Timeline extends React.Component {
 
         this.state = {
             currentPos: -120,
+            mouseDown: false,
             hover: true,
         };
         this.canvasRef = React.createRef();
@@ -41,7 +42,7 @@ class Timeline extends React.Component {
                         visibility: this.flashIfNotInteracted ? "visible" : "hidden",
                         color: Colors.textColorLight,
                     }}>
-                    Hover over the timeline to select a date you'd like to view!
+                    To interact with the timeline, click and hold here!
                 </span>
                 <TimelineDate
                     style={{
@@ -55,6 +56,8 @@ class Timeline extends React.Component {
                 <canvas
                     ref={this.canvasRef}
                     className="timeline"
+                    onMouseDown={() => this.setState({mouseDown: true})}
+                    onMouseUp={() => this.setState({mouseDown: false})}
                     onMouseMove={this.handleMouseOver.bind(this)}
                     onMouseEnter={() => {
                         this.setState({ hover: true });
@@ -103,6 +106,19 @@ class Timeline extends React.Component {
 
     updateCurrent(xpos) {
         const ctx = this.canvasRef.current.getContext("2d");
+
+        ctx.strokeStyle = Colors.textAccent1;
+        ctx.lineWidth = 5;
+
+        ctx.beginPath();
+        ctx.moveTo(this.state.currentPos+50, 0);
+        ctx.lineTo(this.state.currentPos+50, ctx.canvas.height);
+        ctx.closePath();
+        ctx.stroke();
+
+        if (!this.state.mouseDown && !this.state.flashIfNotInteracted) {
+            return;
+        }
         const daysBetween = Math.round(
             Math.abs((this.props.maxDate - this.props.minDate) / (24 * 60 * 60 * 1000))
         );
@@ -114,15 +130,6 @@ class Timeline extends React.Component {
         });
 
         this.props.updateCurrentDate(tempDate);
-
-        ctx.strokeStyle = Colors.textAccent1;
-        ctx.lineWidth = 5;
-
-        ctx.beginPath();
-        ctx.moveTo(xpos, 0);
-        ctx.lineTo(xpos, ctx.canvas.height);
-        ctx.closePath();
-        ctx.stroke();
     }
 
     handleMouseOver(e) {
