@@ -205,7 +205,7 @@ class App extends React.Component {
         this.state.currentShareable.updateDate(time);
     }
 
-    updateArticleType(type) {
+    updateArticleType() {
         this.setState({ selectedType: this.state.selectedType });
     }
 
@@ -249,14 +249,17 @@ class App extends React.Component {
         this.setState({ currentMode: "editingShareable" });
     }
 
-    deleteMarker(shareable) {
+    deleteMarker() {
         this.setState((prevState) => ({
             shareables: prevState.shareables.filter(
                 (element) => element.id !== this.state.selectedShareable.id
             ),
         }));
-        this.state.selectedShareable.x = -200;
-        this.state.selectedShareable.y = -200;
+
+        const selectedShareableCopy = Object.assign({}, this.state.selectedShareable);
+        selectedShareableCopy.x = -200;
+        selectedShareableCopy.y = -200;
+        this.setState({selectedShareable: selectedShareableCopy});
     }
 
     updateSelectedShareableDate(shareable, date) {
@@ -283,8 +286,8 @@ class App extends React.Component {
     }
 
     userCanEdit() {
-        if (this.state.selectedShareable.user != this.state.currentUser) {
-            if (this.state.currentUser != null && this.state.currentUser.username != "admin") {
+        if (this.state.selectedShareable.user !== this.state.currentUser) {
+            if (this.state.currentUser != null && this.state.currentUser.username !== "admin") {
                 return {
                     visibility: "hidden",
                 };

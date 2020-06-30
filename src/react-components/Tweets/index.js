@@ -56,7 +56,7 @@ class Tweets extends React.Component {
 
                 <div className='tweet_container'>
                     {/* print a tweet component for every tweet */}
-                    {this.state.tweets.map( (tweet) => (<Tweet tweet={tweet}/>))}
+                    {this.state.tweets.map( (tweet) => (<Tweet key={tweet.tweetId} tweet={tweet}/>))}
                 </div>
                 <div className='new_tweets'>
                     <TweetsForm tweetState= {this.state} parentRef={this} update={this.update}></TweetsForm>

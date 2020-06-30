@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Colors from "../../site-styles/Colors";
 import "./styles.css";
 
 export class SignUp extends Component {
@@ -25,7 +24,7 @@ export class SignUp extends Component {
                         name="username"
                         placeholder="Username"
                         onChange={(e) => {
-                            this.state.username = e.target.value;
+                            this.setState({username: e.target.value});
                         }}
                         className="userInput"></input>
 
@@ -35,7 +34,7 @@ export class SignUp extends Component {
                         name="password"
                         placeholder="Password"
                         onChange={(e) => {
-                            this.state.password = e.target.value;
+                            this.setState({password: e.target.value});
                         }}
                         className="userInput"></input>
 

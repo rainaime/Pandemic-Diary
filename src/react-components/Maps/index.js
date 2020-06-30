@@ -85,8 +85,6 @@ class Maps extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const ctx = this.canvasRef.current.getContext("2d");
-
         // -------------------------------------------------------------------------------- 
         // TODO: Avoid unneeded canvas rendering by checking the previous props and state.|
         // --------------------------------------------------------------------------------
@@ -127,10 +125,9 @@ class Maps extends React.Component {
                     }}
                     width={3740}
                     height={1700}
-                    alt="Temporary map for Phase 1."
                 >
                 </canvas>
-                <img style={{
+                <img alt="Temporary map for phase 1." style={{
                     zIndex: 0,
                     position: 'absolute',
                     top: 0,

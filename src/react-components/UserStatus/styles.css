@@ -30,7 +30,7 @@ button:hover {
     position: absolute;
     top: calc(10vh);
     right: 20vw;
-    z-index: 9999;
+    z-index: 20;
     background-color: #2f5b7c;
 }
 
@@ -40,7 +40,7 @@ button:hover {
     position: absolute;
     top: calc(10vh);
     right: 20vw;
-    z-index: 9999;
+    z-index: 20;
     background-color: #2f5b7c;
 }
 

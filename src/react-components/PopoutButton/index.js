@@ -15,7 +15,7 @@ const containerStyles = {
     paddingTop: childSettings.distToChild,
     paddingLeft: childSettings.distToChild,
     backgroundClip: "content-box",
-    zIndex: 9999
+    zIndex: 20
 };
 
 const buttonStyles = {
@@ -29,7 +29,7 @@ const buttonStyles = {
     verticalAlign: "center",
     userSelect: "none",
     borderRadius: 0.5 * containerStyles.width,
-    zIndex: 9999,
+    zIndex: 20,
     backgroundColor: Colors.background,
     color: Colors.textColorLight,
 };

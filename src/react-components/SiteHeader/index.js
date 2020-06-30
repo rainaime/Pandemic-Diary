@@ -1,7 +1,6 @@
 import React from "react";
 import "./styles.css";
 import Colors from "../../site-styles/Colors";
-import UserStatus from "../UserStatus";
 
 class SiteHeader extends React.Component {
     render() {

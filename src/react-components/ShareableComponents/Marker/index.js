@@ -28,6 +28,7 @@ class MarkerIcon extends React.Component {
             <img
                 style={this.props.style}
                 src="/marker.png"
+                alt="marker"
                 onClick={() => {
                     this.props.onClick(this.state);
                 }}

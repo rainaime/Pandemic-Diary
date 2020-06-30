@@ -2,7 +2,7 @@
     text-align: center;
     overflow: hidden;
     height: 100vh;
-    min-width: 480px;
+    min-width: 520px;
 
     display: flex;
     flex-direction: column;
@@ -54,7 +54,7 @@
 
 .selectedMarker {
     position: absolute;
-    z-index: 9998;
+    z-index: 15;
     padding: 5px;
     border-radius: 25px;
 }

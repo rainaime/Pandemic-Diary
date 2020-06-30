@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Colors from "../../site-styles/Colors";
 import "./styles.css";
 
 export class Login extends Component {

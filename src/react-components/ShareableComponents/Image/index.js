@@ -6,7 +6,7 @@ class ImageIcon extends React.Component {
         img: new Image(),
         width: 16,
         height: 24,
-        content: <img></img>
+        content: <img alt=""></img>
     };
 
     componentWillUnmount() {
@@ -16,6 +16,7 @@ class ImageIcon extends React.Component {
     render() {
         const marker = (
             <img
+                alt="_image"
                 style={this.props.style}
                 src="/image.png"
                 onClick={() => {

@@ -1,6 +1,6 @@
 .addContext {
     overflow: hidden;
-    z-Index: 9999;
+    z-index: 10;
 }
 
 .dateSection{

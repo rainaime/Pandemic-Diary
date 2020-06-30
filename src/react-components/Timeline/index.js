@@ -9,10 +9,7 @@ const canvasSettings = {
 };
 
 class Timeline extends React.Component {
-    flashIfNotInteracted = setInterval(() => {
-        this.setState({ hover: !this.state.hover });
-    }, 500);
-
+    flashIfNotInteracted;
     constructor(props) {
         super(props);
 
@@ -47,7 +44,7 @@ class Timeline extends React.Component {
                 <TimelineDate
                     style={{
                         visibility:
-                            !this.state.hover && !this.flashIfNotInteracted ? "hidden" : "visible",
+                        !this.state.hover && !this.flashIfNotInteracted ? "hidden" : "visible",
                     }}
                     date={this.props.currentDate}
                     xpos={this.state.currentPos}
@@ -76,6 +73,9 @@ class Timeline extends React.Component {
 
     componentDidMount() {
         window.addEventListener("resize", this.updateDimensions);
+        this.flashIfNotInteracted = setInterval(() => {
+            this.setState({ hover: !this.state.hover });
+        }, 500);
         this.initializeCanvas();
     }
 
