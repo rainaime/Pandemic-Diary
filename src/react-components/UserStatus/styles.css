@@ -56,6 +56,11 @@ button:hover {
     display: inline-block;
 }
 
+.loginButton:hover {
+    background-color: turquoise;
+    color:white;
+}
+
 .SignInButton{
     width: 30%;
     background-color: #009e9e;
@@ -63,6 +68,11 @@ button:hover {
     padding: 12px;
     margin: 8%;
     display: inline-block;
+}
+
+.SignInButton:hover {
+    background-color: turquoise;
+    color:white;
 }
 
 label {
