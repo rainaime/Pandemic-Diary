@@ -71,7 +71,9 @@ class Maps extends React.Component {
         for (let s of this.props.shareables) {
             // TODO: Once selectedType is implemented, replace the condition
             // if (s.date.getDate() === this.props.currentDate.getDate() && s.type === this.props.selectedType){
-            if (s.date.getDate() === this.props.currentDate.getDate()){
+            if (s.date.getFullYear() === this.props.currentDate.getFullYear()
+            && s.date.getMonth() === this.props.currentDate.getMonth()
+            && s.date.getDate() === this.props.currentDate.getDate()){ //getDate() only returns the day value
                 const draw = () => {ctx.drawImage(s.img, s.x, s.y, s.width, s.height)}
                 if (!s.img.complete) {
                     s.img.onload = () => {

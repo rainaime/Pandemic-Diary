@@ -4,10 +4,35 @@
     height: 100%;
 
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     flex-direction: column;
     flex-wrap: nowrap;
 
     font-size: 1.5vw;
     transition: all 0.3s;
+}
+
+.options{
+    height: auto;
+    font-size: 1.5vw;
+}
+
+.menu-val{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    height: 90%;
+    font-size: 1.5vw;
+    /* transition: all 0.3s; */
+}
+
+.shareables_container::-webkit-scrollbar{
+    width: 1em;
+}
+
+.shareables_container {
+    height: 90%;
+    overflow: scroll;
+    white-space: nowrap;
 }

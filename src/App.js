@@ -22,8 +22,8 @@ const appSettings = {
 };
 
 const users = [
-    { username: "admin", password: "admin" },
-    { username: "user", password: "user" },
+    { username: "admin", password: "admin", shareables: [] },
+    { username: "user", password: "user", shareables: [] },
     { username: "user2", password: "user2" },
 ];
 
@@ -44,7 +44,8 @@ class App extends React.Component {
         selectedShareableType: null,
         currentPopup: "",
         idcounts: 1,
-        currentUser: null,
+        currentUser: users[1]
+        // currentUser: null,
     };
 
     renderPopup(currentPopup) {
@@ -99,7 +100,7 @@ class App extends React.Component {
                     />
                 </SiteHeader>
                 <div className="mainBody">
-                    <Menu f={this.handleCollapse} selectType={this.selectCallback.bind(this)} />
+                    <Menu f={this.handleCollapse} selectType={this.selectCallback.bind(this)} currentUser={this.state.currentUser} />
                     {/* outerMapDiv and innerMapDiv were added due to an extra wrapper div being created by
                      * the Maps component from google-map-react which conflict with flexboxes */}
                     <div className="outerMapDiv">
@@ -221,6 +222,10 @@ class App extends React.Component {
             shareables: [...this.state.shareables, shareable],
             currentShareable: shareable,
         });
+
+        this.setState({
+            currentUser: Object.assign(this.state.currentUser, {shareables: [...this.state.currentUser.shareables, shareable]})
+        })
     }
 
     enterAddingMode(shareableType) {
