@@ -65,7 +65,10 @@ class App extends React.Component {
             //     updateDate={this.updateSelectedShareableDate}
             //     enterPressed={this.setCurrentMode.bind(this)}/>;
             case "image":
-                return <ImageMenu image={this.state.currentShareable} />;
+                return <ImageMenu image={this.state.currentShareable}
+                //this prop is because i dont understand how adding shareables works
+                    currentShareable={this.state.currentShareable}
+                />;
             case "login":
                 return (
                     <UserStatusMenu
@@ -171,8 +174,14 @@ class App extends React.Component {
                                             borderTopStyle: "solid",
                                             borderTopWidth: 3,
                                             borderTopColor: Colors.textColorLight,
+                                            //temp set auto to fit images
+                                            height: "auto"
                                         }}>
-                                        <span>{this.state.selectedShareable.content}</span>
+                                        <span>{
+                                        (this.state.selectedShareable != null && this.state.selectedShareable.type === "image") ? 
+                                            <img style={{maxWidth: "100%", maxHeight: "100%"}} src={this.state.selectedShareable.content}/> :
+                                        this.state.selectedShareable.content
+                                        }</span>
                                     </div>
                                 </div>
                             </Maps>
