@@ -42,8 +42,14 @@ class UserStatusMenu extends React.Component {
             return user.username === username;
         });
         if (user === undefined) {
+            this.setState({
+                invalidLogin: true,
+            });
             return false;
         } else if (user.password === password) {
+            this.setState({
+                invalidLogin: false,
+            });
             this.props.updateCurrentUser(user);
             this.props.onSuccess();
             return true;
@@ -62,6 +68,7 @@ class UserStatusMenu extends React.Component {
                 invalidLogin={this.state.invalidLogin}
                 goToSignup={() => {
                     this.setState({ currentComp: "signup" });
+                    this.setState({invalidLogin: false});
                 }}
             />
         );
@@ -70,6 +77,7 @@ class UserStatusMenu extends React.Component {
                 backToLogin={() => {
                     this.setState({ currentComp: "login" });
                 }}
+                usersList={this.props.users}
                 addUser={(newUser) => {this.props.addUser(newUser); this.loginCallback(newUser.username, newUser.password)}}
             />
         );

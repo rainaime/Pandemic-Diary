@@ -5,12 +5,21 @@ export class SignUp extends Component {
     state = {
         username: "",
         password: "",
+        invalidSignUp: false,
     };
 
     addNewUser() {
-        // TODO: fix this so that it checks if the user name is already being used later
-        if (this.state.username !== "") {
+        let usedUserName = false;
+        for(const user of this.props.usersList){
+            if (this.state.username === user.username) {
+                usedUserName = true;
+                this.setState({invalidSignUp: true});
+            }
+        }
+
+        if(!usedUserName){
             this.props.addUser(this.state);
+            this.setState({invalidSignUp: false});
         }
     }
 
@@ -37,20 +46,31 @@ export class SignUp extends Component {
                             this.setState({password: e.target.value});
                         }}
                         className="userInput"></input>
+                        
+                    <br />
+                    {this.state.invalidSignUp ? (
+                        <span className="signUpValidMessage">Username already being used</span>
+                    ) : null}
+                    <br />
 
                     <button
                         type="button"
-                        value="Login"
+                        value="Back to Login"
                         className="loginButton"
-                        onClick={this.props.backToLogin}>
+                        onClick={() => {
+                            this.props.backToLogin();
+                            this.setState({invalidSignUp: false});
+                        }}>
                         Back to Login
                     </button>
 
                     <button
                         type="button"
-                        value="Sign In"
+                        value="Register"
                         className="SignInButton"
-                        onClick={this.addNewUser.bind(this)}>
+                        onClick={
+                            this.addNewUser.bind(this)
+                        }>
                         Register
                     </button>
                 </form>
