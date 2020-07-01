@@ -86,7 +86,7 @@ class App extends React.Component {
         }
     }
 
-    render() {
+    render() { 
         const dynamicStyles = {
             cursor: {
                 cursor: this.state.currentMode === "placingShareable" ? "crosshair" : "auto",
@@ -108,81 +108,86 @@ class App extends React.Component {
             },
         };
 
+        const UserStatusProps = {
+            currentUser: this.state.currentUser,
+            openLoginMenu: () => this.setState({ currentMode: "login", currentPopup: "login" }),
+            logout: () => this.setState({ currentUser: null }),
+        };
+
+        const MenuProps = {
+            selectType: this.selectCallback.bind(this),
+            currentUser: this.state.currentUser,
+        };
+
+        const MapsProps = {
+            currentDate: this.state.currentDate,
+            shareables: this.state.shareables,
+            currentShareable: this.state.currentShareable,
+            addToShareableArray: this.addToShareableArray.bind(this),
+            selectedType: this.state.selectedShareableType,
+            updateSelectedShareable: (s) => this.setState({ selectedShareable: s }),
+            inAddMode: this.state.currentMode === "placingShareable",
+            onShareablePlaced: this.onShareablePlaced.bind(this),
+        };
+
+        const ShareablePopupProps = {
+            shareable: this.state.selectedShareable,
+            editable: this.userCanEdit.bind(this),
+            edit: this.editMarker.bind(this),
+            delete: this.deleteMarker.bind(this),
+        };
+
+        const PopoutButtonIconProps = {
+            style: markerIconStyle,
+            date: this.state.currentDate,
+            onClick: this.enterAddingMode.bind(this),
+        };
+
+        const TimelineProps = {
+            minDate: appSettings.minDate,
+            currentDate: this.state.currentDate,
+            maxDate: appSettings.maxDate,
+            updateCurrentDate: this.updateCurrentDate.bind(this),
+        };
+
         return (
             <div className="App" style={dynamicStyles.cursor}>
                 <SiteHeader>
                     {this.state.currentDate.toDateString()}
-                    <UserStatus
-                        currentUser={this.state.currentUser}
-                        openLoginMenu={() => {
-                            this.setState({ currentMode: "login", currentPopup: "login" });
-                        }}
-                        logout={() => {
-                            this.setState({ currentUser: null });
-                        }}
-                    />
+                    <UserStatus {...UserStatusProps} />
                 </SiteHeader>
+
                 <div className="mainBody">
-                    {/*<Menu
-                        f={this.handleCollapse}
-                        selectType={this.selectCallback.bind(this)}
-                        currentUser={this.state.currentUser}
-                    />*/}
-                    <CollapsibleMenu position="left" f={this.handleCollapse}>
-                        <Menu selectType={this.selectCallback.bind(this)} currentUser={this.state.currentUser}/>
+                    <CollapsibleMenu position="left">
+                        <Menu {...MenuProps} />
                     </CollapsibleMenu>
+
                     {/* outerMapDiv and innerMapDiv were added due to an extra wrapper div being created by
                      * the Maps component from google-map-react which conflict with flexboxes */}
                     <div className="outerMapDiv">
+                        <div className="innerMapDiv">
+                            <Maps {...MapsProps}>
+                                <ShareablePopup
+                                    className="selectedShareable"
+                                    style={dynamicStyles.selectedShareable}
+                                    {...ShareablePopupProps}
+                                />
+                            </Maps>
+                        </div>
                         <div style={dynamicStyles.popupBox} className="popupBox">
                             <span onClick={this.setCurrentMode.bind(this)}>x</span>
                             {this.renderPopup(this.state.currentPopup)}
                         </div>
-                        <div className="innerMapDiv">
-                            <Maps
-                                state={this.state}
-                                currentDate={this.state.currentDate}
-                                shareables={this.state.shareables}
-                                currentShareable={this.state.currentShareable}
-                                addToShareableArray={this.addToShareableArray.bind(this)}
-                                updateSelectedShareable={(s) =>
-                                    this.setState({ selectedShareable: s })
-                                }
-                                inAddMode={this.state.currentMode === "placingShareable"}
-                                selectedType={this.state.selectedShareableType}
-                                onShareablePlaced={this.onShareablePlaced.bind(this)}>
-                                <ShareablePopup
-                                    className="selectedShareable"
-                                    style={dynamicStyles.selectedShareable}
-                                    shareable={this.state.selectedShareable}
-                                    editable={this.userCanEdit.bind(this)}
-                                    edit={this.editMarker.bind(this)}
-                                    delete={this.deleteMarker.bind(this)}
-                                />
-                            </Maps>
-                        </div>
                         <PopoutButton position="bottom-right">
-                            <MarkerIcon
-                                style={markerIconStyle}
-                                date={this.state.currentDate}
-                                onClick={this.enterAddingMode.bind(this)}
-                            />
-                            <ImageIcon
-                                style={markerIconStyle}
-                                onClick={this.enterAddingMode.bind(this)}
-                            />
+                            <MarkerIcon {...PopoutButtonIconProps} />
+                            <ImageIcon {...PopoutButtonIconProps} />
                         </PopoutButton>
                     </div>
-                    <CollapsibleMenu position="right" f={this.handleCollapse}>
-                        <Tweets/>
-                        </CollapsibleMenu>
+                    <CollapsibleMenu position="right">
+                        <Tweets />
+                    </CollapsibleMenu>
                 </div>
-                <Timeline
-                    minDate={appSettings.minDate}
-                    currentDate={this.state.currentDate}
-                    maxDate={appSettings.maxDate}
-                    updateCurrentDate={this.updateCurrentDate.bind(this)}
-                />
+                <Timeline {...TimelineProps} />
             </div>
         );
     }
