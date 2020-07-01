@@ -20,13 +20,17 @@ class Maps extends React.Component {
         const adjX = e.pageX - imgRect.x;
         const adjY = e.pageY - imgRect.y;
         for (const marker of this.props.shareables) {
-            if (
-                marker.x <= adjX &&
-                adjX <= marker.x + markerDimensions.width &&
-                marker.y <= adjY &&
-                adjY <= marker.y + markerDimensions.height
-            ) {
-                return marker;
+            if (marker.date.getFullYear() === this.props.currentDate.getFullYear()
+            && marker.date.getMonth() === this.props.currentDate.getMonth()
+            && marker.date.getDate() === this.props.currentDate.getDate()){ 
+                if (
+                    marker.x <= adjX &&
+                    adjX <= marker.x + markerDimensions.width &&
+                    marker.y <= adjY &&
+                    adjY <= marker.y + markerDimensions.height
+                ) {
+                    return marker;
+                }
             }
         }
     }
