@@ -31,9 +31,6 @@ class Menu extends React.Component {
                     width: this.state.width,
                     backgroundColor: Colors.background,
                     color: Colors.textColorLight,
-                borderRightColor: this.state.collapsed ? 'none' : Colors.backgroundLightAccent,
-                    borderRightWidth: this.state.collapsed ? 'none' : 2,
-                    borderRightStyle: this.state.collapsed ? 'none' : 'dotted'
                 }}>
                 <div className="options">
                     <button style={inlineStyle} value="filter" onClick={this.setDisplay.bind(this)}>Filter</button>
@@ -56,8 +53,6 @@ class MenuDiv extends React.Component{
                 <MenuItem link='#' text='News' onClick={this.updateSelection}/>
                 <MenuItem link='#' text='Vacation' onClick={this.updateSelection}/>
                 <MenuItem link='#' text='Other Stuff' onClick={this.updateSelection}/>
-                {/* REMOVE: this is here just for debugging */}
-                
             </div>
         )
     }

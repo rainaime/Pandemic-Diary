@@ -1,5 +1,6 @@
 import React from "react";
 import Colors from "../../site-styles/Colors";
+import "./styles.css";
 
 class ShareablePopup extends React.Component {
     render() {

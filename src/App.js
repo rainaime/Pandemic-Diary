@@ -46,7 +46,6 @@ class App extends React.Component {
         currentPopup: "",
         idcounts: 1,
         currentUser: users[1],
-        // currentUser: null,
     };
 
     renderPopup(currentPopup) {
@@ -252,11 +251,6 @@ class App extends React.Component {
         selectedShareableCopy.x = -200;
         selectedShareableCopy.y = -200;
         this.setState({ selectedShareable: selectedShareableCopy });
-    }
-
-    updateSelectedShareableDate(shareable, date) {
-        // shareable.date = date
-        // this.setS
     }
 
     handleCollapse() {
