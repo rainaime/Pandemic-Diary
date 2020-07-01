@@ -247,6 +247,7 @@ class App extends React.Component {
     editMarker() {
         this.setState({ currentShareable: this.state.selectedShareable });
         this.setState({ currentMode: "editingShareable" });
+        this.setState({currentPopup: this.state.currentShareable.type});
     }
 
     deleteMarker() {
