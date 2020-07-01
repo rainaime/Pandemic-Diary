@@ -8,6 +8,7 @@ import Tweets from "./react-components/Tweets";
 import Timeline from "./react-components/Timeline";
 import PopoutButton from "./react-components/PopoutButton";
 import { UserStatus, UserStatusMenu } from "./react-components/UserStatus";
+import ShareablePopup from "./react-components/ShareableComponents";
 import { ImageIcon, ImageMenu } from "./react-components/ShareableComponents/Image";
 import { MarkerIcon, MarkerMenu } from "./react-components/ShareableComponents/Marker";
 
@@ -38,13 +39,13 @@ class App extends React.Component {
             user: null,
             type: null,
         },
-        currentShareable: undefined,
+        currentShareable: null,
         currentDate: new Date(),
         selectedDate: new Date(),
         selectedShareableType: null,
         currentPopup: "",
         idcounts: 1,
-        currentUser: users[1]
+        currentUser: users[1],
         // currentUser: null,
     };
 
@@ -60,21 +61,24 @@ class App extends React.Component {
                         shareableDate={this.state.shareableDate}
                     />
                 );
-            // return <MarkerMenu
-            //     state={this.state.currentShareable}
-            //     updateDate={this.updateSelectedShareableDate}
-            //     enterPressed={this.setCurrentMode.bind(this)}/>;
             case "image":
-                return <ImageMenu image={this.state.currentShareable}
-                //this prop is because i dont understand how adding shareables works
-                    currentShareable={this.state.currentShareable}
-                />;
+                return (
+                    <ImageMenu
+                        image={this.state.currentShareable}
+                        //this prop is because i dont understand how adding shareables works
+                        currentShareable={this.state.currentShareable}
+                    />
+                );
             case "login":
                 return (
                     <UserStatusMenu
                         updateCurrentUser={this.updateCurrentUser.bind(this)}
-                        onSuccess={() => {this.setState({currentMode: "normal"})}}
-                        addUser={(newUser) => {users.push(newUser)}}
+                        onSuccess={() => {
+                            this.setState({ currentMode: "normal" });
+                        }}
+                        addUser={(newUser) => {
+                            users.push(newUser);
+                        }}
                         users={users}
                     />
                 );
@@ -84,12 +88,29 @@ class App extends React.Component {
     }
 
     render() {
+        const dynamicStyles = {
+            cursor: {
+                cursor: this.state.currentMode === "placingShareable" ? "crosshair" : "auto",
+            },
+            popupBox: {
+                backgroundColor: Colors.background,
+                color: Colors.textColorLight,
+                visibility:
+                    this.state.currentMode === "normal" ||
+                    this.state.currentMode === "placingShareable"
+                        ? "hidden"
+                        : "visible",
+            },
+            selectedShareable: {
+                top: this.state.selectedShareable.y + 25,
+                left: this.state.selectedShareable.x,
+                backgroundColor: Colors.background,
+                color: Colors.textColorLight,
+            },
+        };
+
         return (
-            <div
-                className="App"
-                style={{
-                    cursor: this.state.currentMode === "placingShareable" ? "crosshair" : "auto",
-                }}>
+            <div className="App" style={dynamicStyles.cursor}>
                 <SiteHeader>
                     {this.state.currentDate.toDateString()}
                     <UserStatus
@@ -103,26 +124,16 @@ class App extends React.Component {
                     />
                 </SiteHeader>
                 <div className="mainBody">
-                    <Menu f={this.handleCollapse} selectType={this.selectCallback.bind(this)} currentUser={this.state.currentUser} />
+                    <Menu
+                        f={this.handleCollapse}
+                        selectType={this.selectCallback.bind(this)}
+                        currentUser={this.state.currentUser}
+                    />
                     {/* outerMapDiv and innerMapDiv were added due to an extra wrapper div being created by
                      * the Maps component from google-map-react which conflict with flexboxes */}
                     <div className="outerMapDiv">
-                        <div
-                            style={{
-                                ...this.popupBoxStyle,
-                                visibility:
-                                    this.state.currentMode === "normal" ||
-                                    this.state.currentMode === "placingShareable"
-                                        ? "hidden"
-                                        : "visible",
-                            }}
-                            className="popupBox">
-                            <span onClick={this.setCurrentMode.bind(this)}>
-                                {/* onClick={() => {
-                                    this.setState({ currentMode: "normal" });
-                                }}> */}
-                                x
-                            </span>
+                        <div style={dynamicStyles.popupBox} className="popupBox">
+                            <span onClick={this.setCurrentMode.bind(this)}>x</span>
                             {this.renderPopup(this.state.currentPopup)}
                         </div>
                         <div className="innerMapDiv">
@@ -132,58 +143,20 @@ class App extends React.Component {
                                 shareables={this.state.shareables}
                                 currentShareable={this.state.currentShareable}
                                 addToShareableArray={this.addToShareableArray.bind(this)}
-                                updateSelectedShareable={(marker) =>
-                                    this.setState({ selectedShareable: marker })
+                                updateSelectedShareable={(s) =>
+                                    this.setState({ selectedShareable: s })
                                 }
                                 inAddMode={this.state.currentMode === "placingShareable"}
                                 selectedType={this.state.selectedShareableType}
                                 onShareablePlaced={this.onShareablePlaced.bind(this)}>
-                                <div
-                                    className="selectedMarker"
-                                    style={{
-                                        top: this.state.selectedShareable.y + 25,
-                                        left: this.state.selectedShareable.x,
-                                        backgroundColor: Colors.background,
-                                        color: Colors.textColorLight,
-                                    }}>
-                                    <div>
-                                        <h3
-                                            style={{
-                                                fontSize: "1.5vh",
-                                                display: "inline",
-                                                margin: "0",
-                                                float: "left",
-                                                paddingLeft: "10px",
-                                            }}>
-                                            {this.getShareableUser()}:{this.getMarkerDate()}
-                                        </h3>
-                                        <button
-                                            className="deleteButton"
-                                            style={this.userCanEdit()}
-                                            onClick={() => {
-                                                this.deleteMarker();
-                                                // this.deleteMarker(this.state.selectedShareable);
-                                            }}></button>
-                                        <button
-                                            className="editButton"
-                                            style={this.userCanEdit()}
-                                            onClick={this.editMarker.bind(this)}></button>
-                                    </div>
-                                    <div
-                                        style={{
-                                            borderTopStyle: "solid",
-                                            borderTopWidth: 3,
-                                            borderTopColor: Colors.textColorLight,
-                                            //temp set auto to fit images
-                                            height: "auto"
-                                        }}>
-                                        <span>{
-                                        (this.state.selectedShareable != null && this.state.selectedShareable.type === "image") ? 
-                                            <img style={{maxWidth: "100%", maxHeight: "100%"}} src={this.state.selectedShareable.content}/> :
-                                        this.state.selectedShareable.content
-                                        }</span>
-                                    </div>
-                                </div>
+                                <ShareablePopup
+                                    className="selectedShareable"
+                                    style={dynamicStyles.selectedShareable}
+                                    shareable={this.state.selectedShareable}
+                                    editable={this.userCanEdit.bind(this)}
+                                    edit={this.editMarker.bind(this)}
+                                    delete={this.deleteMarker.bind(this)}
+                                />
                             </Maps>
                         </div>
                         <PopoutButton position="bottom-right">
@@ -232,9 +205,13 @@ class App extends React.Component {
             currentShareable: shareable,
         });
 
-        this.setState({
-            currentUser: Object.assign(this.state.currentUser, {shareables: [...this.state.currentUser.shareables, shareable]})
-        })
+        if (this.state.currentUser) {
+            this.setState({
+                currentUser: Object.assign(this.state.currentUser, {
+                    shareables: [...this.state.currentUser.shareables, shareable],
+                }),
+            });
+        }
     }
 
     enterAddingMode(shareableType) {
@@ -261,7 +238,7 @@ class App extends React.Component {
     editMarker() {
         this.setState({ currentShareable: this.state.selectedShareable });
         this.setState({ currentMode: "editingShareable" });
-        this.setState({currentPopup: this.state.currentShareable.type});
+        this.setState({ currentPopup: this.state.currentShareable.type });
     }
 
     deleteMarker() {
@@ -274,7 +251,7 @@ class App extends React.Component {
         const selectedShareableCopy = Object.assign({}, this.state.selectedShareable);
         selectedShareableCopy.x = -200;
         selectedShareableCopy.y = -200;
-        this.setState({selectedShareable: selectedShareableCopy});
+        this.setState({ selectedShareable: selectedShareableCopy });
     }
 
     updateSelectedShareableDate(shareable, date) {
@@ -342,11 +319,6 @@ class App extends React.Component {
             },
         });
     }
-
-    popupBoxStyle = {
-        backgroundColor: Colors.background,
-        color: Colors.textColorLight,
-    };
 }
 
 export default App;
