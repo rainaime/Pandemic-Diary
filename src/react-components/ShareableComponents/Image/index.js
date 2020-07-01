@@ -49,10 +49,9 @@ class ImageMenu extends React.Component {
 
     submitImage(e){
         //TODO this seems like a messy implementation the content probably should not be an img but the default was placed as an img object so idk
-        let img = document.createElement("img")
-        img.src = URL.createObjectURL(e.target.files[0])
-        this.props.currentShareable.content = img.src
-        console.log(this.props.currentShareable.content)      
+        //need to check that the file being passed is actually an image file - appears that photo just wont show if wrong file but still
+        let img = URL.createObjectURL(e.target.files[0])
+        this.props.currentShareable.content = img
     }
 
     render() {

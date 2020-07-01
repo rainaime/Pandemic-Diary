@@ -12,7 +12,7 @@ export class UserInfo extends Component {
             <div>
                 <div className="holder" style={squareHolder}>
                         {/* profile picture holder */}
-                        
+                        this a pfp or something
                 </div>
                 <h3>Hello {this.props.currentUser.username}</h3>
                 <div style={{display: 'left'}}>
@@ -30,7 +30,9 @@ export class UserInfo extends Component {
             <div style={{border: "1px solid white"}}>
                 {shareable.date.toDateString()}
                 : 
-                {shareable.content}
+                {(shareable != null && shareable.type === "image") ? 
+                                            <img style={{maxWidth: "100%", maxHeight: "100%", display: "block"}} src={shareable.content}/> :
+                                        shareable.content}
             </div>
         )
     }
