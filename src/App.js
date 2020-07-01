@@ -2,9 +2,10 @@ import React from "react";
 import "./App.css";
 import Colors from "./site-styles/Colors";
 import SiteHeader from "./react-components/SiteHeader";
-import Menu from "./react-components/Menu";
 import Maps from "./react-components/Maps";
+import Menu from "./react-components/Menu";
 import Tweets from "./react-components/Tweets";
+import CollapsibleMenu from "./react-components/CollapsibleMenu";
 import Timeline from "./react-components/Timeline";
 import PopoutButton from "./react-components/PopoutButton";
 import { UserStatus, UserStatusMenu } from "./react-components/UserStatus";
@@ -64,7 +65,6 @@ class App extends React.Component {
                 return (
                     <ImageMenu
                         image={this.state.currentShareable}
-                        //this prop is because i dont understand how adding shareables works
                         currentShareable={this.state.currentShareable}
                     />
                 );
@@ -123,11 +123,14 @@ class App extends React.Component {
                     />
                 </SiteHeader>
                 <div className="mainBody">
-                    <Menu
+                    {/*<Menu
                         f={this.handleCollapse}
                         selectType={this.selectCallback.bind(this)}
                         currentUser={this.state.currentUser}
-                    />
+                    />*/}
+                    <CollapsibleMenu position="left" f={this.handleCollapse}>
+                        <Menu selectType={this.selectCallback.bind(this)} currentUser={this.state.currentUser}/>
+                    </CollapsibleMenu>
                     {/* outerMapDiv and innerMapDiv were added due to an extra wrapper div being created by
                      * the Maps component from google-map-react which conflict with flexboxes */}
                     <div className="outerMapDiv">
@@ -170,7 +173,9 @@ class App extends React.Component {
                             />
                         </PopoutButton>
                     </div>
-                    <Tweets f={this.handleCollapse} />
+                    <CollapsibleMenu position="right" f={this.handleCollapse}>
+                        <Tweets/>
+                        </CollapsibleMenu>
                 </div>
                 <Timeline
                     minDate={appSettings.minDate}
@@ -251,15 +256,6 @@ class App extends React.Component {
         selectedShareableCopy.x = -200;
         selectedShareableCopy.y = -200;
         this.setState({ selectedShareable: selectedShareableCopy });
-    }
-
-    handleCollapse() {
-        if (this.state.collapsed) {
-            this.setState({ width: this.state.maximizedSize });
-        } else {
-            this.setState({ width: 0 });
-        }
-        this.setState({ collapsed: !this.state.collapsed });
     }
 
     setCurrentMode() {

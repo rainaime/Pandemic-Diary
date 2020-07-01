@@ -12,6 +12,7 @@ button {
     font-size: 1.2vw;
 }
 
+/* why are there so many selectors? wtf??? this is unnecessary and they override things in completely unrelated components
 button:hover {
     color:red;
 }
@@ -97,4 +98,4 @@ label {
     display: inline-block;
     margin-top: 10px;
     color: white;
-}
+}*/

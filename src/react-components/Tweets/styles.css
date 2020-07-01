@@ -1,27 +1,18 @@
-.tweets {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    font-size: 1vw;
-    width: 20%;
-    transition: all 0.3s;
-}
-
-#id {
-
-}
-
-.tweet_form{
-    justify-content: center;
-    text-align: center;
+.tweet_container {
+    height: 90%;
+    padding: 0 12px;
+    overflow: scroll;
 }
 
 .tweet_container::-webkit-scrollbar{
-    width: 1em;
+    width: 0;
 }
 
-.tweet_container {
-    height: 90%;
-    overflow: scroll;
-    white-space: nowrap;
+.username {
+    font-size: 12px;
+    text-align: left;
+}
+
+.content {
+    word-wrap: break-word;
 }
