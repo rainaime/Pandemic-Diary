@@ -27,7 +27,6 @@ class TweetsForm extends React.Component {
             content: tstate.text,
             username: tstate.username,
         });
-        parent.setState({ update: "1" });
     }
 
     //update the text in tweets when user leaves the input box
