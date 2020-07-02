@@ -2,6 +2,7 @@ import React from "react";
 import Colors from "../../site-styles/Colors";
 import MenuItem from "./MenuItem";
 import UserInfo from "./UserInfo";
+import Admin from "./Admin";
 import "./styles.css";
 
 class Menu extends React.Component {
@@ -38,7 +39,8 @@ class Menu extends React.Component {
                     <MenuItem  text="Vacation" onClick={(e)=>{this.updateSelection("Vacation");}} />
                     <MenuItem  text="Other Stuff" onClick={(e)=>{this.updateSelection("Other Stuff");}} />
                     </div>
-                ) : (
+                ) : (this.props.currentUser.username === "admin" ?
+                    <Admin /> :
                     <UserInfo currentUser={this.props.currentUser} />
                 )}</>
         );
