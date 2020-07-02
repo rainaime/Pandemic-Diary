@@ -14,7 +14,7 @@ import { UserStatus, UserStatusMenu } from "./react-components/UserStatus";
 import ShareablePopup from "./react-components/ShareableComponents";
 import { ImageIcon, ImageMenu } from "./react-components/ShareableComponents/Image";
 import { MarkerIcon, MarkerMenu } from "./react-components/ShareableComponents/Marker";
-import NotificationMenu from "./react-components/Menu/NotificationBar";
+import { NotificationMenu, NotificationIcon } from "./react-components/Menu/NotificationBar"
 
 const appSettings = {
     minDate: new Date("December 1 2019"),
@@ -47,6 +47,7 @@ class App extends React.Component {
         currentPopup: "",
         idcounts: 1,
         currentUser: users[1],
+        showNotification: false,
     };
 
     renderPopup(currentPopup) {
@@ -78,6 +79,13 @@ class App extends React.Component {
             users: users,
         };
 
+        const NotificationMenuProps = {
+            shareShareable: this.shareShareable.bind(this),
+            currentUser: this.state.currentUser,
+            enterPressed: this.setCurrentMode.bind(this),
+            currentMarker: this.state.selectedShareable,
+        }
+
         switch (currentPopup) {
             case "marker":
                 return <MarkerMenu {...MarkerMenuProps} />;
@@ -86,10 +94,7 @@ class App extends React.Component {
             case "notification":
                 return (
                     <NotificationMenu
-                        shareShareable={this.shareShareable.bind(this)}
-                        currentUser={this.state.currentUser}
-                        currentMarker={this.state.selectedShareable}
-                    />
+                        {...NotificationMenuProps}/>
                 );
             case "login":
                 return <UserStatusMenu {...UserStatusMenuProps} />;
@@ -183,8 +188,13 @@ class App extends React.Component {
             <div className="App" style={dynamicStyles.cursor}>
                 <SiteHeader>
                     <span className="currentDate">{this.state.currentDate.toDateString()}</span>
+                    <button className="button" onClick={this.renderNotification.bind(this)}>Notification</button>
+                    {/* <input type="image" src="./share.png" 
+                        onClick={this.renderNotification.bind(this)}
+                        style={{maxWidth: "100%", maxHeight: "100%"}}/> */}
                     <UserStatus {...UserStatusProps} />
                 </SiteHeader>
+                {this.state.showNotification && <NotificationIcon user={this.state.currentUser}/>}
 
                 <div className="mainBody">
                     <CollapsibleMenu views={["filter", "info"]} switchView={(newView) => {this.setState({currentLeftMenuView: newView})}} position="left">
@@ -273,7 +283,7 @@ class App extends React.Component {
     editMarker() {
         this.setState({ currentShareable: this.state.selectedShareable });
         this.setState({ currentMode: "editingShareable" });
-        this.setState({ currentPopup: this.state.currentShareable.type });
+        this.setState({ currentPopup: this.state.selectedShareable.type });
     }
 
     deleteMarker() {
@@ -297,6 +307,7 @@ class App extends React.Component {
 
     setCurrentMode() {
         this.setState({ currentMode: "normal" });
+        console.log("enter")
     }
 
     updateCurrentUser(user) {
@@ -322,12 +333,11 @@ class App extends React.Component {
         else return this.state.selectedShareable.user.username;
     }
 
-    shareShareable(username) {
-        let user = null;
-        users.forEach((element) => {
-            if (element.username === username) {
-                user = element;
-                console.log("user found");
+    shareShareable(username){
+        let user = null
+        users.forEach(element => {
+            if (element.username === username){
+                user = element
             }
         });
 
@@ -345,6 +355,26 @@ class App extends React.Component {
 
     selectCallback(type) {
         this.setState({ selectedShareableType: type });
+        this.setState({
+            selectedShareable: {
+                x: -200,
+                y: -200,
+                content: "",
+                user: null,
+                shareableType: null,
+            },
+        });
+    }
+
+    renderNotification(){
+        if (this.state.showNotification){
+            this.setState({showNotification: false})
+            if (this.state.currentUser != null)
+                this.state.currentUser.shared = []
+        } else {
+            this.setState({showNotification: true})
+
+        }
     }
 
     updateShareableDate(time) {
