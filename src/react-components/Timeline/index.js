@@ -43,7 +43,7 @@ class Timeline extends React.Component {
                 }}>
                 <span
                     style={{
-                        whiteSpace: 'nowrap',
+                        whiteSpace: "nowrap",
                         position: "absolute",
                         transform: "translateX(-50%)",
                         left: "50%",
@@ -91,6 +91,9 @@ class Timeline extends React.Component {
 
     componentWillUnmount() {
         window.removeEventListener("resize", this.updateDimensions);
+        this.setState = () => {
+            return;
+        };
     }
 
     updateCanvas = () => {

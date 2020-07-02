@@ -1,14 +1,58 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+
+import * as serviceWorker from "./serviceWorker";
+import { Link, Route, Switch, BrowserRouter } from "react-router-dom";
+
+import App from "./App";
+import Colors from "../src/site-styles/Colors";
+
+const mainStyle = {
+    borderTopStyle: "solid",
+    borderBottomStyle: "solid",
+    borderWidth: "5px",
+    borderColor: Colors.background + "B5",
+    backgroundColor: Colors.background + "A5",
+};
+const LandingPage = (
+    <div className="landingPage">
+        <div className="landingPage_main">
+            <div className="landingPage_main_blur">
+                <div className="landingPage_main_title" style={mainStyle}>
+                    <h1 className="landingPage_title" style={{ color: Colors.textAccent1 }}>
+                        Pandemic Diary
+                    </h1>
+                    <p className="landingPage_desc" style={{ color: Colors.textColorLight }}>
+                        A website to help you keep track of your plans during (and especially after)
+                        the pandemic.
+                    </p>
+                </div>
+                <Link
+                    className="landingPage_enter"
+                    style={{ ...mainStyle, color: Colors.textColorLight }}
+                    to="./App">
+                    Enter Site
+                </Link>
+            </div>
+        </div>
+        {/* TODO: Maybe add a features page here.
+        <div className="landingPage_main">
+            <Link to="./App"></Link>
+        </div>*/}
+    </div>
+);
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <BrowserRouter>
+            <Switch>
+                <Route exact path="/" render={() => LandingPage} />
+                <Route exact path="/App" render={() => <App />} />
+            </Switch>
+        </BrowserRouter>
+    </React.StrictMode>,
+    document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change

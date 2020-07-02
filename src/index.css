@@ -1,17 +1,77 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+        "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
     overflow: hidden;
+}
+
+.landingPage {
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.landingPage::-webkit-scrollbar {
+    display: none;
+}
+
+.landingPage_main {
+    background-image: url("/globe.jpeg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+}
+
+.landingPage_main_blur {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.landingPage_main_title {
+    box-sizing: border-box;
+    width: 50%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.landingPage_main_title > * {
+    display: inline-flex;
+}
+
+.landingPage_title {
+    margin: 0;
+    font-size: 4vw;
+}
+
+.landingPage_enter {
+    font-size: 4vw;
+    line-height: 4vw;
+    text-decoration: none;
+    margin-top: 16px;
+    width: 50%;
+    padding: 8px 0;
+    text-align: center;
 }
 
 #root {
@@ -19,6 +79,5 @@ html, body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }

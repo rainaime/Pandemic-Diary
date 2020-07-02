@@ -15,7 +15,6 @@ import { MarkerIcon, MarkerMenu } from "./react-components/ShareableComponents/M
 import NotificationMenu from "./react-components/Menu/NotificationBar"
 
 const markerIconStyle = {
-    height: 24,
     width: 16,
 };
 

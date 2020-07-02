@@ -10,9 +10,9 @@ class Menu extends React.Component {
         display: "filter",
     };
 
-    updateSelection(selectedType){
+    updateSelection(selectedType) {
         this.props.selectType(selectedType);
-    };
+    }
 
     setDisplay = (e) => {
         this.setState({ display: e.target.value });
@@ -20,7 +20,8 @@ class Menu extends React.Component {
 
     render() {
         this.updateSelection.bind(this);
-        return (<>
+        return (
+            <>
                 <div className="options">
                     <button style={inlineStyle} value="filter" onClick={this.setDisplay.bind(this)}>
                         Filter
@@ -34,15 +35,37 @@ class Menu extends React.Component {
                 </div>
                 {this.state.display === "filter" ? (
                     <div className="menu-val">
-                    <MenuItem  text="All" onClick={(e)=>{this.updateSelection("All");}} />
-                    <MenuItem  text="News" onClick={(e)=>{this.updateSelection("News");}} />
-                    <MenuItem  text="Vacation" onClick={(e)=>{this.updateSelection("Vacation");}} />
-                    <MenuItem  text="Other Stuff" onClick={(e)=>{this.updateSelection("Other Stuff");}} />
+                        <MenuItem
+                            text="All"
+                            onClick={() => {
+                                this.updateSelection("All");
+                            }}
+                        />
+                        <MenuItem
+                            text="News"
+                            onClick={() => {
+                                this.updateSelection("News");
+                            }}
+                        />
+                        <MenuItem
+                            text="Vacation"
+                            onClick={() => {
+                                this.updateSelection("Vacation");
+                            }}
+                        />
+                        <MenuItem
+                            text="Other Stuff"
+                            onClick={() => {
+                                this.updateSelection("Other Stuff");
+                            }}
+                        />
                     </div>
-                ) : (this.props.currentUser.username === "admin" ?
-                    <Admin /> :
+                ) : this.props.currentUser && this.props.currentUser.username === "admin" ? (
+                    <Admin />
+                ) : (
                     <UserInfo currentUser={this.props.currentUser} />
-                )}</>
+                )}
+            </>
         );
     }
 }
@@ -61,7 +84,8 @@ class Menu extends React.Component {
 //     }
 // }
 
-{/* <div className="menu-val">
+{
+    /* <div className="menu-val">
                         <button
                             value="All"
                             className="buttonStyle"
@@ -85,7 +109,8 @@ class Menu extends React.Component {
                             className="buttonStyle"
                             onClick={(e)=>{this.updateSelection(e.target.value);}}>
                             {this.value}
-                        </button> */}
+                        </button> */
+}
 
 const inlineStyle = {
     display: "inline-block",
