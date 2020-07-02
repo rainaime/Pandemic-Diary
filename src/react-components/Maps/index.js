@@ -74,12 +74,14 @@ class Maps extends React.Component {
         const ctx = this.canvasRef.current.getContext("2d");
         for (let s of this.props.shareables) {
             // TODO: Once selectedType is implemented, replace the condition
-            if ((s.date.getDate() === this.props.currentDate.getDate() && s.selectedType === this.props.selectedType)
-            || (s.date.getDate() === this.props.currentDate.getDate() && this.props.selectedType === "All")){
-            // if (s.date.getFullYear() === this.props.currentDate.getFullYear()
-            // && s.date.getMonth() === this.props.currentDate.getMonth()
-            // && s.date.getDate() === this.props.currentDate.getDate()){ 
-                //getDate() only returns the day value
+            console.log(s.date.getDate() === this.props.currentDate.getDate())
+            console.log(s.selectedType === this.props.selectedType)
+            console.log(this.props.selectedType === "All")
+            if (s.date.getFullYear() === this.props.currentDate.getFullYear()
+            && s.date.getMonth() === this.props.currentDate.getMonth()
+            && s.date.getDate() === this.props.currentDate.getDate()
+            && (s.selectedType === this.props.selectedType || this.props.selectedType === "All")){ 
+                //getDate() only returns the day value so you have to check the month and year are also equal
     
                 const draw = () => {ctx.drawImage(s.img, s.x, s.y, s.width, s.height)}
                 if (!s.img.complete) {
