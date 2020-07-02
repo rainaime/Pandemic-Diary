@@ -163,7 +163,7 @@ class App extends React.Component {
         return (
             <div className="App" style={dynamicStyles.cursor}>
                 <SiteHeader>
-                    {this.state.currentDate.toDateString()}
+                    <span className="currentDate">{this.state.currentDate.toDateString()}</span>
                     <UserStatus {...UserStatusProps} />
                 </SiteHeader>
 
