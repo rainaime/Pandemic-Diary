@@ -1,5 +1,11 @@
 import React from "react";
 
+class NewsArticle extends React.Component {
+    render () {
+
+    }
+}
+
 class News extends React.Component {
     render() {
         return(
@@ -7,9 +13,6 @@ class News extends React.Component {
             </div>
         );
     };
-}
-
-export default News;    };
 }
 
 export default News;

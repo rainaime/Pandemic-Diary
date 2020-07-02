@@ -6,7 +6,7 @@ class CollapsibleMenu extends React.Component {
     state = {
         collapsed: false,
         maximizedSize: "20%",
-    }
+    };
 
     handleCollapse() {
         if (this.state.collapsed) {
@@ -28,6 +28,18 @@ class CollapsibleMenu extends React.Component {
 
         return (
             <div className="collapsible-menu" style={dynamicStyles.container}>
+                <div className="menu-views">
+                    {this.props.views.map((v) => {
+                        return (
+                            <span
+                                onClick={() => {
+                                    this.props.switchView(v);
+                                }}>
+                                {v}
+                            </span>
+                        );
+                    })}
+                </div>
                 {this.props.children}
                 <CollapseButton
                     position={this.props.position === "left" ? "right" : "left"}

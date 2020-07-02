@@ -34,17 +34,6 @@ class Tweets extends React.Component {
     render() {
         return (
             <>
-                {/* <div className="options">
-                    <button style={inlineStyle} value="filter" onClick={this.setDisplay.bind(this)}>
-                        Filter
-                    </button>
-                    <button
-                        style={inlineStyle}
-                        value="user info"
-                        onClick={this.setDisplay.bind(this)}>
-                        User Info
-                    </button>
-                </div> */}
                 <div>
                     <div style={inlineStyle}>
                         <h1 style={{ ...titleStyle, color: Colors.textAccent1 }}>Tweets</h1>
@@ -69,7 +58,6 @@ class Tweets extends React.Component {
 const inlineStyle = {
     display: "inline-block",
     width: "50%",
-    // marginBottom: '2px'
 };
 const titleStyle = {
     float: "none",

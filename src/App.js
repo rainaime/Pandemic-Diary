@@ -4,6 +4,8 @@ import Colors from "./site-styles/Colors";
 import SiteHeader from "./react-components/SiteHeader";
 import Maps from "./react-components/Maps";
 import Menu from "./react-components/Menu";
+import Admin from "./react-components/Menu/Admin";
+import UserInfo from "./react-components/Menu/UserInfo";
 import Tweets from "./react-components/Tweets";
 import CollapsibleMenu from "./react-components/CollapsibleMenu";
 import Timeline from "./react-components/Timeline";
@@ -27,6 +29,8 @@ const users = [
 
 class App extends React.Component {
     state = {
+        currentLeftMenuView: "filter",
+        currentRightMenuView: "tweets",
         currentMode: "normal",
         shareables: [],
         selectedShareable: {
@@ -158,6 +162,23 @@ class App extends React.Component {
             updateCurrentDate: this.updateCurrentDate.bind(this),
         };
 
+        let leftMenuView;
+        switch(this.state.currentLeftMenuView) {
+            case "filter":
+                leftMenuView = <Menu {...MenuProps}/>;
+                break;
+            case "info":
+                if (this.currentUser && this.currentUser.username === "admin") {
+                    leftMenuView = <Admin />
+                } else {
+                    leftMenuView = <UserInfo currentUser={this.state.currentUser}/>
+                }
+                break;
+            default:
+                leftMenuView = null;
+                break;
+        }
+
         return (
             <div className="App" style={dynamicStyles.cursor}>
                 <SiteHeader>
@@ -166,8 +187,8 @@ class App extends React.Component {
                 </SiteHeader>
 
                 <div className="mainBody">
-                    <CollapsibleMenu position="left">
-                        <Menu {...MenuProps} />
+                    <CollapsibleMenu views={["filter", "info"]} switchView={(newView) => {this.setState({currentLeftMenuView: newView})}} position="left">
+                        {leftMenuView}
                     </CollapsibleMenu>
 
                     {/* outerMapDiv and innerMapDiv were added due to an extra wrapper div being created by
@@ -191,7 +212,7 @@ class App extends React.Component {
                             <ImageIcon {...PopoutButtonIconProps} />
                         </PopoutButton>
                     </div>
-                    <CollapsibleMenu position="right">
+                    <CollapsibleMenu views={["filter", "info"]} switchView={(newView) => {this.setState({currentLeftMenuView: newView})}} position="left" position="right">
                         <Tweets />
                     </CollapsibleMenu>
                 </div>

@@ -17,3 +17,17 @@
     z-index: 10;
     transition: all 0.3s;
 }
+
+.menu-views {
+    width: 100%;
+    height: 16px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.menu-views > span {
+    line-height: 16px;
+    font-size: 16px;
+    text-transform: capitalize;
+}
