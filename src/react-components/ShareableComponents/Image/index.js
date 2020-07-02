@@ -1,4 +1,5 @@
 import React from "react";
+import "./style.css";
 
 class ImageIcon extends React.Component {
     Image = {
@@ -7,10 +8,17 @@ class ImageIcon extends React.Component {
         width: 16,
         height: 24,
         content: <img alt=""></img>,
+        date: this.props.date,
+        dateText: '',
+        updateDate: this.updateDate,
     };
 
     componentWillUnmount() {
         Image.img = undefined;
+    }
+
+    updateDate(date) {
+        this.date = date
     }
 
     render() {
@@ -46,7 +54,7 @@ class ImageMenu extends React.Component {
         //TODO this seems like a messy implementation the content probably should not be an img but the default was placed as an img object so idk
         //need to check that the file being passed is actually an image file - appears that photo just wont show if wrong file but still
         const imgUrl = URL.createObjectURL(e.target.files[0]);
-        this.props.currentShareable.content = <img style={{maxWidth: '90%', maxHeight: '90%'}} src={imgUrl} alt=""/>
+        this.props.image.content = <img style={{maxWidth: '90%', maxHeight: '90%'}} src={imgUrl} alt=""/>
     }
 
     render() {
@@ -62,9 +70,31 @@ class ImageMenu extends React.Component {
                         type="file"
                         name="fileupload"
                         id="fileupload"
-                        onChange={this.submitImage.bind(this)}
+                        onChange={this.submitImage.bind(this)
+                        }
                     />
                 </form>
+                <div className="dateSection">
+                    <input type="date" value={this.props.image.dateText} min="2019-12-01" max="2020-12-31"
+                    onChange={(e) => {
+                        // this.setState({value: e.target.valueAsDate});
+                        this.props.image.dateText = e.target.value;
+                        this.setState({value: e.target.value});
+                        this.props.updateDate(e.target.valueAsDate);
+                        this.props.updateCurrentDate(e.target.valueAsDate);
+                    }}/>
+                </div>
+
+                <div className="articleType">
+                <select name="article" id="cars" onChange={(e) => {
+                        // this.setState({value: e.target.value});
+                        this.props.updateArticleType(e.target.value);
+                    }}>
+                    <option value="News">News</option>
+                    <option value="Vacation">Vacation</option>
+                    <option value="Other Stuff">Other Stuff</option>
+                </select>
+                </div>
             </div>
         );
     }

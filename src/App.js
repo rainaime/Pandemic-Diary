@@ -55,17 +55,21 @@ class App extends React.Component {
                 return (
                     <MarkerMenu
                         state={this.state.currentShareable}
-                        updateDate={this.updateCurrentDate.bind(this)}
+                        updateDate={this.updateShareableDate.bind(this)}
                         enterPressed={this.setCurrentMode.bind(this)}
                         updateArticleType={this.updateArticleType.bind(this)}
                         shareableDate={this.state.shareableDate}
+                        updateCurrentDate={this.updateCurrentDate.bind(this)}
                     />
                 );
             case "image":
                 return (
                     <ImageMenu
                         image={this.state.currentShareable}
-                        currentShareable={this.state.currentShareable}
+                        updateDate={this.updateShareableDate.bind(this)}
+                        updateArticleType={this.updateArticleType.bind(this)}
+                        shareableDate={this.state.shareableDate}
+                        updateCurrentDate={this.updateCurrentDate.bind(this)}
                     />
                 );
             case "login":
@@ -295,10 +299,14 @@ class App extends React.Component {
         this.setState({ selectedShareableType: type });
     }
 
+    updateShareableDate(time) {
+        time.setTime(time.getTime() + time.getTimezoneOffset() * 60 * 1000);
+        this.state.currentShareable.updateDate(time);
+    }
+
     //change Time Line
     updateCurrentDate(time) {
         time.setTime(time.getTime() + time.getTimezoneOffset() * 60 * 1000);
-        this.state.currentShareable.updateDate(time);
         this.setState({ currentDate: time });
         this.setState({
             selectedShareable: {

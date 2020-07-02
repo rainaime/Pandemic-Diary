@@ -86,6 +86,7 @@ class MarkerMenu extends React.Component {
                         this.props.state.dateText = e.target.value;
                         this.setState({value: e.target.value});
                         this.props.updateDate(e.target.valueAsDate);
+                        this.props.updateCurrentDate(e.target.valueAsDate);
                         //TODO old
                     // <input type="date" defaultValue="2019-01-01" min="2019-01-01" max="2020-12-31"
                     // onChange={(e) => {
