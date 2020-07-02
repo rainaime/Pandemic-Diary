@@ -17,6 +17,10 @@
     word-wrap: break-word;
 }
 
+#tweet_context {
+    width: 90%;
+}
+
 .add_tweet_container {
     margin: 12px 0;
 }

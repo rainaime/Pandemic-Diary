@@ -191,7 +191,7 @@ class App extends React.Component {
                 rightMenuView = <Tweets user={this.state.currentUser}/>;
                 break;
             case "news":
-                rightMenuView = <News/>;
+                rightMenuView = <News currentDate={this.state.currentDate}/>;
                 break;
             default:
                 rightMenuView = null;
