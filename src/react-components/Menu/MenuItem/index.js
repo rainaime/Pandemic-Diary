@@ -16,14 +16,14 @@ class MenuItem extends React.Component {
         }
 
         return (
-            <a  href={this.props.link}
+            <button  href={this.props.link}
                 style={aStyle}
                 onClick={this.props.onClick}
                 onMouseEnter={() => this.setState({hover: true})}
                 onMouseLeave={() => this.setState({hover: false})}
             >
                 {this.props.text}
-            </a>
+            </button>
         );
     }
 }

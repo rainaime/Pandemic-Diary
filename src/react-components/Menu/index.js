@@ -9,16 +9,16 @@ class Menu extends React.Component {
         display: "filter",
     };
 
-    updateSelection = (e) => {
-        this.props.selectType(e.target.text);
+    updateSelection(selectedType){
+        this.props.selectType(selectedType);
     };
 
     setDisplay = (e) => {
-        console.log(e.target.value);
         this.setState({ display: e.target.value });
     };
 
     render() {
+        this.updateSelection.bind(this);
         return (<>
                 <div className="options">
                     <button style={inlineStyle} value="filter" onClick={this.setDisplay.bind(this)}>
@@ -32,7 +32,12 @@ class Menu extends React.Component {
                     </button>
                 </div>
                 {this.state.display === "filter" ? (
-                    <MenuDiv />
+                    <div className="menu-val">
+                    <MenuItem  text="All" onClick={(e)=>{this.updateSelection("All");}} />
+                    <MenuItem  text="News" onClick={(e)=>{this.updateSelection("News");}} />
+                    <MenuItem  text="Vacation" onClick={(e)=>{this.updateSelection("Vacation");}} />
+                    <MenuItem  text="Other Stuff" onClick={(e)=>{this.updateSelection("Other Stuff");}} />
+                    </div>
                 ) : (
                     <UserInfo currentUser={this.props.currentUser} />
                 )}</>
@@ -40,17 +45,45 @@ class Menu extends React.Component {
     }
 }
 
-class MenuDiv extends React.Component {
-    render() {
-        return (
-            <div className="menu-val">
-                <MenuItem link="#" text="News" onClick={this.updateSelection} />
-                <MenuItem link="#" text="Vacation" onClick={this.updateSelection} />
-                <MenuItem link="#" text="Other Stuff" onClick={this.updateSelection} />
-            </div>
-        );
-    }
-}
+// class MenuDiv extends React.Component {
+
+//     render() {
+//         return (
+//             <div className="menu-val">
+//                 <MenuItem  text="All" onClick={(e)=>{this.updateSelection.bind(this);this.updateSelection(e);}} />
+//                 <MenuItem  text="News" onClick={(e)=>{this.updateSelection.bind(this);this.updateSelection(e);}} />
+//                 <MenuItem  text="Vacation" onClick={(e)=>{this.updateSelection.bind(this);this.updateSelection(e);}} />
+//                 <MenuItem  text="Other Stuff" onClick={(e)=>{this.updateSelection.bind(this);this.updateSelection(e);}} />
+//             </div>
+//         );
+//     }
+// }
+
+{/* <div className="menu-val">
+                        <button
+                            value="All"
+                            className="buttonStyle"
+                            onClick={(e)=>{this.updateSelection(e.target.value);}}>
+                            {this.value}
+                        </button>
+                        <button
+                            value="News"
+                            className="buttonStyle"
+                            onClick={(e)=>{this.updateSelection(e.target.value);}}>
+                            {this.value}
+                        </button>
+                        <button
+                            value="Vacation"
+                            className="buttonStyle"
+                            onClick={(e)=>{this.updateSelection(e.target.value);}}>
+                            {this.value}
+                        </button>
+                        <button
+                            value="OtherStuff"
+                            className="buttonStyle"
+                            onClick={(e)=>{this.updateSelection(e.target.value);}}>
+                            {this.value}
+                        </button> */}
 
 const inlineStyle = {
     display: "inline-block",
