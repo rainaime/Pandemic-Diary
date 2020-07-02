@@ -29,9 +29,10 @@ class CollapsibleMenu extends React.Component {
         return (
             <div className="collapsible-menu" style={dynamicStyles.container}>
                 <div className="menu-views">
-                    {this.props.views.map((v) => {
+                    {this.props.views.map((v, i) => {
                         return (
                             <span
+                                key={i}
                                 onClick={() => {
                                     this.props.switchView(v);
                                 }}>

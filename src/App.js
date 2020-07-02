@@ -7,6 +7,7 @@ import Menu from "./react-components/Menu";
 import Admin from "./react-components/Menu/Admin";
 import UserInfo from "./react-components/Menu/UserInfo";
 import Tweets from "./react-components/Tweets";
+import News from "./react-components/News";
 import CollapsibleMenu from "./react-components/CollapsibleMenu";
 import Timeline from "./react-components/Timeline";
 import PopoutButton from "./react-components/PopoutButton";
@@ -184,6 +185,19 @@ class App extends React.Component {
                 break;
         }
 
+        let rightMenuView;
+        switch(this.state.currentRightMenuView) {
+            case "tweets":
+                rightMenuView = <Tweets user={this.state.currentUser}/>;
+                break;
+            case "news":
+                rightMenuView = <News/>;
+                break;
+            default:
+                rightMenuView = null;
+                break;
+        }
+
         return (
             <div className="App" style={dynamicStyles.cursor}>
                 <SiteHeader>
@@ -222,8 +236,8 @@ class App extends React.Component {
                             <ImageIcon {...PopoutButtonIconProps} />
                         </PopoutButton>
                     </div>
-                    <CollapsibleMenu views={["filter", "info"]} switchView={(newView) => {this.setState({currentLeftMenuView: newView})}} position="left" position="right">
-                        <Tweets />
+                    <CollapsibleMenu views={["tweets", "news"]} switchView={(newView) => {this.setState({currentRightMenuView: newView})}} position="right">
+                        {rightMenuView}
                     </CollapsibleMenu>
                 </div>
                 <Timeline {...TimelineProps} />

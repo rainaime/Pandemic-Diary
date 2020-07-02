@@ -4,51 +4,29 @@ import "./styles.css";
 class TweetsForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            username: "",
-            text: "",
-        };
-    }
 
-    componentDidMount() {
-        this.getUserName.bind(this); //bind to this class
-        this.getUserName(); //initialize the username
-    }
-
-    //use server call to get name of the user making this tweet later
-    getUserName() {
-        this.setState({ username: "Woojin" });
-    }
-
-    //update new Tweet by making servercall later
-    addNewTweet(pstate, tstate, parent) {
-        pstate.tweets.push({
-            tweetId: 0,
-            content: tstate.text,
-            username: tstate.username,
-        });
-    }
-
-    //update the text in tweets when user leaves the input box
-    textInput(e) {
-        this.setState({ text: e.target.value });
+        this.inputRef = React.createRef();
     }
 
     render() {
         return (
-            <div>
+            <div className="add_tweet_container">
                 <input
+                    ref={this.inputRef}
                     id="tweet_context"
                     type="text"
                     name="new_tweet"
                     alt="add comments"
-                    onBlur={this.textInput.bind(this)}
                 />
                 <button
                     className="addButton"
                     onClick={() => {
-                        this.addNewTweet(this.props.tweetState, this.state, this.props.parentRef); //add new tweet
-                        document.getElementById("tweet_context").value = ""; //clear the input text when clicked
+                        let formVal = this.inputRef.current.value;
+                        if (formVal === "") {
+                            return;
+                        }
+                        this.props.addNewTweet(formVal);
+                        this.inputRef.current.value = "";
                     }}>
                     add tweet
                 </button>

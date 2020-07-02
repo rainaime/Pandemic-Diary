@@ -1,6 +1,6 @@
 .tweet_container {
-    height: 90%;
-    padding: 0 12px;
+    flex-grow: 1;
+    padding: 12px;
     overflow: scroll;
 }
 
@@ -15,4 +15,8 @@
 
 .content {
     word-wrap: break-word;
+}
+
+.add_tweet_container {
+    margin: 12px 0;
 }

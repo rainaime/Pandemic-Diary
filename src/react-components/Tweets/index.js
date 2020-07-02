@@ -1,5 +1,4 @@
 import React from "react";
-import Colors from "../../site-styles/Colors";
 import "./styles.css";
 
 import Tweet from "./Tweet";
@@ -7,6 +6,7 @@ import TweetsForm from "./TweetsForm";
 
 class Tweets extends React.Component {
     state = {
+        maxId: 2,
         tweets: [
             {
                 tweetId: 0,
@@ -24,47 +24,34 @@ class Tweets extends React.Component {
                 username: "woojin",
             },
         ],
-        update: "",
     };
 
-    setDisplay() {
-
+    addNewTweet(tweet) {
+        if (this.props.user === null) {
+            return;
+        }
+        this.setState({
+            maxId: this.state.maxId + 1,
+            tweets: [
+                ...this.state.tweets,
+                { tweetId: this.state.maxId + 1, content: tweet, username: this.props.user.username},
+            ],
+        });
     }
 
     render() {
         return (
             <>
-                <div>
-                    <div style={inlineStyle}>
-                        <h1 style={{ ...titleStyle, color: Colors.textAccent1 }}>Tweets</h1>
-                    </div>
-                    <div style={inlineStyle}>
-                        <h1 style={{ ...titleStyle, color: Colors.textAccent1 }}>News</h1>
-                    </div>
-                </div>
-
                 <div className="tweet_container">
                     {/* print a tweet component for every tweet */}
                     {this.state.tweets.map((tweet, i, arr) => (
-                        <Tweet key={tweet.tweetId} tweet={tweet} isLast={i === arr.length-1}/>
+                        <Tweet key={tweet.tweetId} tweet={tweet} isLast={i === arr.length - 1} />
                     ))}
                 </div>
-                    <TweetsForm tweetState={this.state} parentRef={this}></TweetsForm>
+                <TweetsForm addNewTweet={this.addNewTweet.bind(this)} />
             </>
         );
     }
 }
-
-const inlineStyle = {
-    display: "inline-block",
-    width: "50%",
-};
-const titleStyle = {
-    float: "none",
-    textAlign: "center",
-    marginBlockStart: "0",
-    marginBlockEnd: "0",
-    margin: "0",
-};
 
 export default Tweets;

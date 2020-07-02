@@ -18,14 +18,4 @@ class Tweet extends React.Component {
     };
 }
 
-const tweetBorder = {
-    borderTop: '1px solid grey',
-	borderBottom: '1px solid grey'
-}
-
-const userStyle = {
-    fontSize: '12px',
-    textAlign: 'left',
-    padding: '0.5em'
-}
 export default Tweet;
