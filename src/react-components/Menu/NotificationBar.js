@@ -23,12 +23,12 @@ class NotificationMenu extends React.Component{
     render(){
         return(
             <div>
-                <h2>Share/Invite!</h2>
+                <h1 className="popupBox_title">Share/Invite!</h1>
                 <span className="greeting">
                     Enter the user you'd like to share this with!
                 </span>
                 <form>
-                    <input type="text" onChange={this.updateUser.bind(this)}/>
+                    <input type="text" onSubmit={()=>{return;}} onChange={this.updateUser.bind(this)}/>
                     <button type="button" style={buttonStyle} value="Submit" onClick={this.submit.bind(this)}>Submit</button>
                 </form>
                 {this.state.error ? "User not Found" : null}

@@ -71,9 +71,9 @@ class ImageMenu extends React.Component {
         }
 
         return (
-            <div style={{ textAlign: "left" }}>
-                <h1>Image Selector</h1>
-                <p>
+            <>
+                <h1 className="popupBox_title">Image Selector</h1>
+                <p className="popupBox_instructions">
                     Select an image to add to this image marker you've placed. It will be displayed
                     when you hover over the marker.
                 </p>
@@ -90,7 +90,6 @@ class ImageMenu extends React.Component {
                 <div className="dateSection">
                     <input type="date" value={this.props.image.dateText} min="2019-12-01" max="2020-12-31"
                     onChange={(e) => {
-                        // this.setState({value: e.target.valueAsDate});
                         this.props.image.dateText = e.target.value;
                         this.setState({value: e.target.value});
                         this.props.updateDate(e.target.valueAsDate);
@@ -108,7 +107,7 @@ class ImageMenu extends React.Component {
                     <option value="Other Stuff">Other Stuff</option>
                 </select>
                 </div>
-            </div>
+            </>
         );
     }
 }

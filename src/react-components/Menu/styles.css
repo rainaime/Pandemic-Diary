@@ -21,25 +21,3 @@
 .shareables_container::-webkit-scrollbar {
     display: none;
 }
-
-.buttonStyle{
-    width: 100%;
-    color: #ff7c43;
-    text-decoration: 'none';
-    font-weight: 600;
-    padding: 12px 0;
-}
-
-.buttonStyle:hover{
-    color: #ffa600;
-}
-
-.button2{
-    color: white;
-    font-weight: 600;
-    font-size: 1.2em;
-}
-
-.button2:hover {
-    color: #ff7c43;
-}

@@ -12,11 +12,7 @@ import { UserStatus, UserStatusMenu } from "./react-components/UserStatus";
 import ShareablePopup from "./react-components/ShareableComponents";
 import { ImageIcon, ImageMenu } from "./react-components/ShareableComponents/Image";
 import { MarkerIcon, MarkerMenu } from "./react-components/ShareableComponents/Marker";
-import NotificationMenu from "./react-components/Menu/NotificationBar"
-
-const markerIconStyle = {
-    width: 16,
-};
+import NotificationMenu from "./react-components/Menu/NotificationBar";
 
 const appSettings = {
     minDate: new Date("December 1 2019"),
@@ -70,25 +66,21 @@ class App extends React.Component {
         const UserStatusMenuProps = {
             updateCurrentUser: this.updateCurrentUser.bind(this),
             onSuccess: () => {
-                            this.setState({ currentMode: "normal" });
-                        },
+                this.setState({ currentMode: "normal" });
+            },
             addUser: (newUser) => {
-                            users.push(newUser);
-                        },
-            users: users
-        }
+                users.push(newUser);
+            },
+            users: users,
+        };
 
         switch (currentPopup) {
             case "marker":
-                return (
-                    <MarkerMenu {...MarkerMenuProps}/>
-                );
+                return <MarkerMenu {...MarkerMenuProps} />;
             case "image":
-                return (
-                    <ImageMenu {...ImageMenuProps}/>
-                );
+                return <ImageMenu {...ImageMenuProps} />;
             case "notification":
-                return(
+                return (
                     <NotificationMenu
                         shareShareable={this.shareShareable.bind(this)}
                         currentUser={this.state.currentUser}
@@ -96,15 +88,13 @@ class App extends React.Component {
                     />
                 );
             case "login":
-                return (
-                    <UserStatusMenu {...UserStatusMenuProps}/>
-                );
+                return <UserStatusMenu {...UserStatusMenuProps} />;
             default:
                 return null;
         }
     }
 
-    render() { 
+    render() {
         const dynamicStyles = {
             cursor: {
                 cursor: this.state.currentMode === "placingShareable" ? "crosshair" : "auto",
@@ -281,7 +271,7 @@ class App extends React.Component {
     shareMarkerState() {
         this.setState({ currentShareable: this.state.selectedShareable });
         this.setState({ currentPopup: "notification" });
-        this.setState({currentMode: "editing"})
+        this.setState({ currentMode: "editing" });
     }
 
     setCurrentMode() {
@@ -311,20 +301,19 @@ class App extends React.Component {
         else return this.state.selectedShareable.user.username;
     }
 
-    shareShareable(username){
-        let user = null
-        users.forEach(element => {
-            if (element.username === username){
-                user = element
-                console.log("user found")
+    shareShareable(username) {
+        let user = null;
+        users.forEach((element) => {
+            if (element.username === username) {
+                user = element;
+                console.log("user found");
             }
         });
 
-        if (user === null)
-            return false
+        if (user === null) return false;
         else {
-            user.shared.push(this.state.selectedShareable)
-            return true
+            user.shared.push(this.state.selectedShareable);
+            return true;
         }
     }
 

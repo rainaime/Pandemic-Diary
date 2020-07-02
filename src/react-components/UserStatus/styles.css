@@ -6,96 +6,30 @@ button {
     background: none;
     color: inherit;
 	border: none;
-	/* font: inherit; */
 	cursor: pointer;
     outline: inherit;
     font-size: 1.2vw;
 }
 
-/* why are there so many selectors? wtf??? this is unnecessary and they override things in completely unrelated components
-button:hover {
-    color:red;
-}
-
-.userStatus {
-    margin-right: 20px;
-}
-
-.message {
-    font-size: 1.25vw;
-}
-
 .login {
-    width: 94.5%;
-    height: 90%;
-    position: absolute;
-    top: calc(6vh);
-    right: 1.5vw;
-    z-index: 20;
-    background-color: #2f5b7c;
+    display: flex;
+    flex-grow: 1;
+    align-self: center;
+    flex-direction: column;
 }
 
-.signUp {
-    width: 94.5%;
-    height: 90%;
-    position: absolute;
-    top: calc(6vh);
-    right: 1.5vw;
-    z-index: 20;
-    background-color: #2f5b7c;
+.login-item {
+    align-self: flex-end;
 }
 
-.loginValidMessage{
-    display: inline-block;
-    margin-top: 10px;
-    color: white;
+.login-item > input {
+    margin-left: 20px;
 }
 
-.userInput{
-    display: inline-block;
-    width: 65%;
-    margin-top: 6px;
-    margin-right: 1vw;
+.login-buttons {
+    margin-top: 20px;
 }
 
-.loginButton{
-    width: 30%;
-    background-color: #009e9e;
-    color: 	white;
-    padding: 12px;
-    margin: 8%;
-    display: inline-block;
+.login-buttons > * {
+    width: 50%;
 }
-
-.loginButton:hover {
-    background-color: turquoise;
-    color:white;
-}
-
-.SignInButton{
-    width: 30%;
-    background-color: #009e9e;
-    color: 	white;
-    padding: 12px;
-    margin: 8%;
-    display: inline-block;
-}
-
-.SignInButton:hover {
-    background-color: turquoise;
-    color:white;
-}
-
-label {
-    display: inline-block;
-    color: white;
-    width: 25%;
-    margin-top: 6px;
-    font-size: 1.2vw;
-}
-
-.signUpValidMessage{
-    display: inline-block;
-    margin-top: 10px;
-    color: white;
-}*/
