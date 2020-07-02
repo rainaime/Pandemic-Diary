@@ -10,6 +10,9 @@ class ImageIcon extends React.Component {
         content: <img alt=""></img>,
         date: this.props.date,
         dateText: '',
+        selectedType: '',
+
+        updateSelectedType: this.updateSelectedType,
         updateDate: this.updateDate,
     };
 
@@ -19,6 +22,10 @@ class ImageIcon extends React.Component {
 
     updateDate(date) {
         this.date = date
+    }
+
+    updateSelectedType(type) {
+        this.selectedType = type;
     }
 
     render() {
@@ -58,6 +65,11 @@ class ImageMenu extends React.Component {
     }
 
     render() {
+        //initially created then the default selectedType is News
+        if(this.props.image.selectedType == null){
+            this.props.updateArticleType("News");
+        }
+
         return (
             <div style={{ textAlign: "left" }}>
                 <h1>Image Selector</h1>
@@ -86,9 +98,9 @@ class ImageMenu extends React.Component {
                 </div>
 
                 <div className="articleType">
-                <select name="article" id="cars" onChange={(e) => {
-                        // this.setState({value: e.target.value});
+                <select name="article" value={this.props.image.selectedType} onChange={(e) => {
                         this.props.updateArticleType(e.target.value);
+                        this.setState({value: e.target.value});
                     }}>
                     <option value="News">News</option>
                     <option value="Vacation">Vacation</option>

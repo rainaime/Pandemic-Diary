@@ -5,6 +5,7 @@
 
 .menu-val{
     display: flex;
+    position: relative;
     justify-content: center;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -16,4 +17,15 @@
     height: 90%;
     overflow: scroll;
     white-space: nowrap;
+}
+
+.buttonStyle{
+    width: 100%;
+    color: #ff7c43;
+    text-decoration: 'none';
+    font-weight: 600;
+    padding: 12px 0;
+}
+.buttonStyle:hover{
+    color: #ffa600;
 }

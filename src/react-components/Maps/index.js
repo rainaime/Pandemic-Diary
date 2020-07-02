@@ -44,8 +44,8 @@ class Maps extends React.Component {
             n.x = e.pageX - imgRect.x;
             n.y = e.pageY - imgRect.y;
             n.user = null;
-            n.selectedType = this.props.selectedType;
-            console.log(this.props.currentDate)
+            // n.selectedType = this.props.selectedType;
+            n.selectedType = null;
             n.date = this.props.currentDate;
             this.props.addToShareableArray(n);
             this.props.onShareablePlaced(n.type);
@@ -74,10 +74,11 @@ class Maps extends React.Component {
         const ctx = this.canvasRef.current.getContext("2d");
         for (let s of this.props.shareables) {
             // TODO: Once selectedType is implemented, replace the condition
-            // if (s.date.getDate() === this.props.currentDate.getDate() && s.type === this.props.selectedType){
-            if (s.date.getFullYear() === this.props.currentDate.getFullYear()
-            && s.date.getMonth() === this.props.currentDate.getMonth()
-            && s.date.getDate() === this.props.currentDate.getDate()){ 
+            if ((s.date.getDate() === this.props.currentDate.getDate() && s.selectedType === this.props.selectedType)
+            || (s.date.getDate() === this.props.currentDate.getDate() && this.props.selectedType === "All")){
+            // if (s.date.getFullYear() === this.props.currentDate.getFullYear()
+            // && s.date.getMonth() === this.props.currentDate.getMonth()
+            // && s.date.getDate() === this.props.currentDate.getDate()){ 
                 //getDate() only returns the day value
     
                 const draw = () => {ctx.drawImage(s.img, s.x, s.y, s.width, s.height)}

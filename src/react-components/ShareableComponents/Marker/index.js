@@ -11,7 +11,10 @@ class MarkerIcon extends React.Component {
         date: this.props.date, //do we need this here
         id: '',
         dateText: '',
-        updateDate: this.updateDate
+        selectedType: '',
+
+        updateSelectedType: this.updateSelectedType,
+        updateDate: this.updateDate,
     };
 
     componentWillUnmount() {
@@ -22,8 +25,14 @@ class MarkerIcon extends React.Component {
         this.date = date
     }
 
+    updateSelectedType(type) {
+        this.selectedType = type;
+    }
+
     render() {
         this.updateDate.bind(this);
+        this.updateSelectedType.bind(this);
+
         const marker = (
             <img
                 style={this.props.style}
@@ -55,6 +64,10 @@ class MarkerIcon extends React.Component {
 class MarkerMenu extends React.Component {
 
     render() {
+        //initially created then the default selectedType is News
+        if(this.props.state.selectedType == null){
+            this.props.updateArticleType("News");
+        }
         return (
             <div className ="addContext">
                 <h1>Edit your marker!</h1>
@@ -84,9 +97,10 @@ class MarkerMenu extends React.Component {
                     onChange={(e) => {
                         // this.setState({value: e.target.valueAsDate});
                         this.props.state.dateText = e.target.value;
-                        this.setState({value: e.target.value});
+                        // this.setState({value: e.target.value});
                         this.props.updateDate(e.target.valueAsDate);
                         this.props.updateCurrentDate(e.target.valueAsDate);
+                        this.setState({value: e.target.value});
                         //TODO old
                     // <input type="date" defaultValue="2019-01-01" min="2019-01-01" max="2020-12-31"
                     // onChange={(e) => {
@@ -95,11 +109,10 @@ class MarkerMenu extends React.Component {
                     //     //this only adjusts the year-month-date
                     }}/>
                 </div>
-
                 <div className="articleType">
-                <select name="article" id="cars" onChange={(e) => {
-                        // this.setState({value: e.target.value});
+                <select name="article" value={this.props.state.selectedType} onChange={(e) => {
                         this.props.updateArticleType(e.target.value);
+                        this.setState({value: e.target.value});
                     }}>
                     <option value="News">News</option>
                     <option value="Vacation">Vacation</option>

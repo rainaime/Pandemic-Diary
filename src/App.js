@@ -43,7 +43,7 @@ class App extends React.Component {
         currentShareable: null,
         currentDate: new Date(),
         selectedDate: new Date(),
-        selectedShareableType: null,
+        selectedShareableType: "All",
         currentPopup: "",
         idcounts: 1,
         currentUser: users[1],
@@ -202,8 +202,8 @@ class App extends React.Component {
         );
     }
 
-    updateArticleType() {
-        this.setState({ selectedType: this.state.selectedType });
+    updateArticleType(selectedType) {
+        this.state.currentShareable.updateSelectedType(selectedType);
     }
 
     addToShareableArray(shareable) {
@@ -274,7 +274,6 @@ class App extends React.Component {
 
     updateCurrentUser(user) {
         this.setState({ currentUser: user });
-        console.log(this.state.currentUser);
     }
 
     userCanEdit() {
