@@ -58,12 +58,14 @@ class NotificationIcon extends React.Component {
     render(){
         return(
             <div style={notificationStyle}>
-                <h3>Markers Shared:</h3>
+                {(this.props.user === null) ? 
+                <h3>login to use</h3> :
+                <><h3>Markers Shared:</h3>
                 <div className="content_container">
                     {this.props.user.shared.map((shareable) =>
                             this.renderShared(shareable)
                         )}
-                </div>
+                </div></>}
             </div>
         )
     }

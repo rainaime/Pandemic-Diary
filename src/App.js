@@ -351,7 +351,8 @@ class App extends React.Component {
     renderNotification(){
         if (this.state.showNotification){
             this.setState({showNotification: false})
-            this.state.currentUser.shared = []
+            if (this.state.currentUser != null)
+                this.state.currentUser.shared = []
         } else {
             this.setState({showNotification: true})
 
