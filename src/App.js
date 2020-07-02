@@ -50,40 +50,46 @@ class App extends React.Component {
     };
 
     renderPopup(currentPopup) {
+        const MarkerMenuProps = {
+            state: this.state.currentShareable,
+            updateDate: this.updateShareableDate.bind(this),
+            enterPressed: this.setCurrentMode.bind(this),
+            updateArticleType: this.updateArticleType.bind(this),
+            shareableDate: this.state.shareableDate,
+            updateCurrentDate: this.updateCurrentDate.bind(this),
+        };
+
+        const ImageMenuProps = {
+            image: this.state.currentShareable,
+            updateDate: this.updateShareableDate.bind(this),
+            updateArticleType: this.updateArticleType.bind(this),
+            shareableDate: this.state.shareableDate,
+            updateCurrentDate: this.updateCurrentDate.bind(this),
+        };
+
+        const UserStatusMenuProps = {
+            updateCurrentUser: this.updateCurrentUser.bind(this),
+            onSuccess: () => {
+                            this.setState({ currentMode: "normal" });
+                        },
+            addUser: (newUser) => {
+                            users.push(newUser);
+                        },
+            users: users
+        }
+
         switch (currentPopup) {
             case "marker":
                 return (
-                    <MarkerMenu
-                        state={this.state.currentShareable}
-                        updateDate={this.updateShareableDate.bind(this)}
-                        enterPressed={this.setCurrentMode.bind(this)}
-                        updateArticleType={this.updateArticleType.bind(this)}
-                        shareableDate={this.state.shareableDate}
-                        updateCurrentDate={this.updateCurrentDate.bind(this)}
-                    />
+                    <MarkerMenu {...MarkerMenuProps}/>
                 );
             case "image":
                 return (
-                    <ImageMenu
-                        image={this.state.currentShareable}
-                        updateDate={this.updateShareableDate.bind(this)}
-                        updateArticleType={this.updateArticleType.bind(this)}
-                        shareableDate={this.state.shareableDate}
-                        updateCurrentDate={this.updateCurrentDate.bind(this)}
-                    />
+                    <ImageMenu {...ImageMenuProps}/>
                 );
             case "login":
                 return (
-                    <UserStatusMenu
-                        updateCurrentUser={this.updateCurrentUser.bind(this)}
-                        onSuccess={() => {
-                            this.setState({ currentMode: "normal" });
-                        }}
-                        addUser={(newUser) => {
-                            users.push(newUser);
-                        }}
-                        users={users}
-                    />
+                    <UserStatusMenu {...UserStatusMenuProps}/>
                 );
             default:
                 return null;
