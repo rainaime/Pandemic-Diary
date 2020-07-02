@@ -16,17 +16,12 @@ export class UserInfo extends Component {
                 </div>
                 <h3>Hello {this.props.currentUser.username}</h3>
                 <div style={{ display: "left" }}>Content</div>
-                <div className="shareables_container">
+                <div className="content_container">
                     {/* there is a bug here that when a shareable is deleted
                         the mutation does not affect this array as well which causes the render here to render deleted shareables*/}
+                    {/* content_container does not scroll rn */}
                     {this.props.currentUser.shareables.map((shareable) =>
                         this.renderShareable(shareable)
-                    )}
-                </div>
-                <div className="notification">
-                    Notifications / Shared Articles
-                    {this.props.currentUser.shared.map((notification) =>
-                        this.renderNotification(notification)
                     )}
                 </div>
             </div>
@@ -38,14 +33,13 @@ export class UserInfo extends Component {
             <div style={{ border: "1px solid white" }}>
                 {shareable.date.toDateString()}: <br/>
                 {shareable.content}
-            </div>
-        );
-    }
-
-    renderNotification(shareable) {
-        return (
-            <div>
-                {shareable.user.username}: {shareable.content}
+    
+            {/* <div style={{border: "1px solid white"}}>
+                {shareable.date.toDateString()}
+                : 
+                {(shareable != null && shareable.type === "image") ? 
+                    <img style={{maxWidth: "100%", maxHeight: "100%", display: "block"}} src={shareable.content}/> 
+                    :    shareable.content} */}
             </div>
         );
     }

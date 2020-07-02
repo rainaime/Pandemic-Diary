@@ -12,9 +12,10 @@ import { UserStatus, UserStatusMenu } from "./react-components/UserStatus";
 import ShareablePopup from "./react-components/ShareableComponents";
 import { ImageIcon, ImageMenu } from "./react-components/ShareableComponents/Image";
 import { MarkerIcon, MarkerMenu } from "./react-components/ShareableComponents/Marker";
-import NotificationMenu from "./react-components/Menu/NotificationBar"
+import { NotificationMenu, NotificationIcon } from "./react-components/Menu/NotificationBar"
 
 const markerIconStyle = {
+    height: 24,
     width: 16,
 };
 
@@ -47,6 +48,7 @@ class App extends React.Component {
         currentPopup: "",
         idcounts: 1,
         currentUser: users[1],
+        showNotification: false,
     };
 
     renderPopup(currentPopup) {
@@ -78,6 +80,13 @@ class App extends React.Component {
             users: users
         }
 
+        const NotificationMenuProps = {
+            shareShareable: this.shareShareable.bind(this),
+            currentUser: this.state.currentUser,
+            enterPressed: this.setCurrentMode.bind(this),
+            currentMarker: this.state.selectedShareable,
+        }
+
         switch (currentPopup) {
             case "marker":
                 return (
@@ -90,10 +99,7 @@ class App extends React.Component {
             case "notification":
                 return(
                     <NotificationMenu
-                        shareShareable={this.shareShareable.bind(this)}
-                        currentUser={this.state.currentUser}
-                        currentMarker={this.state.selectedShareable}
-                    />
+                        {...NotificationMenuProps}/>
                 );
             case "login":
                 return (
@@ -172,8 +178,13 @@ class App extends React.Component {
             <div className="App" style={dynamicStyles.cursor}>
                 <SiteHeader>
                     <span className="currentDate">{this.state.currentDate.toDateString()}</span>
+                    <button className="button" onClick={this.renderNotification.bind(this)}>Notification</button>
+                    {/* <input type="image" src="./share.png" 
+                        onClick={this.renderNotification.bind(this)}
+                        style={{maxWidth: "100%", maxHeight: "100%"}}/> */}
                     <UserStatus {...UserStatusProps} />
                 </SiteHeader>
+                {this.state.showNotification && <NotificationIcon user={this.state.currentUser}/>}
 
                 <div className="mainBody">
                     <CollapsibleMenu position="left">
@@ -286,6 +297,7 @@ class App extends React.Component {
 
     setCurrentMode() {
         this.setState({ currentMode: "normal" });
+        console.log("enter")
     }
 
     updateCurrentUser(user) {
@@ -316,7 +328,6 @@ class App extends React.Component {
         users.forEach(element => {
             if (element.username === username){
                 user = element
-                console.log("user found")
             }
         });
 
@@ -335,6 +346,16 @@ class App extends React.Component {
 
     selectCallback(type) {
         this.setState({ selectedShareableType: type });
+    }
+
+    renderNotification(){
+        if (this.state.showNotification){
+            this.setState({showNotification: false})
+            this.state.currentUser.shared = []
+        } else {
+            this.setState({showNotification: true})
+
+        }
     }
 
     updateShareableDate(time) {
