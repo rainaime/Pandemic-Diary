@@ -19,7 +19,13 @@ export class UserInfo extends Component {
                     Content
                 </div>
                 <div className="shareables_container">
+                    {/* there is a bug here that when a shareable is deleted
+                        the mutation does not affect this array as well which causes the render here to render deleted shareables*/}
                     {this.props.currentUser.shareables.map( (shareable) => this.renderShareable(shareable) )}
+                </div>
+                <div className="notification">
+                    Notifications / Shared Articles
+                    {this.props.currentUser.shared.map( (notification) => this.renderNotification(notification))}
                 </div>
             </div>
         );
@@ -33,6 +39,14 @@ export class UserInfo extends Component {
                 {(shareable != null && shareable.type === "image") ? 
                                             <img style={{maxWidth: "100%", maxHeight: "100%", display: "block"}} src={shareable.content}/> :
                                         shareable.content}
+            </div>
+        )
+    }
+
+    renderNotification(shareable){
+        return(
+            <div>
+                {shareable.user.username}: {shareable.content}
             </div>
         )
     }

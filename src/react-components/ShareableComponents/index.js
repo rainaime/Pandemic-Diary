@@ -26,7 +26,7 @@ class ShareablePopup extends React.Component {
                             float: "left",
                             paddingLeft: "10px",
                         }}>
-                        {shareableContent.username}: {shareableContent.date}
+                        {shareableContent.username}
                     </h3>
                     <button
                         className="deleteButton"
@@ -36,9 +36,16 @@ class ShareablePopup extends React.Component {
                         className="editButton"
                         style={this.props.editable()}
                         onClick={this.props.edit}></button>
+                    <button
+                        className="shareButton"
+                        style={this.props.editable()}
+                        onClick={this.props.share}
+                    ></button>
                 </div>
                 <div>
                     <span>
+                        <span style={{float:"left"}}>{shareableContent.date}</span>
+                        <br></br>
                         {shareableContent.content}
                     </span>
                 </div>

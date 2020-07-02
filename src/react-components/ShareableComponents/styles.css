@@ -1,7 +1,7 @@
 .selectedShareable {
     position: absolute;
-    max-height: 300px;
-    max-width: 200px;
+    max-height: 340px;
+    max-width: 240px;
     z-index: 15;
     padding: 5px;
     border-radius: 25px;
@@ -40,4 +40,10 @@
     border-top-right-radius: 25px;
     float: right;
     background-color: blue;
+}
+
+.shareButton{
+    float: right;
+    /* should replace this with share icon */
+    background-color: white;
 }

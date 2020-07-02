@@ -12,6 +12,7 @@ import { UserStatus, UserStatusMenu } from "./react-components/UserStatus";
 import ShareablePopup from "./react-components/ShareableComponents";
 import { ImageIcon, ImageMenu } from "./react-components/ShareableComponents/Image";
 import { MarkerIcon, MarkerMenu } from "./react-components/ShareableComponents/Marker";
+import NotificationMenu from "./react-components/Menu/NotificationBar"
 
 const markerIconStyle = {
     height: 24,
@@ -24,8 +25,8 @@ const appSettings = {
 };
 
 const users = [
-    { username: "admin", password: "admin", shareables: [] },
-    { username: "user", password: "user", shareables: [] },
+    { username: "admin", password: "admin", shareables: [], shared: [] },
+    { username: "user", password: "user", shareables: [], shared: [] },
     { username: "user2", password: "user2" },
 ];
 
@@ -87,6 +88,14 @@ class App extends React.Component {
                 return (
                     <ImageMenu {...ImageMenuProps}/>
                 );
+            case "notification":
+                return(
+                    <NotificationMenu
+                        shareShareable={this.shareShareable.bind(this)}
+                        currentUser={this.state.currentUser}
+                        currentMarker={this.state.selectedShareable}
+                    />
+                );
             case "login":
                 return (
                     <UserStatusMenu {...UserStatusMenuProps}/>
@@ -145,6 +154,7 @@ class App extends React.Component {
             editable: this.userCanEdit.bind(this),
             edit: this.editMarker.bind(this),
             delete: this.deleteMarker.bind(this),
+            share: this.shareMarkerState.bind(this),
         };
 
         const PopoutButtonIconProps = {
@@ -208,6 +218,8 @@ class App extends React.Component {
 
     addToShareableArray(shareable) {
         shareable.id = this.state.idcounts;
+
+        //probably should not be giving the whole user object for shareable to use
         shareable.user = this.state.currentUser;
 
         this.setState({
@@ -268,6 +280,12 @@ class App extends React.Component {
         this.setState({ selectedShareable: selectedShareableCopy });
     }
 
+    shareMarkerState() {
+        this.setState({ currentShareable: this.state.selectedShareable });
+        this.setState({ currentPopup: "notification" });
+        this.setState({currentMode: "editing"})
+    }
+
     setCurrentMode() {
         this.setState({ currentMode: "normal" });
     }
@@ -294,6 +312,23 @@ class App extends React.Component {
     getShareableUser() {
         if (this.state.selectedShareable.user === null) return null;
         else return this.state.selectedShareable.user.username;
+    }
+
+    shareShareable(username){
+        let user = null
+        users.forEach(element => {
+            if (element.username === username){
+                user = element
+                console.log("user found")
+            }
+        });
+
+        if (user === null)
+            return false
+        else {
+            user.shared.push(this.state.selectedShareable)
+            return true
+        }
     }
 
     getMarkerDate() {

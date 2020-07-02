@@ -13,7 +13,10 @@
 }
 
 .shareables_container {
-    height: 90%;
+    height: 35vh;
     overflow: scroll;
     white-space: nowrap;
+}
+.shareables_container::-webkit-scrollbar {
+    display: none;
 }

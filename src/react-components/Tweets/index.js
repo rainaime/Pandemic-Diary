@@ -34,7 +34,7 @@ class Tweets extends React.Component {
     render() {
         return (
             <>
-                <div className="options">
+                {/* <div className="options">
                     <button style={inlineStyle} value="filter" onClick={this.setDisplay.bind(this)}>
                         Filter
                     </button>
@@ -44,15 +44,15 @@ class Tweets extends React.Component {
                         onClick={this.setDisplay.bind(this)}>
                         User Info
                     </button>
-                </div>
-                {/*<div>
+                </div> */}
+                <div>
                     <div style={inlineStyle}>
                         <h1 style={{ ...titleStyle, color: Colors.textAccent1 }}>Tweets</h1>
                     </div>
                     <div style={inlineStyle}>
                         <h1 style={{ ...titleStyle, color: Colors.textAccent1 }}>News</h1>
                     </div>
-                </div>*/}
+                </div>
 
                 <div className="tweet_container">
                     {/* print a tweet component for every tweet */}
