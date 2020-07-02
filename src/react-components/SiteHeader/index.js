@@ -10,7 +10,7 @@ class SiteHeader extends React.Component {
                     backgroundColor: Colors.background,
                     color: Colors.textAccent1,
                 }}>
-                <h1>Pandemic Diary</h1>
+                <h1 className="siteTitle">Pandemic Diary</h1>
                 {this.props.children}
             </header>
         );

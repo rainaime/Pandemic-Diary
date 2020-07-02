@@ -9,21 +9,21 @@ class UserStatus extends React.Component {
         // TODO: Get user status from server (phase 2)
         const messageStyle = { color: Colors.textAccent1, fontWeight: "bold", display: "inline" };
         const message = this.props.currentUser ? (
-            <h2 className="message" style={messageStyle}>
+            <h2 className="userStatus" style={messageStyle}>
                 Welcome back, {this.props.currentUser.username}!
             </h2>
         ) : (
-            <button type="button" onClick={this.props.openLoginMenu} style={messageStyle}>
+            <button className="userStatus" type="button" onClick={this.props.openLoginMenu} style={messageStyle}>
                 Login or Sign Up Here!
             </button>
         );
 
         const logOut = this.props.currentUser ? (
-            <button onClick={this.props.logout}>Log Out</button>
+            <button className="userStatus" onClick={this.props.logout}>Log Out</button>
         ) : null;
 
         return (
-            <div className="userStatus" onClick={this.props.onClick}>
+            <div onClick={this.props.onClick}>
                 {message}
                 {logOut}
             </div>

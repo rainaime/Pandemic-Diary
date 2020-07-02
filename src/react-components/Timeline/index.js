@@ -1,4 +1,5 @@
 import React from "react";
+import { isBrowser } from "react-device-detect";
 import Colors from "../../site-styles/Colors";
 import TimelineDate from "./TimelineDate";
 import "./styles.css";
@@ -15,17 +16,26 @@ class Timeline extends React.Component {
 
         this.state = {
             currentPos: -120,
-            mouseDown: false,
+            mouseDown: !isBrowser,
             hover: true,
         };
         this.canvasRef = React.createRef();
     }
 
     render() {
+        const timelineBehaviour = {
+            onMouseDown: null,
+            onMouseUp: null,
+        };
+
+        if (isBrowser) {
+            timelineBehaviour.onMouseDown = () => this.setState({ mouseDown: true });
+            timelineBehaviour.onMouseUp = () => this.setState({ mouseDown: false });
+        }
         return (
             <div
                 style={{
-                    height: "20px",
+                    height: isBrowser ? "20px" : "40px",
                     backgroundColor: !this.state.hover
                         ? Colors.background
                         : Colors.backgroundDarkAccent,
@@ -33,6 +43,7 @@ class Timeline extends React.Component {
                 }}>
                 <span
                     style={{
+                        whiteSpace: 'nowrap',
                         position: "absolute",
                         transform: "translateX(-50%)",
                         left: "50%",
@@ -44,7 +55,7 @@ class Timeline extends React.Component {
                 <TimelineDate
                     style={{
                         visibility:
-                        !this.state.hover && !this.flashIfNotInteracted ? "hidden" : "visible",
+                            !this.state.hover && !this.flashIfNotInteracted ? "hidden" : "visible",
                     }}
                     date={this.props.currentDate}
                     xpos={this.state.currentPos}
@@ -53,8 +64,7 @@ class Timeline extends React.Component {
                 <canvas
                     ref={this.canvasRef}
                     className="timeline"
-                    onMouseDown={() => this.setState({mouseDown: true})}
-                    onMouseUp={() => this.setState({mouseDown: false})}
+                    {...timelineBehaviour}
                     onMouseMove={this.handleMouseOver.bind(this)}
                     onMouseEnter={() => {
                         this.setState({ hover: true });
@@ -111,8 +121,8 @@ class Timeline extends React.Component {
         ctx.lineWidth = 5;
 
         ctx.beginPath();
-        ctx.moveTo(this.state.currentPos+50, 0);
-        ctx.lineTo(this.state.currentPos+50, ctx.canvas.height);
+        ctx.moveTo(this.state.currentPos + 50, 0);
+        ctx.lineTo(this.state.currentPos + 50, ctx.canvas.height);
         ctx.closePath();
         ctx.stroke();
 
