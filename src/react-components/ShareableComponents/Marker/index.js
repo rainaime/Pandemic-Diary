@@ -68,9 +68,9 @@ class MarkerMenu extends React.Component {
             this.props.updateArticleType("News");
         }
         return (
-            <div className ="addContext">
-                <h1>Edit your marker!</h1>
-                <p>
+            <>
+                <h1 className="popupBox_title">Edit your marker!</h1>
+                <p className="popupBox_instructions">
                     You may enter text you'd like your marker to display here. There is a limit of
                     100 characters.
                 </p>
@@ -94,18 +94,10 @@ class MarkerMenu extends React.Component {
                 <div className="dateSection">
                     <input type="date" value={this.props.state.dateText} min="2019-12-01" max="2020-12-31"
                     onChange={(e) => {
-                        // this.setState({value: e.target.valueAsDate});
                         this.props.state.dateText = e.target.value;
-                        // this.setState({value: e.target.value});
                         this.props.updateDate(e.target.valueAsDate);
                         this.props.updateCurrentDate(e.target.valueAsDate);
                         this.setState({value: e.target.value});
-                        //TODO old
-                    // <input type="date" defaultValue="2019-01-01" min="2019-01-01" max="2020-12-31"
-                    // onChange={(e) => {
-                    //     this.setState({date: new Date(e.target.value)});
-                    //     this.props.state.date = new Date(e.target.value);
-                    //     //this only adjusts the year-month-date
                     }}/>
                 </div>
                 <div className="articleType">
@@ -118,7 +110,7 @@ class MarkerMenu extends React.Component {
                     <option value="Other Stuff">Other Stuff</option>
                 </select>
                 </div>
-            </div>
+            </>
         );
     }
 }

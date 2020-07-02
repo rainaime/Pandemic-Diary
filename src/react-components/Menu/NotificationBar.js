@@ -32,7 +32,7 @@ class NotificationMenu extends React.Component{
     render(){
         return(
             <div>
-                <h2>Share/Invite!</h2>
+                <h1 className="popupBox_title">Share/Invite!</h1>
                 <span className="greeting">
                     Enter the user you'd like to share this with!
                 </span>

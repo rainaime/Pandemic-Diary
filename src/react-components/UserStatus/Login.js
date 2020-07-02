@@ -33,70 +33,59 @@ export class Login extends Component {
 
     render() {
         return (
-            <div className="login">
-                <form>
-                    <label htmlFor="username">Username: </label>
-                    <input
-                        type="text"
-                        name="username"
-                        placeholder="Username"
-                        onChange={this.handleChange}
-                        className="userInput"></input>
+            <>
+                <h1 className="popupBox_title">Login</h1>
+                <p className="popupBox_instructions">
+                    You may login to your account here. Doing so enables you to interact with
+                    other users in fun ways: share content, view their diaries, and more!
+                </p>
+                <form className="login">
+                    <div className="login-item">
+                        <label htmlFor="username">Username:</label>
+                        <input
+                            type="text"
+                            name="username"
+                            placeholder="Username"
+                            onChange={this.handleChange}
+                            className="userInput"></input>
+                    </div>
 
-                    <label htmlFor="password">Password: </label>
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        onChange={this.handleChange}
-                        onKeyPress={(event) => this.keyPressed(event)}
-                        className="userInput"></input>
+                    <div className="login-item">
+                        <label htmlFor="password">Password:</label>
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            onChange={this.handleChange}
+                            onKeyPress={(event) => this.keyPressed(event)}
+                            className="userInput"></input>
+                    </div>
 
-                    <br />
                     {this.props.invalidLogin ? (
-                        <span className="loginValidMessage">Invalid Username or Password</span>
+                        <span className="loginInvalidMessage">Invalid Username or Password</span>
                     ) : null}
-                    <br />
 
-                    <button
-                        type="button"
-                        value="Login"
-                        className="loginButton"
-                        onClick={this.loginAttempt}>
-                        Login
-                    </button>
+                    <div className="login-buttons">
+                        <button
+                            type="button"
+                            value="Login"
+                            className="loginButton"
+                            onClick={this.loginAttempt}>
+                            Login
+                        </button>
 
-                    <button
-                        type="button"
-                        value="Sign In"
-                        className="SignInButton"
-                        onClick={this.props.goToSignup}>
-                        Sign Up
-                    </button>
+                        <button
+                            type="button"
+                            value="Sign In"
+                            className="SignInButton"
+                            onClick={this.props.goToSignup}>
+                            Sign Up
+                        </button>
+                    </div>
                 </form>
-            </div>
+            </>
         );
     }
 }
-
-//add on click functions verifying the values of login when login is clicked
-
-// const formStyle = {
-//     display: 'inline-block',
-//     float: 'right',
-//     width: '65%',
-//     marginTop: '6px',
-//     marginRight: '1vw'
-// }
-
-// const buttonStyle = {
-//     position: 'center',
-//     width: '30%',
-//     backgroundColor: Colors.backgroundDarkAccent,
-//     color: Colors.textAccent1,
-//     padding: '12px',
-//     margin: '8%',
-//     display: 'inline-block'
-// }
 
 export default Login;
