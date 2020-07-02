@@ -26,7 +26,7 @@ const appSettings = {
 const users = [
     { username: "admin", password: "admin", shareables: [], shared: [] },
     { username: "user", password: "user", shareables: [], shared: [] },
-    { username: "user2", password: "user2" },
+    { username: "user2", password: "user2", shareables: [], shared: [] },
 ];
 
 class App extends React.Component {
@@ -157,7 +157,6 @@ class App extends React.Component {
         };
 
         const PopoutButtonIconProps = {
-            style: markerIconStyle,
             date: this.state.currentDate,
             onClick: this.enterAddingMode.bind(this),
         };

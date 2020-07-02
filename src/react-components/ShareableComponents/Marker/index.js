@@ -4,9 +4,9 @@ import "./style.css";
 class MarkerIcon extends React.Component {
     state = {
         type: "marker",
+        width: 20,
+        height: 30,
         img: new Image(),
-        width: 16,
-        height: 24,
         content: "",
         date: this.props.date, //do we need this here
         id: '',
@@ -35,7 +35,7 @@ class MarkerIcon extends React.Component {
 
         const marker = (
             <img
-                style={this.props.style}
+                style={{...this.props.style, width: 16, height: 24}}
                 src="/marker.png"
                 alt="marker"
                 onClick={() => {
@@ -45,7 +45,6 @@ class MarkerIcon extends React.Component {
         );
         const img = this.state.img;
         if (img.src) {
-            // console.log("this")
             return marker;
         } else {
             if (!img.complete) {

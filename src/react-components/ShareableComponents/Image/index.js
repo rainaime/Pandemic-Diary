@@ -4,9 +4,9 @@ import "./style.css";
 class ImageIcon extends React.Component {
     Image = {
         type: "image",
-        img: new Image(),
-        width: 16,
         height: 24,
+        width: 24,
+        img: new Image(),
         content: <img alt=""></img>,
         date: this.props.date,
         dateText: '',
@@ -32,7 +32,7 @@ class ImageIcon extends React.Component {
         const marker = (
             <img
                 alt="_image"
-                style={this.props.style}
+                style={{...this.props.style, height: 20, width: 20}}
                 src="/image.png"
                 onClick={() => {
                     this.props.onClick(this.Image);
@@ -80,6 +80,7 @@ class ImageMenu extends React.Component {
                 <form action="image upload">
                     <input
                         type="file"
+                        accept="image/*"
                         name="fileupload"
                         id="fileupload"
                         onChange={this.submitImage.bind(this)
