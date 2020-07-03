@@ -52,3 +52,11 @@
 .user-val button{
     color: red;
 }
+
+.squareHolder{
+    color: red;
+    height: 10vh;
+    width: 40%;
+    margin: 5vw;
+    border: 1px solid red;
+}

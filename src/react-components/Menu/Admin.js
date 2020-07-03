@@ -1,34 +1,31 @@
 import React, { Component } from 'react'
 import "./styles.css";
 
+/**
+ * An admin component where it contains all the admin functionality
+ *
+ * Props: 
+ * - openUserManage: a function to handle switching current mode and current popup as 'manageUser'
+ */
 class Admin extends Component {
-
-    renderPopupBox(){
-        return(
-            <div style={stylePopup}>
-                Hello
-            </div>
-        )
-    }
 
     render() {
         return (
             <div className="menu-val">
                 <button className="button2" onClick={this.props.openUserManage}>Manage Users</button>
                 <button className="button2" onClick={this.props.openReports}>Manage Reports</button>
-                {this.renderPopupBox()}
             </div>
         )
     }
 }
 
-const stylePopup = {
-    position: "absolute",
-    left: '20vw',
-    top: '10vh',
-    height: '100px'
-}
-
+/**
+ * An admin functionality to delete users
+ *
+ * Props: 
+ * - users:     a list containing all the users
+ * - deleteUser: a function to delete user and all its shareables
+ */
 class ManageUsers extends React.Component {
 
     render(){

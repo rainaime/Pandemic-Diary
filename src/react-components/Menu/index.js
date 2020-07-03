@@ -2,14 +2,19 @@ import React from "react";
 import MenuItem from "./MenuItem";
 import "./styles.css";
 
+/**
+ * a menu with filter functionality
+ *
+ * Props: 
+ * - selectType: a callback function to update the type of shareable to appear on map
+ * - currentUser: current user using this filter
+ */
 class Menu extends React.Component {
+
+    //run the callback function if the button is clicked
     updateSelection(selectedType) {
         this.props.selectType(selectedType);
     }
-
-    setDisplay = (e) => {
-        this.setState({ display: e.target.value });
-    };
 
     render() {
         this.updateSelection.bind(this);

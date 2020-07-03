@@ -1,5 +1,12 @@
 import React, { Component } from "react";
+import "./styles.css";
 
+/**
+ * displays the user info. eg) shareables this user made
+ *
+ * Props: 
+ * - currentUser:   current user logged in
+ */
 export class UserInfo extends Component {
     constructor(props) {
         super(props);
@@ -7,10 +14,11 @@ export class UserInfo extends Component {
         this.renderUserInfo.bind(this);
     }
 
+    //render user info to display
     renderUserInfo() {
         return (
             <div>
-                <div className="holder" style={squareHolder}>
+                <div className="holder" className="squareHolder">
                     {/* profile picture holder */}
                     this a pfp or something
                 </div>
@@ -28,18 +36,12 @@ export class UserInfo extends Component {
         );
     }
 
+    //render shareables to display
     renderShareable(shareable) {
         return (
             <div style={{ border: "1px solid white" }}>
                 {shareable.date.toDateString()}: <br/>
                 {shareable.content}
-    
-            {/* <div style={{border: "1px solid white"}}>
-                {shareable.date.toDateString()}
-                : 
-                {(shareable != null && shareable.type === "image") ? 
-                    <img style={{maxWidth: "100%", maxHeight: "100%", display: "block"}} src={shareable.content}/> 
-                    :    shareable.content} */}
             </div>
         );
     }
@@ -56,13 +58,5 @@ export class UserInfo extends Component {
         );
     }
 }
-
-const squareHolder = {
-    color: "red",
-    height: "10vh",
-    width: "40%",
-    margin: "5vw",
-    border: "1px solid red",
-};
 
 export default UserInfo;
