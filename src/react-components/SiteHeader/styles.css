@@ -11,9 +11,13 @@ header {
     white-space: nowrap;
 }
 
-header > :first-child {
+header > a {
+    text-decoration: none;
+}
+header > a > :first-child {
     margin-left: 16px;
-    font-size: 1.25em;
+    font-size: 1.5em;
+    color: white;
 }
 
 header > :not(:first-child) {
@@ -22,8 +26,4 @@ header > :not(:first-child) {
 
 header > div * {
     font-size: 1em;
-}
-
-.fas {
-    margin: 0 6px;
 }
