@@ -210,7 +210,7 @@ class App extends React.Component {
         }
 
         return (
-            <div className="App" style={dynamicStyles.cursor, {backgroundColor: Colors.backgroundDarkAccent}}>
+            <div className="App" style={{...dynamicStyles.cursor, backgroundColor: Colors.backgroundDarkAccent}}>
                 <SiteHeader>
                     <span className="currentDate"><i class="fas fa-calendar-alt"></i>{this.state.currentDate.toDateString()}</span>
                     {this.state.currentUser != null && 
