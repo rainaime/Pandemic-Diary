@@ -4,13 +4,24 @@ import Colors from "../../site-styles/Colors";
 import TimelineDate from "./TimelineDate";
 import "./styles.css";
 
+// Variables for the appearance of the canvas.
 const canvasSettings = {
     xspace: 12,
     lineWidth: 0.2,
 };
 
+/**
+ * A Timeline, used to select a date which is crucial to user interactions
+ * across the application.
+ *
+ * Props:
+ *  - minDate:              the earliest date to be displayed
+ *  - currentDate:          the current date; at this position, a popup is displayed
+ *  - maxDate:              the latest date to be displayed
+ *  - updateCurrentDate:    callback function used to update date elsewhere
+ */
 class Timeline extends React.Component {
-    flashIfNotInteracted;
+    flashIfNotInteracted;       // Notify the user that they should use this
     constructor(props) {
         super(props);
 
@@ -23,6 +34,7 @@ class Timeline extends React.Component {
     }
 
     render() {
+        // Don't require tap-and-hold on mobile devices.
         const timelineBehaviour = {
             onMouseDown: null,
             onMouseUp: null,
@@ -32,6 +44,7 @@ class Timeline extends React.Component {
             timelineBehaviour.onMouseDown = () => this.setState({ mouseDown: true });
             timelineBehaviour.onMouseUp = () => this.setState({ mouseDown: false });
         }
+
         return (
             <div
                 style={{
@@ -77,10 +90,10 @@ class Timeline extends React.Component {
         );
     }
 
-    updateDimensions = () => {
-        this.initializeCanvas();
-    };
-
+    /**
+     * Initialize/kill things as necessary on mount and unmount. These are
+     * React lifecycle methods to avoid memory leaks by updating canvas.
+     */
     componentDidMount() {
         window.addEventListener("resize", this.updateDimensions);
         this.flashIfNotInteracted = setInterval(() => {
@@ -96,7 +109,10 @@ class Timeline extends React.Component {
         };
     }
 
-    updateCanvas = () => {
+    /**
+     * Update the canvas dimensions; used when dimension changes.
+     */
+    updateDimensions = () => {
         this.initializeCanvas();
     };
 
@@ -117,6 +133,10 @@ class Timeline extends React.Component {
         }
     };
 
+    /**
+     * Update the current position given by the user's interaction with the
+     * canvas at position 'xpos'.
+     */
     updateCurrent(xpos) {
         const ctx = this.canvasRef.current.getContext("2d");
 
@@ -129,6 +149,7 @@ class Timeline extends React.Component {
         ctx.closePath();
         ctx.stroke();
 
+        // Require one of these conditions to interact with Timeline.
         if (!this.state.mouseDown && !this.state.flashIfNotInteracted) {
             return;
         }
@@ -145,6 +166,7 @@ class Timeline extends React.Component {
         this.props.updateCurrentDate(tempDate);
     }
 
+    // Update position with the user's last interaction at position described by 'e'.
     handleMouseOver(e) {
         clearInterval(this.flashIfNotInteracted);
         this.flashIfNotInteracted = false;

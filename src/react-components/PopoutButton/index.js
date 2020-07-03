@@ -1,7 +1,11 @@
 import React from "react";
+import "./styles.css";
 import Colors from "../../site-styles/Colors";
 
-// PARAMETERS FOR BUTTON - Fixed regardless of position of the PopoutButton.
+/**
+ * Parameters for every PopoutButton. These are dynamic styles used in code,
+ * hence they appear inline in the HTML.
+ */
 const childSettings = {
     distToChild: 64,
     childRadius: 8,
@@ -14,44 +18,47 @@ const containerStyles = {
     distToViewport: 16,
     paddingTop: childSettings.distToChild,
     paddingLeft: childSettings.distToChild,
-    backgroundClip: "content-box",
-    zIndex: 20
 };
 
 const buttonStyles = {
-    position: "absolute",
-    right: 0,
-    width: containerStyles.width,
-    height: containerStyles.height,
-    fontSize: 0.5 * containerStyles.height,
-    lineHeight: containerStyles.height + "px",
-    textAlign: "center",
-    verticalAlign: "center",
-    userSelect: "none",
-    borderRadius: 0.5 * containerStyles.width,
-    zIndex: 20,
     backgroundColor: Colors.background,
     color: Colors.textColorLight,
 };
 
+/**
+ * A PopoutButton, which can be placed on a corner of a container. It renders
+ * children as small icons that can be clicked to perform some action, popping
+ * them out whenever the user hovers over them.
+ *
+ * Props:
+ *  - position: where the button should be placed relative to the parent
+ */
 class PopoutButton extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            hover: false,
-        };
+    state = {
+        hover: false,
     }
 
+    /**
+     * Get the (x, y) position, relative to the parent container, of where the
+     * i-th child should be placed such that all n children are visible when
+     * the PopoutButton is hovered over.
+     */
     getChildPos(i) {
+        // Effective radius on the arc of the circle.
         const radius = childSettings.distToChild + containerStyles.width / 2;
+
+        // Number of children to be placed.
         const nChildren = this.props.children.length;
+
+        // Calculate the adjusted angle by dividing the arc into segments.
         let angle;
         if (nChildren > 1) {
             angle = (Math.PI / 2 / (nChildren - 1)) * i;
         } else {
             angle = 45;
         }
+
+        // Basic trig to get the final coordinates.
         const ret = [Math.cos(angle) * radius, Math.sin(angle) * radius];
         if (this.props.position === "top-right") {
             ret[1] = -ret[1] + childSettings.distToChild;
@@ -59,24 +66,25 @@ class PopoutButton extends React.Component {
         return ret;
     }
 
+    /**
+     * Render all children components in their appropriate positions.
+     */
     renderChildren() {
         return React.Children.toArray(this.props.children).map((child, i) => {
             const childPos = this.getChildPos(i);
             return React.cloneElement(child, {
+                className: "popoutButton-children",
                 key: i.toString(),
                 radius: childSettings.childRadius,
                 pos: this.getChildPos(i),
                 style: {
                     ...child.props.style,
-                    position: "absolute",
                     right: this.state.hover ? childPos[0] : 16,
                     bottom: this.state.hover
                         ? childPos[1]
                         : this.props.position === "top-right"
                         ? containerStyles.distToViewport + childSettings.distToChild
                         : containerStyles.distToViewport,
-                    transition: "all 0.3s",
-                    userSelect: "none",
                     visibility: this.state.hover ? "visible" : "hidden",
                 },
             });
@@ -84,8 +92,6 @@ class PopoutButton extends React.Component {
     }
 
     render() {
-        // TODO: change these styles to allow for different locations on map
-        // top: -childSettings.distToChild + 16,
         const popoutButtonStyles = {
             position: "absolute",
         };
@@ -104,12 +110,12 @@ class PopoutButton extends React.Component {
         }
 
         return (
-            <div
+            <div className="popoutButton-container"
                 style={{ ...popoutButtonStyles, ...containerStyles }}
                 onMouseEnter={() => this.setState({ hover: true })}
                 onMouseLeave={() => this.setState({ hover: false })}
             >
-                <span style={buttonStylesCopy}>+</span>
+                <span className="popoutButton" style={buttonStylesCopy}>+</span>
                 {this.renderChildren()}
             </div>
         );

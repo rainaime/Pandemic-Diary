@@ -2,12 +2,25 @@ import React from "react";
 import Colors from "../../site-styles/Colors";
 import "./styles.css";
 
+/**
+ * A CollapsibleMenu, which can be used in any container to fill its full
+ * height and 20% of its width when expanded, or no width when collapsed.
+ *
+ * Props: 
+ * - views:         the 'modes' this can display
+ * - switchView:    callback function to handle switching of views
+ * - position:      which side of the parent container this is placed on
+ * - children:      the view to be rendered in this container
+ */
 class CollapsibleMenu extends React.Component {
     state = {
         collapsed: false,
         maximizedSize: "20%",
     };
 
+    /**
+     * Handler method called when CollapseButton is clicked.
+     */
     handleCollapse() {
         if (this.state.collapsed) {
             this.setState({ width: this.state.maximizedSize });
@@ -15,6 +28,23 @@ class CollapsibleMenu extends React.Component {
             this.setState({ width: 0 });
         }
         this.setState({ collapsed: !this.state.collapsed });
+    }
+
+    /**
+     * Render the companion views this CollapsibleMenu manages.
+     */
+    renderViews() {
+        return this.props.views.map((view, i) => {
+            return (
+                <span
+                    key={i}
+                    onClick={() => {
+                        this.props.switchView(view);
+                    }}>
+                    {view}
+                </span>
+            );
+        });
     }
 
     render() {
@@ -29,17 +59,7 @@ class CollapsibleMenu extends React.Component {
         return (
             <div className="collapsible-menu" style={dynamicStyles.container}>
                 <div className="menu-views">
-                    {this.props.views.map((v, i) => {
-                        return (
-                            <span
-                                key={i}
-                                onClick={() => {
-                                    this.props.switchView(v);
-                                }}>
-                                {v}
-                            </span>
-                        );
-                    })}
+                    {this.renderViews()}
                 </div>
                 {this.props.children}
                 <CollapseButton
@@ -52,6 +72,13 @@ class CollapsibleMenu extends React.Component {
     }
 }
 
+/**
+ * A CollapseButton which triggers an event in the parent CollapsibleMenu.
+ *
+ * Props:
+ * - position:      the side on which this should be placed
+ * - onClick:       callback function that triggers the event.
+ */
 class CollapseButton extends React.Component {
     state = {
         hover: false,

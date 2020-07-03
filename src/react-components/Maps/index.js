@@ -3,26 +3,47 @@ import ScrollContainer from "react-indiana-drag-scroll";
 
 import "./styles.css";
 
+// Dimensions of the shareable-markers on the map.
 const markerDimensions = {
     width: 16,
     height: 26,
 };
+
+/**
+ * An overlaid Canvas to facilitate the interactions with markers on the
+ * map image below it. This is temporary for Phase 1 as external APIs are not
+ * allowed.
+ *
+ * Props:
+ *  - currentDate
+ *  - shareables                array of shareable markers to be displayed
+ *  - currentShareable          the shareable that is selected
+ *  - selectedType              the type of shareable to be added
+ *  - inAddMode                 whether or not the user is in add mode
+ *  - addToShareableArray       callback function to add a shareable
+ *  - onShareablePlaced         callback function to update state when the shareable is placed
+ *  - updateSelectedShareable   callback function to edit selected shareable
+ */
 class Maps extends React.Component {
     constructor(props) {
         super(props);
 
         this.canvasRef = React.createRef();
-
     }
 
+    /**
+     * Compute and return the shareable at location described by 'e'.
+     */
     getShareableAtLocation(e) {
         const imgRect = this.canvasRef.current.getBoundingClientRect();
         const adjX = e.pageX - imgRect.x;
         const adjY = e.pageY - imgRect.y;
         for (const marker of this.props.shareables) {
-            if (marker.date.getFullYear() === this.props.currentDate.getFullYear()
-            && marker.date.getMonth() === this.props.currentDate.getMonth()
-            && marker.date.getDate() === this.props.currentDate.getDate()){ 
+            if (
+                marker.date.getFullYear() === this.props.currentDate.getFullYear() &&
+                marker.date.getMonth() === this.props.currentDate.getMonth() &&
+                marker.date.getDate() === this.props.currentDate.getDate()
+            ) {
                 if (
                     marker.x <= adjX &&
                     adjX <= marker.x + markerDimensions.width &&
@@ -35,9 +56,13 @@ class Maps extends React.Component {
         }
     }
 
+    /**
+     * Add a shareable to the shareables array and update state variables if
+     * one can be placed at location described by 'e'.
+     */
     handleClick(e) {
         const shareable = this.getShareableAtLocation(e);
-        
+
         if (!shareable && this.props.inAddMode) {
             const imgRect = this.canvasRef.current.getBoundingClientRect();
             const n = Object.assign({}, this.props.currentShareable);
@@ -52,42 +77,31 @@ class Maps extends React.Component {
         }
     }
 
-    componentDidMount() {
-        // this.drawMap();
-    }
-
-    drawMap() {
-        const ctx = this.canvasRef.current.getContext("2d");
-        const map = new Image();
-        map.onload = () => {
-            ctx.drawImage(map, 0, 0);
-        };
-        map.src = "/map.png";
-    }
-
+    /**
+     * Clear all markers on the map.
+     */
     clearMap() {
         const ctx = this.canvasRef.current.getContext("2d");
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     }
-    
+
+    /**
+     * Draw shareables in 'shareables' on the map.
+     */
     drawMarkers(shareables) {
         const ctx = this.canvasRef.current.getContext("2d");
-        for (let s of this.props.shareables) {
-            // TODO: Once selectedType is implemented, replace the condition
-            console.log(s.date.getDate() === this.props.currentDate.getDate())
-            console.log(s.selectedType === this.props.selectedType)
-            console.log(this.props.selectedType === "All")
-            if (s.date.getFullYear() === this.props.currentDate.getFullYear()
-            && s.date.getMonth() === this.props.currentDate.getMonth()
-            && s.date.getDate() === this.props.currentDate.getDate()
-            && (s.selectedType === this.props.selectedType || this.props.selectedType === "All")){ 
-                //getDate() only returns the day value so you have to check the month and year are also equal
-    
-                const draw = () => {ctx.drawImage(s.img, s.x, s.y, s.width, s.height)}
+        for (let s of shareables) {
+            if (
+                s.date.toDateString() == this.props.currentDate.toDateString() &&
+                (s.selectedType === this.props.selectedType || this.props.selectedType === "All")
+            ) {
+                const draw = () => {
+                    ctx.drawImage(s.img, s.x, s.y, s.width, s.height);
+                };
                 if (!s.img.complete) {
                     s.img.onload = () => {
                         draw();
-                    }
+                    };
                 } else {
                     draw();
                 }
@@ -95,23 +109,10 @@ class Maps extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        // -------------------------------------------------------------------------------- 
-        // TODO: Avoid unneeded canvas rendering by checking the previous props and state.|
-        // --------------------------------------------------------------------------------
-        // const shareable = this.props.shareables[this.props.shareables.length - 1];
-        // if (prevProps.shareables.length > this.props.shareables.length) {
-        //     this.clearMap();
-        //     this.drawMarkers(this.props.shareables);
-        // } else if (!shareable || prevProps.shareables.length === this.props.shareables.length) {
-        //     return;
-        // } else {
-        //     this.drawMarkers([this.props.shareables[this.props.shareables.length - 1]]);
-        // }
+    componentDidUpdate() {
         this.clearMap();
         this.drawMarkers(this.props.shareables);
     }
-
 
     render() {
         return (
@@ -130,20 +131,24 @@ class Maps extends React.Component {
                     }}
                     style={{
                         zIndex: 1,
-                        position: 'absolute',
+                        position: "absolute",
                         top: 0,
-                        left: 0
+                        left: 0,
                     }}
+                    width={3740} 
+                    height={1700}></canvas>
+                <img
+                    alt="Temporary map for phase 1."
+                    style={{
+                        zIndex: 0,
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                    }}
+                    src="/map.png"
                     width={3740}
                     height={1700}
-                >
-                </canvas>
-                <img alt="Temporary map for phase 1." style={{
-                    zIndex: 0,
-                    position: 'absolute',
-                    top: 0,
-                    left: 0
-                }} src='/map.png' width={3740} height={1700}/>
+                />
             </ScrollContainer>
         );
     }

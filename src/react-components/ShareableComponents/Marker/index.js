@@ -35,6 +35,7 @@ class MarkerIcon extends React.Component {
 
         const marker = (
             <img
+                className="popoutButton-children"
                 style={{...this.props.style, width: 16, height: 24}}
                 src="/marker.png"
                 alt="marker"
