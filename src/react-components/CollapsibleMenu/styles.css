@@ -33,6 +33,7 @@
     justify-content: space-around;
     align-items: center;
     box-sizing: border-box;
+    margin-top: 16px;
     padding: 10px 0;
     overflow: scroll;
     -ms-overflow-style: none;

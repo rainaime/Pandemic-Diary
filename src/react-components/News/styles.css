@@ -1,6 +1,6 @@
 .news-container {
     flex-grow: 1;
-    overflow: scroll;
+    overflow: scroll !important;
     -ms-overflow-style: none;
     scrollbar-width: none;
 }

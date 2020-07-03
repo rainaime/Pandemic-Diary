@@ -1,7 +1,7 @@
 .tweet_container {
     flex-grow: 1;
     padding: 12px;
-    overflow: scroll;
+    overflow: scroll !important;
 }
 
 .tweet_container::-webkit-scrollbar{
