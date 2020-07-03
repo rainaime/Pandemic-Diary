@@ -1,11 +1,12 @@
 import React from "react";
+import {isBrowser} from "react-device-detect";
 import Colors from '../../../site-styles/Colors';
 
 class TimelineDate extends React.Component {
     render() {
         return (
             <span style={{...this.props.style,
-                top: 'calc(100% - 60px)',
+                top: `calc(100% - ${(isBrowser ? 4 : 2.5)*this.props.ypos}px)`,
                 left: this.props.xpos,
                 position: 'fixed',
                 display: 'inline',

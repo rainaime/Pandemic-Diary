@@ -11,15 +11,15 @@ header {
     white-space: nowrap;
 }
 
-.siteTitle {
-    margin-left: 1em;
-    font-size: 1.5em;
+header > :first-child {
+    margin-left: 16px;
+    font-size: 1.25em;
 }
 
-.currentDate {
-    font-size: 1em
+header > :not(:first-child) {
+    font-size: 1em;
 }
 
-.userStatus {
+header > div * {
     font-size: 1em;
 }

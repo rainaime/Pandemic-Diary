@@ -1,4 +1,5 @@
 import React from "react";
+import HorizontalScroll from "react-scroll-horizontal";
 import Colors from "../../site-styles/Colors";
 import "./styles.css";
 
@@ -58,7 +59,7 @@ class CollapsibleMenu extends React.Component {
 
         return (
             <div className="collapsible-menu" style={dynamicStyles.container}>
-                <div className="menu-views">
+                    <div className="menu-views">
                     {this.renderViews()}
                 </div>
                 {this.props.children}

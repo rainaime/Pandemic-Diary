@@ -29,6 +29,7 @@ class Timeline extends React.Component {
             currentPos: -120,
             mouseDown: !isBrowser,
             hover: true,
+            timelineDate_ypos: 0,
         };
         this.canvasRef = React.createRef();
     }
@@ -75,6 +76,7 @@ class Timeline extends React.Component {
                     }}
                     date={this.props.currentDate}
                     xpos={this.state.currentPos}
+                    ypos={this.state.timelineDate_ypos}
                     state={this.props.state}
                 />
                 <canvas
@@ -122,7 +124,11 @@ class Timeline extends React.Component {
     // Draw an empty canvas with only the bar on it.
     initializeCanvas = () => {
         const ctx = this.canvasRef.current.getContext("2d");
-        ctx.canvas.width = window.innerWidth;
+        ctx.canvas.width = this.canvasRef.current.offsetWidth;
+        ctx.canvas.height = this.canvasRef.current.offsetHeight;
+        this.setState({
+            timelineDate_ypos: ctx.canvas.height,
+        })
 
         ctx.strokeStyle = Colors.backgroundLightAccent;
         ctx.lineCap = "round";
@@ -147,8 +153,8 @@ class Timeline extends React.Component {
         ctx.lineWidth = 5;
 
         ctx.beginPath();
-        ctx.moveTo(this.state.currentPos + 50, 0);
-        ctx.lineTo(this.state.currentPos + 50, ctx.canvas.height);
+        ctx.moveTo(this.state.currentPos + 25, 0);
+        ctx.lineTo(this.state.currentPos + 25, ctx.canvas.height);
         ctx.closePath();
         ctx.stroke();
 
@@ -163,7 +169,7 @@ class Timeline extends React.Component {
         const tempDate = new Date(this.props.minDate);
         tempDate.setDate(this.props.minDate.getDate() + (xpos / ctx.canvas.width) * daysBetween);
         this.setState({
-            currentPos: xpos - 50,
+            currentPos: xpos - 25,
         });
 
         this.props.updateCurrentDate(tempDate);

@@ -8,8 +8,10 @@
 
     border-radius: 25px;
     margin: 25px 25px 25px 25px;
-    /* border: solid 0.5px #002f44B5; */
+}
 
+.collapsible-menu *:not(.collapse-button):not(.menu-views) {
+    overflow: hidden;
 }
 
 .collapse-button {
@@ -30,10 +32,19 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 10px;
+    box-sizing: border-box;
+    padding: 10px 0;
+    overflow: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
-.menu-views > span {
+.menu-views::-webkit-scrollbar {
+    display: none;
+}
+
+.menu-views span {
+    flex-grow: 1;
     font-weight: 600;
     line-height: 16px;
     font-size: 16px;

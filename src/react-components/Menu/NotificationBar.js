@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react';
 
 class NotificationMenu extends React.Component{
 
@@ -80,10 +80,11 @@ const contentStyle = {
 const notificationStyle = {
     color: "white",
     position: "absolute",
-    left: "63vw",
-    top: "10vh",
-    width: "15vw",
-    height: "26vh",
+    wordWrap: "break",
+    top: '30px',
+    right: '4px',
+    width: '50%',
+    height: '30%',
     zIndex: '10',
     backgroundColor: "#416E8E",
     borderRadius: "25px"

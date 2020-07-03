@@ -215,7 +215,6 @@ class App extends React.Component {
                     <span className="currentDate">{this.state.currentDate.toDateString()}</span>
                     {this.state.currentUser != null && 
                     <button className="button" 
-                        style={{position: "absolute", right: "16vw", fontSize: "1.5vh"}}
                         onClick={this.renderNotification.bind(this)}>
                         Notification
                     </button>}
@@ -224,7 +223,6 @@ class App extends React.Component {
                         style={{maxWidth: "100%", maxHeight: "100%"}}/> */}
                     <UserStatus {...UserStatusProps} />
                 </SiteHeader>
-                {this.state.showNotification && <NotificationIcon user={this.state.currentUser}/>}
 
                 <div className="mainBody">
                     <CollapsibleMenu views={["filter", "info"]} switchView={(newView) => {this.setState({currentLeftMenuView: newView})}} position="left">
@@ -235,6 +233,7 @@ class App extends React.Component {
                      * the Maps component from google-map-react which conflict with flexboxes */}
                     <div className="outerMapDiv">
                         <div className="innerMapDiv">
+                {this.state.showNotification && <NotificationIcon user={this.state.currentUser}/>}
                             <Maps {...MapsProps}>
                                 <ShareablePopup
                                     className="selectedShareable"
@@ -280,9 +279,6 @@ class App extends React.Component {
                 shareableType: null,
             },
         });
-
-        console.log(users)
-        console.log(this.state)
     }
 
     updateArticleType(selectedType) {

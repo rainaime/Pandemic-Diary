@@ -1,7 +1,6 @@
 import React from "react";
+import {isBrowser} from "react-device-detect";
 import "./styles.css";
-import Colors from "../../site-styles/Colors";
-import { withRouter } from "react-router-dom";
 
 /**
  * Props:
@@ -14,10 +13,9 @@ class SiteHeader extends React.Component {
             <header
                 style={{
                     backgroundColor: "#2a526f",
-                    // backgroundColor: Colors.background,
                     color: "white",
                 }}>
-                <h1 className="siteTitle">Pandemic Diary</h1>
+                {isBrowser && <h1 className="siteTitle">Pandemic Diary</h1>}
                 {this.props.children}
             </header>
         );
