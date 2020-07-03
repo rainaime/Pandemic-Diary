@@ -129,22 +129,12 @@ class Maps extends React.Component {
                             this.props.updateSelectedShareable(shareable);
                         }
                     }}
-                    style={{
-                        zIndex: 1,
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                    }}
+                    className="map-canvas"
                     width={3740} 
                     height={1700}></canvas>
                 <img
                     alt="Temporary map for phase 1."
-                    style={{
-                        zIndex: 0,
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                    }}
+                    className="map-image"
                     src="/map.png"
                     width={3740}
                     height={1700}

@@ -14,3 +14,12 @@
     left: 50%;
     bottom: 11px;
 }
+
+.timelineDate {
+    position: fixed;
+    display: inline-block;
+    width: 100px;
+    border-radius: 5px;
+    user-select: none;
+    z-index: 20;
+}

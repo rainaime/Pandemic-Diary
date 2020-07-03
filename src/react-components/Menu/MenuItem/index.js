@@ -8,15 +8,11 @@ class MenuItem extends React.Component {
 
     render() {
         const aStyle = {
-            width: '100%',
             color: this.state.hover ? Colors.textAccent1 : Colors.textColorLight,
-            textDecoration: 'none',
-            fontWeight: 600,
-            padding: '12px 0'
         }
 
         return (
-            <button  href={this.props.link}
+            <button className="menuItem" href={this.props.link}
                 style={aStyle}
                 onClick={this.props.onClick}
                 onMouseEnter={() => this.setState({hover: true})}

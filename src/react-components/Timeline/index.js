@@ -1,7 +1,6 @@
 import React from "react";
 import { isBrowser } from "react-device-detect";
 import Colors from "../../site-styles/Colors";
-import TimelineDate from "./TimelineDate";
 import "./styles.css";
 
 // Variables for the appearance of the canvas.
@@ -9,6 +8,28 @@ const canvasSettings = {
     xspace: 12,
     lineWidth: 0.2,
 };
+
+/**
+ * Used in the Timeline to display the user-selected date.
+ *
+ * Props:
+ * - xpos: current location of the cursor.
+ * - ypos: current height to render this date at.
+ */
+class TimelineDate extends React.Component {
+    render() {
+        return (
+            <span className="timelineDate" style={{...this.props.style,
+                top: `calc(100% - ${(isBrowser ? 4 : 2.5)*this.props.ypos}px)`,
+                left: this.props.xpos,
+                backgroundColor: Colors.backgroundDarkAccent,
+                color: Colors.textColorLight,
+            }}>
+            {this.props.date.toDateString()}
+            </span>
+        );
+    }
+}
 
 /**
  * A Timeline, used to select a date which is crucial to user interactions

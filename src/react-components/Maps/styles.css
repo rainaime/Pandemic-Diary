@@ -8,3 +8,17 @@
     border-radius: 25px;
     border: 1px solid;
 }
+
+.map-canvas {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0
+}
+
+.map-image {
+    z-index: 0;
+    position: absolute;
+    top: 0;
+    left: 0
+}
