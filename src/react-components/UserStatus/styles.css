@@ -11,6 +11,8 @@ button {
 }
 
 .login {
+    min-width: 250px;
+    width: 20%;
     display: flex;
     flex-grow: 1;
     align-self: center;

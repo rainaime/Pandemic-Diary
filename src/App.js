@@ -3,9 +3,11 @@ import "./App.css";
 import Colors from "./site-styles/Colors";
 import SiteHeader from "./react-components/SiteHeader";
 import Maps from "./react-components/Maps";
-import Menu from "./react-components/Menu";
-import { Admin, ManageUsers } from "./react-components/Menu/Admin";
-import UserInfo from "./react-components/Menu/UserInfo";
+import Filter from "./react-components/Filter";
+import { Admin, ManageUsers } from "./react-components/UserFeatures/Admin";
+import { ReportMenu, ManageReports } from "./react-components/UserFeatures/Report";
+import { UserInfo } from "./react-components/UserFeatures/UserInfo";
+import { NotificationMenu, NotificationIcon } from "./react-components/UserFeatures/NotificationBar";
 import Tweets from "./react-components/Tweets";
 import News from "./react-components/News";
 import CollapsibleMenu from "./react-components/CollapsibleMenu";
@@ -15,8 +17,6 @@ import { UserStatus, UserStatusMenu } from "./react-components/UserStatus";
 import ShareablePopup from "./react-components/ShareableComponents";
 import { ImageIcon, ImageMenu } from "./react-components/ShareableComponents/Image";
 import { MarkerIcon, MarkerMenu } from "./react-components/ShareableComponents/Marker";
-import { NotificationMenu, NotificationIcon } from "./react-components/Menu/NotificationBar";
-import { ReportMenu, ManageReports } from "./react-components/Menu/Report";
 
 const appSettings = {
     minDate: new Date("December 1 2019"),
@@ -179,7 +179,7 @@ class App extends React.Component {
             logout: () => this.updateCurrentUser(null),
         };
 
-        const MenuProps = {
+        const FilterProps  = {
             selectType: this.selectCallback.bind(this),
             currentUser: this.state.currentUser,
         };
@@ -224,7 +224,7 @@ class App extends React.Component {
         let leftMenuView;
         switch(this.state.currentLeftMenuView) {
             case "filter":
-                leftMenuView = <Menu {...MenuProps}/>;
+                leftMenuView = <Filter {...FilterProps}/>;
                 break;
             case "info":
                 if (this.state.currentUser && this.state.currentUser.username === "admin") {

@@ -1,17 +1,15 @@
 import React from "react";
-import MenuItem from "./MenuItem";
+import Colors from '../../site-styles/Colors';
 import "./styles.css";
 
 /**
- * a menu with filter functionality
+ * A menu with filter functionality
  *
  * Props: 
  * - selectType: a callback function to update the type of shareable to appear on map
  * - currentUser: current user using this filter
  */
 class Menu extends React.Component {
-
-    //run the callback function if the button is clicked
     updateSelection(selectedType) {
         this.props.selectType(selectedType);
     }
@@ -49,6 +47,35 @@ class Menu extends React.Component {
                     }}
                 />
             </div>
+        );
+    }
+}
+
+/**
+ * Props: 
+ *  - icon: the icon to use for this item
+ *  - text: ...
+ */
+class MenuItem extends React.Component {
+    state = {
+        hover: false
+    }
+
+    render() {
+        const aStyle = {
+            color: this.state.hover ? Colors.textAccent1 : Colors.textColorLight,
+        }
+
+        return (
+            <button className="menuItem" href={this.props.link}
+                style={aStyle}
+                onClick={this.props.onClick}
+                onMouseEnter={() => this.setState({hover: true})}
+                onMouseLeave={() => this.setState({hover: false})}
+            >
+                {this.props.icon}
+                {this.props.text}
+            </button>
         );
     }
 }
