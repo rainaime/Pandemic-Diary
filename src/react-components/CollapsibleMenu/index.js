@@ -15,7 +15,7 @@ import "./styles.css";
 class CollapsibleMenu extends React.Component {
     state = {
         collapsed: false,
-        maximizedSize: "20%",
+        maximizedSize: "15%",
     };
 
     /**
@@ -51,7 +51,7 @@ class CollapsibleMenu extends React.Component {
         const dynamicStyles = {
             container: {
                 width: this.state.width,
-                backgroundColor: Colors.background,
+                backgroundColor: "#416E8E", //Colors.background,
                 color: Colors.textColorLight,
             },
         };
@@ -86,7 +86,7 @@ class CollapseButton extends React.Component {
 
     render() {
         const buttonStyle = {
-            left: "calc(100% - 6px)",
+            left: "calc(100% - 8px)",
             transform: "none",
             backgroundColor: Colors.backgroundDarkAccent,
             color: this.state.hover ? Colors.textAccent1 : Colors.textColorLight,

@@ -7,7 +7,7 @@ import SignUp from "./SignUp";
 class UserStatus extends React.Component {
     render() {
         // TODO: Get user status from server (phase 2)
-        const messageStyle = { color: Colors.textAccent1, fontWeight: "bold", display: "inline" };
+        const messageStyle = { color: "white", fontWeight: "bold", display: "inline" };
         const message = this.props.currentUser ? (
             <h2 className="userStatus" style={messageStyle}>
                 Welcome back, {this.props.currentUser.username}!

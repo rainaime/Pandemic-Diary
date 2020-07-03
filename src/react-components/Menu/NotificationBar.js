@@ -78,13 +78,16 @@ const contentStyle = {
 }
 
 const notificationStyle = {
+    color: "white",
     position: "absolute",
-    left: "58vw",
-    top: "6vh",
-    width: "20vw",
-    height: "25vh",
+    left: "63vw",
+    top: "10vh",
+    width: "15vw",
+    height: "26vh",
     zIndex: '10',
-    backgroundColor: '#003f5c',
+    backgroundColor: "#416E8E",
+    borderRadius: "25px"
+    // backgroundColor: '#003f5c',
 }
 
 const buttonStyle = {

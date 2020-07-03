@@ -53,6 +53,9 @@ class Timeline extends React.Component {
                         ? Colors.background
                         : Colors.backgroundDarkAccent,
                     transition: "all 0.3s",
+                    margin: "0px 25px 10px 25px",
+                    borderRadius: "5px",
+                    border: "solid 1px #002f44",
                 }}>
                 <span
                     style={{

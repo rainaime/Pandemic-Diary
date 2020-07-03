@@ -48,7 +48,7 @@ class App extends React.Component {
         currentPopup: "",
         idcounts: 1,
         currentUser: users[1],
-        showNotification: false,
+        showNotification: true,
     };
 
     renderPopup(currentPopup) {
@@ -136,7 +136,7 @@ class App extends React.Component {
         const UserStatusProps = {
             currentUser: this.state.currentUser,
             openLoginMenu: () => this.setState({ currentMode: "login", currentPopup: "login" }),
-            logout: () => this.setState({ currentUser: null }),
+            logout: () => this.updateCurrentUser(null),
         };
 
         const MenuProps = {
@@ -210,10 +210,15 @@ class App extends React.Component {
         }
 
         return (
-            <div className="App" style={dynamicStyles.cursor}>
+            <div className="App" style={dynamicStyles.cursor, {backgroundColor: Colors.backgroundDarkAccent}}>
                 <SiteHeader>
                     <span className="currentDate">{this.state.currentDate.toDateString()}</span>
-                    <button className="button" onClick={this.renderNotification.bind(this)}>Notification</button>
+                    {this.state.currentUser != null && 
+                    <button className="button" 
+                        style={{position: "absolute", right: "16vw", fontSize: "1.5vh"}}
+                        onClick={this.renderNotification.bind(this)}>
+                        Notification
+                    </button>}
                     {/* <input type="image" src="./share.png" 
                         onClick={this.renderNotification.bind(this)}
                         style={{maxWidth: "100%", maxHeight: "100%"}}/> */}
@@ -361,6 +366,7 @@ class App extends React.Component {
 
     updateCurrentUser(user) {
         this.setState({ currentUser: user });
+        this.setState({showNotification: false})
     }
 
     userCanEdit() {

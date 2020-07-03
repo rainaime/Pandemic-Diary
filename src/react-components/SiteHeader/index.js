@@ -1,6 +1,7 @@
 import React from "react";
 import "./styles.css";
 import Colors from "../../site-styles/Colors";
+import { withRouter } from "react-router-dom";
 
 /**
  * Props:
@@ -12,8 +13,9 @@ class SiteHeader extends React.Component {
         return (
             <header
                 style={{
-                    backgroundColor: Colors.background,
-                    color: Colors.textAccent1,
+                    backgroundColor: "#2a526f",
+                    // backgroundColor: Colors.background,
+                    color: "white",
                 }}>
                 <h1 className="siteTitle">Pandemic Diary</h1>
                 {this.props.children}

@@ -111,7 +111,8 @@ class PopoutButton extends React.Component {
 
         return (
             <div className="popoutButton-container"
-                style={{ ...popoutButtonStyles, ...containerStyles }}
+                //temp added bottom and right here to fit look
+                style={{ ...popoutButtonStyles, ...containerStyles, bottom: "40px", right: "25px" }}
                 onMouseEnter={() => this.setState({ hover: true })}
                 onMouseLeave={() => this.setState({ hover: false })}
             >
