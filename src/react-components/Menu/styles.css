@@ -21,3 +21,16 @@
 .content_container::-webkit-scrollbar {
     display: none;
 }
+
+.userContainer{
+    width: 90%;
+    height: 90%;
+    /* background-color: white; */
+    overflow-y: scroll;
+}
+
+.user{
+    width: 90%;
+    height: 20%;
+    background-color: red;
+}

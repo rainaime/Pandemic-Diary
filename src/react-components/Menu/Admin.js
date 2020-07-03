@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
+import "./styles.css";
 
-export class Admin extends Component {
+class Admin extends Component {
 
     renderPopupBox(){
         return(
@@ -13,10 +14,8 @@ export class Admin extends Component {
     render() {
         return (
             <div className="menu-val">
-                <button className="button2" onClick={console.log("clicked")}>View Users</button>
+                <button className="button2" onClick={this.props.openUserManage}>View Users</button>
                 <button className="button2">View Markers</button>
-                {/* <button>View Users</button> */}
-                {/* <div className="popupBox"></div> */}
                 {this.renderPopupBox()}
             </div>
         )
@@ -30,4 +29,26 @@ const stylePopup = {
     height: '100px'
 }
 
-export default Admin
+class ManageUsers extends React.Component {
+
+    render(){
+
+        return(
+            <div id="userContainer" className="userContainer">
+                hi this admin
+                {/* {this.generateUsers()} */}
+                {this.props.users.map((user) => {
+                    if(user.username !== 'admin'){
+                        return <div key ={user.username} className="user-val">
+                                    <span>{user.username}</span>
+                                    <button onClick={(e)=>{this.props.deleteUser(e, user)}}>delete</button>
+                                </div>
+                    }
+                })}
+
+            </div>
+        )
+    }
+}
+
+export { Admin , ManageUsers };

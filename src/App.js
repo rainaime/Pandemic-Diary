@@ -4,7 +4,7 @@ import Colors from "./site-styles/Colors";
 import SiteHeader from "./react-components/SiteHeader";
 import Maps from "./react-components/Maps";
 import Menu from "./react-components/Menu";
-import Admin from "./react-components/Menu/Admin";
+import { Admin, ManageUsers } from "./react-components/Menu/Admin";
 import UserInfo from "./react-components/Menu/UserInfo";
 import Tweets from "./react-components/Tweets";
 import News from "./react-components/News";
@@ -22,7 +22,7 @@ const appSettings = {
     maxDate: new Date("December 31 2020"),
 };
 
-const users = [
+let users = [
     { username: "admin", password: "admin", shareables: [], shared: [] },
     { username: "user", password: "user", shareables: [], shared: [] },
     { username: "user2", password: "user2", shareables: [], shared: [] },
@@ -87,6 +87,11 @@ class App extends React.Component {
             currentMarker: this.state.selectedShareable,
         }
 
+        const ManageUsersProps = {
+            users: users,
+            deleteUser: this.deleteUser.bind(this),
+        }
+
         switch (currentPopup) {
             case "marker":
                 return <MarkerMenu {...MarkerMenuProps} />;
@@ -99,6 +104,8 @@ class App extends React.Component {
                 );
             case "login":
                 return <UserStatusMenu {...UserStatusMenuProps} />;
+            case "manageUser":
+                return <ManageUsers {...ManageUsersProps} />;
             default:
                 return null;
         }
@@ -168,14 +175,18 @@ class App extends React.Component {
             updateCurrentDate: this.updateCurrentDate.bind(this),
         };
 
+        const AdminProps = {
+            openUserManage: () => this.setState({ currentMode: "manageUser", currentPopup: "manageUser"}),
+        }
+
         let leftMenuView;
         switch(this.state.currentLeftMenuView) {
             case "filter":
                 leftMenuView = <Menu {...MenuProps}/>;
                 break;
             case "info":
-                if (this.currentUser && this.currentUser.username === "admin") {
-                    leftMenuView = <Admin />
+                if (this.state.currentUser && this.state.currentUser.username === "admin") {
+                    leftMenuView = <Admin {...AdminProps}/>
                 } else {
                     leftMenuView = <UserInfo currentUser={this.state.currentUser}/>
                 }
@@ -243,6 +254,20 @@ class App extends React.Component {
                 <Timeline {...TimelineProps} />
             </div>
         );
+    }
+
+    deleteUser(e, user){
+        e.preventDefault()
+        //filter shareables in state
+        this.setState((prevState) => ({
+            shareables: prevState.shareables.filter(
+                (element) => !user.shareables.includes(element)),
+        }));
+
+        users = users.filter((element) => user !== element);//filter users lsit
+
+        console.log(users)
+        console.log(this.state)
     }
 
     updateArticleType(selectedType) {
