@@ -59,11 +59,8 @@ class Timeline extends React.Component {
                     border: "solid 1px #002f44",
                 }}>
                 <span
+                    className="timelineInstructions"
                     style={{
-                        whiteSpace: "nowrap",
-                        position: "absolute",
-                        transform: "translateX(-50%)",
-                        left: "50%",
                         visibility: this.flashIfNotInteracted ? "visible" : "hidden",
                         color: Colors.textColorLight,
                     }}>

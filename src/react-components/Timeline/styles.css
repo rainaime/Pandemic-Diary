@@ -6,3 +6,11 @@
     transition-timing-function: ease;
     z-index: 10;
 }
+
+.timelineInstructions {
+    white-space: nowrap;
+    position: absolute;
+    transform: translateX(-50%);
+    left: 50%;
+    bottom: 11px;
+}
