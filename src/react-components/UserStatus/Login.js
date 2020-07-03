@@ -1,6 +1,14 @@
 import React, { Component } from "react";
 import "./styles.css";
 
+/**
+ * User login functionality
+ *
+ * Props: 
+ * - loginCallback: calls the login callback function
+ * - invalidLogin: function to set the state as invalid login
+ * - goToSignup: function to set states for the sign up
+ */
 export class Login extends Component {
     constructor(props) {
         super(props);
@@ -13,20 +21,20 @@ export class Login extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    getUsername = () => {
-        console.log(this.state.password);
-    };
-
+    //try login if user presses enter
     keyPressed(e) {
         if (e.key === "Enter") {
             this.loginAttempt();
         }
     }
+
+    //update the value of username and password of this state
     handleChange(event) {
         if (event.target.name === "username") this.setState({ username: event.target.value });
         else if (event.target.name === "password") this.setState({ password: event.target.value });
     }
 
+    //run callback function when user tries to login
     loginAttempt = () => {
         this.props.loginCallback(this.state.username, this.state.password);
     };

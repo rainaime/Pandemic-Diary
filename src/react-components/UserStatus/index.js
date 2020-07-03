@@ -3,6 +3,14 @@ import "./styles.css";
 import Login from "./Login";
 import SignUp from "./SignUp";
 
+/**
+ * Displays user status to indicate whether the user have logged in.
+ *
+ * Props: 
+ * - currentUser: user currently logged in otherwise null
+ * - openLoginMenu: a function to set current mode and current popup to login
+ * - logout: a fuction to update current user as null
+ */
 class UserStatus extends React.Component {
     render() {
         // TODO: Get user status from server (phase 2)
@@ -30,6 +38,15 @@ class UserStatus extends React.Component {
     }
 }
 
+/**
+ * a popup for user to login or sign up
+ *
+ * Props: 
+ * - updateCurrentUser: function to update current user
+ * - onSuccess: function to set current mode to normal
+ * - addUser: function to add user
+ * - users: list containing all the users
+ */
 class UserStatusMenu extends React.Component {
     state = {
         currentComp: "login",

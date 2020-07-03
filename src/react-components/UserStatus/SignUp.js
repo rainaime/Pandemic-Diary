@@ -1,6 +1,14 @@
 import React, { Component } from "react";
 import "./styles.css";
 
+/**
+ * User SignUp functionality
+ *
+ * Props: 
+ * - backToLogin: change state to transit back to login
+ * - usersList: list of users
+ * - addUser: function to add new user and run callback function
+ */
 export class SignUp extends Component {
     state = {
         username: "",
@@ -10,6 +18,7 @@ export class SignUp extends Component {
         invalidSignUp: false,
     };
 
+    //add new user if this is a new user
     addNewUser() {
         let usedUserName = false;
         for (const user of this.props.usersList) {
