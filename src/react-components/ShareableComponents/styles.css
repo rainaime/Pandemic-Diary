@@ -36,3 +36,8 @@
 .selectedShareable > div:last-of-type::-webkit-scrollbar {
     display: none;
 }
+
+.reportButton{
+    float: right;
+    background-color: green;
+} 
