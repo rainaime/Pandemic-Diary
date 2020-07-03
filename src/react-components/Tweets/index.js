@@ -4,6 +4,12 @@ import "./styles.css";
 import Tweet from "./Tweet";
 import TweetsForm from "./TweetsForm";
 
+/**
+ * Used to display tweets
+ *
+ * Props: 
+ * - currentUser: user currently logged in otherwise null
+ */
 class Tweets extends React.Component {
     state = {
         maxId: 2,
@@ -26,10 +32,12 @@ class Tweets extends React.Component {
         ],
     };
 
+    //add new tweet
     addNewTweet(tweet) {
         if (this.props.user === null) {
             return;
         }
+        //this is where we update new tweet to the serverr
         this.setState({
             maxId: this.state.maxId + 1,
             tweets: [

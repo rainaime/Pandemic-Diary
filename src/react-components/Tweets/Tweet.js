@@ -1,6 +1,14 @@
 import React from "react";
 import Colors from "../../site-styles/Colors";
 
+/**
+ * display tweets
+ *
+ * Props: 
+ * - key: key value of this tweet
+ * - tweet: tweet to display
+ * - isLast: boolean to indicate if this is the last tweet
+ */
 class Tweet extends React.Component {
     render() {
         const dynamicStyles = {

@@ -1,6 +1,12 @@
 import React from "react";
 import "./styles.css";
 
+/**
+ * generate tweets
+ *
+ * Props: 
+ * - addNewTweet: function to add new tweets
+ */
 class TweetsForm extends React.Component {
     constructor(props) {
         super(props);
