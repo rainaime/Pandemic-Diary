@@ -60,3 +60,21 @@
     margin: 5vw;
     border: 1px solid red;
 }
+
+.reports {
+    overflow: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.reports::-webkit-scrollbar {
+    display: none;
+}
+
+.text_area, form {
+    width: 80%;
+}
+
+.text_area {
+    height: 60px;
+}

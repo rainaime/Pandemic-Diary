@@ -8,7 +8,6 @@ button {
 	border: none;
 	cursor: pointer;
     outline: inherit;
-    font-size: 1.2vw;
 }
 
 .login {

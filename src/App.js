@@ -378,10 +378,10 @@ class App extends React.Component {
         this.setState({ currentPopup: this.state.selectedShareable.type });
     }
 
-    deleteMarker() {
+    deleteMarker(marker) {
         this.setState((prevState) => ({
             shareables: prevState.shareables.filter(
-                (element) => element.id !== this.state.selectedShareable.id
+                (element) => element.id !== marker.id
             ),
         }));
 
@@ -391,9 +391,10 @@ class App extends React.Component {
         this.setState({ selectedShareable: selectedShareableCopy });
     }
 
-    deleteReportedShareable(){
-        this.deleteMarker();
-        //need to remove the report after deleting
+    deleteReportedShareable(marker) {
+        this.deleteMarker(marker);
+        marker.user.shareables = marker.user.shareables.filter((s) => s !== marker)
+        users[0].reports = users[0].reports.filter((s) => s.shareable !== marker);
     }
 
     shareMarkerState() {
@@ -406,7 +407,7 @@ class App extends React.Component {
         this.setState({
             currentShareable: this.state.selectedShareable,
             currentPopup: "report",
-            currentMode: "editing" //not sure if you need this one i honestly dont know how this works
+            currentMode: "editing"
         })
     }
 
