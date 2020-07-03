@@ -14,8 +14,7 @@ class Admin extends Component {
     render() {
         return (
             <div className="menu-val">
-                <button className="button2" onClick={this.props.openUserManage}>View Users</button>
-                <button className="button2">View Markers</button>
+                <button className="button2" onClick={this.props.openUserManage}>Manage Users</button>
                 {this.renderPopupBox()}
             </div>
         )
