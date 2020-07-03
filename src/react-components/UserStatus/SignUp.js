@@ -5,6 +5,8 @@ export class SignUp extends Component {
     state = {
         username: "",
         password: "",
+        shared: [],
+        shareables: [],
         invalidSignUp: false,
     };
 
