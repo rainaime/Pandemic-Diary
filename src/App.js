@@ -252,7 +252,7 @@ class App extends React.Component {
     editMarker() {
         this.setState({ currentShareable: this.state.selectedShareable });
         this.setState({ currentMode: "editingShareable" });
-        this.setState({ currentPopup: this.state.currentShareable.type });
+        this.setState({ currentPopup: this.state.selectedShareable.type });
     }
 
     deleteMarker() {
@@ -324,6 +324,15 @@ class App extends React.Component {
 
     selectCallback(type) {
         this.setState({ selectedShareableType: type });
+        this.setState({
+            selectedShareable: {
+                x: -200,
+                y: -200,
+                content: "",
+                user: null,
+                shareableType: null,
+            },
+        });
     }
 
     updateShareableDate(time) {
