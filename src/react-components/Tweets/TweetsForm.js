@@ -29,7 +29,8 @@ class TweetsForm extends React.Component {
                         this.props.addNewTweet(formVal);
                         this.inputRef.current.value = "";
                     }}>
-                    add tweet
+                    <i class="fas fa-plus"></i>
+                    Add Tweet
                 </button>
             </div>
         );

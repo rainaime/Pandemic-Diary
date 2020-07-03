@@ -17,7 +17,7 @@ class ShareablePopup extends React.Component {
         }
         return (
             <div className="selectedShareable" style={this.props.style}>
-                <div>
+                <div className="selectedShareable_buttons">
                     <h3
                         style={{
                             fontSize: "1.5vh",
@@ -31,16 +31,16 @@ class ShareablePopup extends React.Component {
                     <button
                         className="deleteButton"
                         style={this.props.editable()}
-                        onClick={this.props.delete}></button>
+                        onClick={this.props.delete}><i class="fas fa-trash-alt"></i></button>
                     <button
                         className="editButton"
                         style={this.props.editable()}
-                        onClick={this.props.edit}></button>
+                        onClick={this.props.edit}><i class="fas fa-edit"></i></button>
                     <button
                         className="shareButton"
                         style={this.props.editable()}
                         onClick={this.props.share}
-                    ></button>
+                    ><i class="fas fa-share-square"></i></button>
                 </div>
                 <div>
                     <span>

@@ -212,11 +212,11 @@ class App extends React.Component {
         return (
             <div className="App" style={dynamicStyles.cursor, {backgroundColor: Colors.backgroundDarkAccent}}>
                 <SiteHeader>
-                    <span className="currentDate">{this.state.currentDate.toDateString()}</span>
+                    <span className="currentDate"><i class="fas fa-calendar-alt"></i>{this.state.currentDate.toDateString()}</span>
                     {this.state.currentUser != null && 
                     <button className="button" 
                         onClick={this.renderNotification.bind(this)}>
-                        Notification
+                        <i class="fas fa-bell"></i>Notifications
                     </button>}
                     {/* <input type="image" src="./share.png" 
                         onClick={this.renderNotification.bind(this)}

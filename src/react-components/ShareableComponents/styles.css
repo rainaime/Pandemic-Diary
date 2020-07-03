@@ -10,6 +10,12 @@
 .selectedShareable:first-child button {
     width: 20px;
     height: 20px;
+    margin: 0 4px;
+    float: right;
+}
+
+.selectedShareable:first-child button:first-of-type {
+    margin-right: 15px;
 }
 
 .selectedShareable > div:last-of-type {
@@ -29,21 +35,4 @@
 
 .selectedShareable > div:last-of-type::-webkit-scrollbar {
     display: none;
-}
-
-.editButton {
-    float: right;
-    background-color: red;
-}
-
-.deleteButton {
-    border-top-right-radius: 25px;
-    float: right;
-    background-color: blue;
-}
-
-.shareButton{
-    float: right;
-    /* should replace this with share icon */
-    background-color: white;
 }

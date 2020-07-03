@@ -19,7 +19,7 @@ class UserStatus extends React.Component {
         );
 
         const logOut = this.props.currentUser ? (
-            <button className="userStatus hoverOrange" onClick={this.props.logout}>Log Out</button>
+            <button className="userStatus hoverOrange" onClick={this.props.logout}>Log Out<i class="fas fa-sign-out-alt"></i></button>
         ) : null;
 
         return (

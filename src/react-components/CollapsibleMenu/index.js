@@ -35,13 +35,29 @@ class CollapsibleMenu extends React.Component {
      */
     renderViews() {
         return this.props.views.map((view, i) => {
+            let icon;
+            switch (view) {
+                case "filter":
+                    icon = <i class="fas fa-filter"></i>;
+                    break;
+                case "info":
+                    icon = <i class="fas fa-info"></i>;
+                    break;
+                case "tweets":
+                    icon = <i class="fab fa-twitter"></i>;
+                    break;
+                case "news":
+                    icon = <i class="fas fa-newspaper"></i>;
+                    break;
+                default: break;
+            }
             return (
                 <span
                     key={i}
                     onClick={() => {
                         this.props.switchView(view);
                     }}>
-                    {view}
+                    {icon}{view}
                 </span>
             );
         });

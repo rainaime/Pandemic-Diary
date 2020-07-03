@@ -15,7 +15,9 @@ class SiteHeader extends React.Component {
                     backgroundColor: "#2a526f",
                     color: "white",
                 }}>
-                {isBrowser && <h1 className="siteTitle">Pandemic Diary</h1>}
+                {isBrowser && <h1 className="siteTitle">Pandemic 
+                    <i class="fas fa-virus"></i>
+                Diary</h1>}
                 {this.props.children}
             </header>
         );
