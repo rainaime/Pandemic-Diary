@@ -1,6 +1,13 @@
 import React from "react";
 import "./style.css";
 
+/**
+ * Marker for user to display on the map
+ *
+ * Props: 
+ * - date: date on the map
+ * - onClick: function to set mode to add this marker
+ */
 class MarkerIcon extends React.Component {
     state = {
         type: "marker",
@@ -17,14 +24,17 @@ class MarkerIcon extends React.Component {
         updateDate: this.updateDate,
     };
 
+    //set image to undefined when first mounted
     componentWillUnmount() {
         Image.img = undefined;
     }
 
+    //update date of marker
     updateDate(date) {
         this.date = date
     }
 
+    //update selected type of marker
     updateSelectedType(type) {
         this.selectedType = type;
     }
@@ -61,6 +71,17 @@ class MarkerIcon extends React.Component {
     }
 }
 
+/**
+ * A popup to change marker's content, type and date
+ *
+ * Props: 
+ * - state: currently selected marker
+ * - updateDate: function to update the date of the marker to the currently selected date
+ * - enterPressed: function to set the mode to normal
+ * - updateArticleType: function to update the shareable's type
+ * - shareableDate: date of the shareable
+ * - updateCurrentDate: function to update current date
+ */
 class MarkerMenu extends React.Component {
 
     render() {

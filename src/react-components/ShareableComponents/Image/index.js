@@ -1,6 +1,13 @@
 import React from "react";
 import "./style.css";
 
+/**
+ * Image for user to display on the map
+ *
+ * Props: 
+ * - date: date on the map
+ * - onClick: function to set mode to add this marker
+ */
 class ImageIcon extends React.Component {
     Image = {
         type: "image",
@@ -16,14 +23,17 @@ class ImageIcon extends React.Component {
         updateDate: this.updateDate,
     };
 
+    //set image to undefined when first mounted
     componentWillUnmount() {
         Image.img = undefined;
     }
 
+    //update date of image
     updateDate(date) {
         this.date = date
     }
 
+    //update selected type of image
     updateSelectedType(type) {
         this.selectedType = type;
     }
@@ -57,6 +67,16 @@ class ImageIcon extends React.Component {
     }
 }
 
+/**
+ * A popup to change image, type and date
+ *
+ * Props: 
+ * - image: currently selected image
+ * - updateDate: function to update the date of the image to the currently selected date
+ * - updateArticleType: function to update shareable's type
+ * - shareableDate: date of the shareable
+ * - updateCurrentDate: function to update current date
+ */
 class ImageMenu extends React.Component {
     submitImage(e) {
         //TODO this seems like a messy implementation the content probably should not be an img but the default was placed as an img object so idk

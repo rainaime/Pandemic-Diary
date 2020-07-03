@@ -36,3 +36,14 @@
 .selectedShareable > div:last-of-type::-webkit-scrollbar {
     display: none;
 }
+
+.header-style{
+    font-size: 1.5vh;
+    display: inline;
+    margin: 0;
+    padding-left: 10px;
+}
+
+.content{
+    float:"left"
+}
