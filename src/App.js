@@ -48,10 +48,32 @@ class App extends React.Component {
         selectedDate: new Date(),
         selectedShareableType: "All",
         currentPopup: "",
-        idcounts: 1,
+        idcounts: 2,
         currentUser: users[1],
         showNotification: false,
     };
+
+    //this is just to hardcode an example marker
+    componentDidMount(){
+        let example = {
+            content: "example content",
+            date: new Date(),
+            dateText: "",
+            height: 30,
+            id: 1,
+            selectedType: "News",
+            type: "marker",
+            width: 20,
+            x: 459,
+            y: 305.75, 
+            user: users[1],
+            img: new Image(),
+
+        }
+        example.img.src = "/marker.png"
+        this.addToShareableArray(example)
+
+    }
 
     renderPopup(currentPopup) {
         const MarkerMenuProps = {
@@ -106,7 +128,7 @@ class App extends React.Component {
 
         const ManageReportsProps = {
             reports: users[0].reports,
-            deleteReportedShareable: this.deleteMarker.bind(this),
+            deleteReportedShareable: this.deleteReportedShareable.bind(this),
         }
 
         switch (currentPopup) {
@@ -367,6 +389,11 @@ class App extends React.Component {
         selectedShareableCopy.x = -200;
         selectedShareableCopy.y = -200;
         this.setState({ selectedShareable: selectedShareableCopy });
+    }
+
+    deleteReportedShareable(){
+        this.deleteMarker();
+        //need to remove the report after deleting
     }
 
     shareMarkerState() {
