@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import "./styles.css";
 
+/**
+ * An admin component where it contains all the admin functionality
+ *
+ * Props: 
+ * - openUserManage: a function to handle switching current mode and current popup as 'manageUser'
+ */
 class Admin extends Component {
     renderPopupBox() {
         return <div style={stylePopup}>Hello</div>;
@@ -28,6 +34,13 @@ const stylePopup = {
     height: "100px",
 };
 
+/**
+ * An admin functionality to delete users
+ *
+ * Props: 
+ * - users:     a list containing all the users
+ * - deleteUser: a function to delete user and all its shareables
+ */
 class ManageUsers extends React.Component {
     render() {
         return (
@@ -36,18 +49,11 @@ class ManageUsers extends React.Component {
                 <div className="userContainer">
                     {/* {this.generateUsers()} */}
                     {this.props.users.map((user) => {
-                        if (user.username !== "admin") {
-                            return (
-                                <div key={user.username} className="user-val">
-                                    <span>{user.username}</span>
-                                    <button
-                                        onClick={(e) => {
-                                            this.props.deleteUser(e, user);
-                                        }}>
-                                        delete
-                                    </button>
-                                </div>
-                            );
+                        if(user.username !== 'admin'){
+                            return <div key ={user.username} className="user-val">
+                                        <span>{user.username}</span>
+                                        <button onClick={(e)=>{this.props.deleteUser(e, user)}}>delete</button>
+                                    </div>
                         }
                         return null;
                     })}
