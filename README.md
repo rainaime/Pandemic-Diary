@@ -1,7 +1,7 @@
 # Pandemic Diary
 Welcome to the portion of the site we've completed for Phase 1 of the CSC309 group project! The frontend of the website is complete, with animations across views in the single page that makes up our app.
 
-==========SCREENSHOT OF APP HERE====================
+<img width="75%" src="./readme-images/appscreen.png"/>
 
 ## Getting Started
 To run the server:
