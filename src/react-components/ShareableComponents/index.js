@@ -45,7 +45,7 @@ class ShareablePopup extends React.Component {
                         className="reportButton"
                         style={this.props.editable()}
                         onClick={this.props.report}
-                    ></button>
+                    ><i class="fas fa-flag"></i></button>
                     
                 </div>
                 <div>

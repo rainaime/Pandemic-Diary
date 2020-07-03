@@ -33,7 +33,7 @@ let users = [
 class App extends React.Component {
     state = {
         currentLeftMenuView: "filter",
-        currentRightMenuView: "tweets",
+        currentRightMenuView: "news",
         currentMode: "normal",
         shareables: [],
         selectedShareable: {
@@ -271,7 +271,7 @@ class App extends React.Component {
                             <ImageIcon {...PopoutButtonIconProps} />
                         </PopoutButton>
                     </div>
-                    <CollapsibleMenu views={["tweets", "news"]} switchView={(newView) => {this.setState({currentRightMenuView: newView})}} position="right">
+                    <CollapsibleMenu views={["news", "tweets"]} switchView={(newView) => {this.setState({currentRightMenuView: newView})}} position="right">
                         {rightMenuView}
                     </CollapsibleMenu>
                 </div>
