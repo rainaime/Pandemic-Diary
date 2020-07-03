@@ -266,6 +266,16 @@ class App extends React.Component {
 
         users = users.filter((element) => user !== element);//filter users lsit
 
+        this.setState({
+            selectedShareable: {
+                x: -200,
+                y: -200,
+                content: "",
+                user: null,
+                shareableType: null,
+            },
+        });
+
         console.log(users)
         console.log(this.state)
     }
