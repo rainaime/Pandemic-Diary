@@ -232,11 +232,11 @@ class App extends React.Component {
         return (
             <div className="App" style={{...dynamicStyles.cursor, backgroundColor: Colors.backgroundDarkAccent}}>
                 <SiteHeader>
-                    <span className="currentDate"><i class="fas fa-calendar-alt"></i>{this.state.currentDate.toDateString()}</span>
+                    <span className="currentDate"><i className="fas fa-calendar-alt"></i>{this.state.currentDate.toDateString()}</span>
                     {this.state.currentUser != null && 
                     <button className="button" 
                         onClick={this.renderNotification.bind(this)}>
-                        <i class="fas fa-bell"></i>Notifications
+                        <i className="fas fa-bell"></i>Notifications
                     </button>}
                     {/* <input type="image" src="./share.png" 
                         onClick={this.renderNotification.bind(this)}
@@ -457,7 +457,7 @@ class App extends React.Component {
         if (this.state.showNotification){
             this.setState({showNotification: false})
             if (this.state.currentUser != null)
-                this.state.currentUser.shared = []
+                this.setState({currentUser: {shared: []}})
         } else {
             this.setState({showNotification: true})
 

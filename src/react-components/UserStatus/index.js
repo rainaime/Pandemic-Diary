@@ -1,6 +1,5 @@
 import React from "react";
 import "./styles.css";
-import Colors from "../../site-styles/Colors";
 import Login from "./Login";
 import SignUp from "./SignUp";
 
@@ -19,7 +18,7 @@ class UserStatus extends React.Component {
         );
 
         const logOut = this.props.currentUser ? (
-            <button className="userStatus hoverOrange" onClick={this.props.logout}>Log Out<i class="fas fa-sign-out-alt"></i></button>
+            <button className="userStatus hoverOrange" onClick={this.props.logout}>Log Out<i className="fas fa-sign-out-alt"></i></button>
         ) : null;
 
         return (

@@ -23,7 +23,7 @@ const LandingPage = (
                 <div className="landingPage_main_title" style={mainStyle}>
                     <h1 className="landingPage_title" style={{ color: Colors.textAccent1 }}>
                         Pandemic
-                        <i class="fas fa-virus"></i>
+                        <i className="fas fa-virus"></i>
                         Diary
                     </h1>
                     <p className="landingPage_desc" style={{ color: Colors.textColorLight }}>

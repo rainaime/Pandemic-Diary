@@ -38,16 +38,16 @@ class CollapsibleMenu extends React.Component {
             let icon;
             switch (view) {
                 case "filter":
-                    icon = <i class="fas fa-filter"></i>;
+                    icon = <i className="fas fa-filter"></i>;
                     break;
                 case "info":
-                    icon = <i class="fas fa-info"></i>;
+                    icon = <i className="fas fa-info"></i>;
                     break;
                 case "tweets":
-                    icon = <i class="fab fa-twitter"></i>;
+                    icon = <i className="fab fa-twitter"></i>;
                     break;
                 case "news":
-                    icon = <i class="fas fa-newspaper"></i>;
+                    icon = <i className="fas fa-newspaper"></i>;
                     break;
                 default: break;
             }

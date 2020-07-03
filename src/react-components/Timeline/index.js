@@ -67,9 +67,9 @@ class Timeline extends React.Component {
                         visibility: this.flashIfNotInteracted ? "visible" : "hidden",
                         color: Colors.textColorLight,
                     }}>
-                    <i class="fas fa-info"></i>
+                    <i className="fas fa-info"></i>
                     To interact with the timeline, click and hold here!
-                    <i class="fas fa-info"></i>
+                    <i className="fas fa-info"></i>
                 </span>
                 <TimelineDate
                     style={{

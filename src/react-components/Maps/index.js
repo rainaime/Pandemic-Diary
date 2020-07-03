@@ -92,7 +92,7 @@ class Maps extends React.Component {
         const ctx = this.canvasRef.current.getContext("2d");
         for (let s of shareables) {
             if (
-                s.date.toDateString() == this.props.currentDate.toDateString() &&
+                s.date.toDateString() === this.props.currentDate.toDateString() &&
                 (s.selectedType === this.props.selectedType || this.props.selectedType === "All")
             ) {
                 const draw = () => {

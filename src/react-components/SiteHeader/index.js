@@ -16,7 +16,7 @@ class SiteHeader extends React.Component {
                     color: "white",
                 }}>
                 {isBrowser && <h1 className="siteTitle">Pandemic 
-                    <i class="fas fa-virus"></i>
+                    <i className="fas fa-virus"></i>
                 Diary</h1>}
                 {this.props.children}
             </header>

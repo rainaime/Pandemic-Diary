@@ -16,28 +16,28 @@ class Menu extends React.Component {
         return (
             <div className="menu-val">
                 <MenuItem
-                    icon={<i class="fas fa-globe"></i>}
+                    icon={<i className="fas fa-globe"></i>}
                     text={"All"}
                     onClick={() => {
                         this.updateSelection("All");
                     }}
                 />
                 <MenuItem
-                    icon={<i class="far fa-newspaper"></i>}
+                    icon={<i className="far fa-newspaper"></i>}
                     text="News"
                     onClick={() => {
                         this.updateSelection("News");
                     }}
                 />
                 <MenuItem
-                    icon={<i class="fas fa-plane"></i>}
+                    icon={<i className="fas fa-plane"></i>}
                     text="Vacation"
                     onClick={() => {
                         this.updateSelection("Vacation");
                     }}
                 />
                 <MenuItem
-                    icon={<i class="fas fa-ellipsis-h"></i>}
+                    icon={<i className="fas fa-ellipsis-h"></i>}
                     text="Other Stuff"
                     onClick={() => {
                         this.updateSelection("Other Stuff");

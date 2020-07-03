@@ -1,5 +1,4 @@
 import React from "react";
-import Colors from "../../site-styles/Colors";
 import "./styles.css";
 
 class ShareablePopup extends React.Component {
@@ -31,21 +30,21 @@ class ShareablePopup extends React.Component {
                     <button
                         className="deleteButton"
                         style={this.props.editable()}
-                        onClick={this.props.delete}><i class="fas fa-trash-alt"></i></button>
+                        onClick={this.props.delete}><i className="fas fa-trash-alt"></i></button>
                     <button
                         className="editButton"
                         style={this.props.editable()}
-                        onClick={this.props.edit}><i class="fas fa-edit"></i></button>
+                        onClick={this.props.edit}><i className="fas fa-edit"></i></button>
                     <button
                         className="shareButton"
                         style={this.props.editable()}
                         onClick={this.props.share}
-                    ><i class="fas fa-share-square"></i></button>
+                    ><i className="fas fa-share-square"></i></button>
                     <button
                         className="reportButton"
                         style={this.props.editable()}
                         onClick={this.props.report}
-                    ><i class="fas fa-flag"></i></button>
+                    ><i className="fas fa-flag"></i></button>
                     
                 </div>
                 <div>

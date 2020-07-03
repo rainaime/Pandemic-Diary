@@ -115,7 +115,7 @@ class PopoutButton extends React.Component {
                 onMouseEnter={() => this.setState({ hover: true })}
                 onMouseLeave={() => this.setState({ hover: false })}
             >
-                <span className="popoutButton" style={buttonStylesCopy}><i class="fas fa-plus"></i></span>
+                <span className="popoutButton" style={buttonStylesCopy}><i className="fas fa-plus"></i></span>
                 {this.renderChildren()}
             </div>
         );
