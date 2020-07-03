@@ -1,4 +1,6 @@
 body {
+    height: 100%;
+    width: 100%;
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
         "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
@@ -6,9 +8,15 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+#root {
+    height: 100%;
+    width: 100%;
+}
+
 html,
 body {
     height: 100%;
+    width: 100%;
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -55,6 +63,10 @@ body {
     align-items: center;
 }
 
+.landingPage_title > i {
+    margin: 0 16px;
+}
+
 .landingPage_main_title > * {
     display: inline-flex;
 }
@@ -65,8 +77,8 @@ body {
 }
 
 .landingPage_enter {
-    font-size: 4vw;
-    line-height: 4vw;
+    font-size: 3vw;
+    line-height: 3vw;
     text-decoration: none;
     margin-top: 16px;
     width: 50%;
@@ -74,10 +86,11 @@ body {
     text-align: center;
 }
 
-#root {
-    height: 100%;
+.landingPage_features {
+    padding: 32px;
 }
 
-code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+.landingPage_features * {
+    margin: 0;
+    box-sizing: border-box;
 }

@@ -34,17 +34,19 @@ class ManageUsers extends React.Component {
     render(){
 
         return(
-            <div id="userContainer" className="userContainer">
-                hi this admin
-                {/* {this.generateUsers()} */}
-                {this.props.users.map((user) => {
-                    if(user.username !== 'admin'){
-                        return <div key ={user.username} className="user-val">
-                                    <span>{user.username}</span>
-                                    <button onClick={(e)=>{this.props.deleteUser(e, user)}}>delete</button>
-                                </div>
-                    }
-                })}
+            <div>
+                <h1>Manage Users</h1>
+                <div className="userContainer">
+                    {/* {this.generateUsers()} */}
+                    {this.props.users.map((user) => {
+                        if(user.username !== 'admin'){
+                            return <div key ={user.username} className="user-val">
+                                        <span>{user.username}</span>
+                                        <button onClick={(e)=>{this.props.deleteUser(e, user)}}>delete</button>
+                                    </div>
+                        }
+                    })}
+                </div>
 
             </div>
         )

@@ -73,3 +73,6 @@
     text-align: left;
 }
 
+.fas, .fab, .far {
+    margin: 0 6px;
+}

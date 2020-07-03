@@ -23,3 +23,7 @@ header > :not(:first-child) {
 header > div * {
     font-size: 1em;
 }
+
+.fas {
+    margin: 0 6px;
+}

@@ -22,6 +22,7 @@ class MenuItem extends React.Component {
                 onMouseEnter={() => this.setState({hover: true})}
                 onMouseLeave={() => this.setState({hover: false})}
             >
+                {this.props.icon}
                 {this.props.text}
             </button>
         );

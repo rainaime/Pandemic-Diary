@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./index.css";
 
 import * as serviceWorker from "./serviceWorker";
@@ -21,11 +22,13 @@ const LandingPage = (
             <div className="landingPage_main_blur">
                 <div className="landingPage_main_title" style={mainStyle}>
                     <h1 className="landingPage_title" style={{ color: Colors.textAccent1 }}>
-                        Pandemic Diary
+                        Pandemic
+                        <i class="fas fa-virus"></i>
+                        Diary
                     </h1>
                     <p className="landingPage_desc" style={{ color: Colors.textColorLight }}>
-                        A website to help you keep track of your plans during (and especially after)
-                        the pandemic.
+                        A website to help you keep track of your plans during and after the
+                        pandemic.
                     </p>
                 </div>
                 <Link
@@ -36,10 +39,13 @@ const LandingPage = (
                 </Link>
             </div>
         </div>
-        {/* TODO: Maybe add a features page here.
-        <div className="landingPage_main">
-            <Link to="./App"></Link>
-        </div>*/}
+        {/* Features page
+        <div className="landingPage_features" style={{backgroundColor: Colors.background, color: Colors.textColorLight}}>
+            <h1>Features</h1>
+            <ul>
+                <li>dsa</li>
+            </ul>
+        </div> */}
     </div>
 );
 

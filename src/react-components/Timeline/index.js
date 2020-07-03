@@ -21,7 +21,7 @@ const canvasSettings = {
  *  - updateCurrentDate:    callback function used to update date elsewhere
  */
 class Timeline extends React.Component {
-    flashIfNotInteracted;       // Notify the user that they should use this
+    flashIfNotInteracted; // Notify the user that they should use this
     constructor(props) {
         super(props);
 
@@ -67,7 +67,9 @@ class Timeline extends React.Component {
                         visibility: this.flashIfNotInteracted ? "visible" : "hidden",
                         color: Colors.textColorLight,
                     }}>
+                    <i class="fas fa-info"></i>
                     To interact with the timeline, click and hold here!
+                    <i class="fas fa-info"></i>
                 </span>
                 <TimelineDate
                     style={{
@@ -128,7 +130,7 @@ class Timeline extends React.Component {
         ctx.canvas.height = this.canvasRef.current.offsetHeight;
         this.setState({
             timelineDate_ypos: ctx.canvas.height,
-        })
+        });
 
         ctx.strokeStyle = Colors.backgroundLightAccent;
         ctx.lineCap = "round";

@@ -73,7 +73,6 @@ class PopoutButton extends React.Component {
         return React.Children.toArray(this.props.children).map((child, i) => {
             const childPos = this.getChildPos(i);
             return React.cloneElement(child, {
-                className: "popoutButton-children",
                 key: i.toString(),
                 radius: childSettings.childRadius,
                 pos: this.getChildPos(i),
@@ -116,7 +115,7 @@ class PopoutButton extends React.Component {
                 onMouseEnter={() => this.setState({ hover: true })}
                 onMouseLeave={() => this.setState({ hover: false })}
             >
-                <span className="popoutButton" style={buttonStylesCopy}>+</span>
+                <span className="popoutButton" style={buttonStylesCopy}><i class="fas fa-plus"></i></span>
                 {this.renderChildren()}
             </div>
         );
