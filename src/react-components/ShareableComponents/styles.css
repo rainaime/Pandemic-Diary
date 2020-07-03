@@ -47,3 +47,8 @@
     /* should replace this with share icon */
     background-color: white;
 }
+
+.reportButton{
+    float: right;
+    background-color: green;
+}

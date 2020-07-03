@@ -15,7 +15,8 @@ import { UserStatus, UserStatusMenu } from "./react-components/UserStatus";
 import ShareablePopup from "./react-components/ShareableComponents";
 import { ImageIcon, ImageMenu } from "./react-components/ShareableComponents/Image";
 import { MarkerIcon, MarkerMenu } from "./react-components/ShareableComponents/Marker";
-import { NotificationMenu, NotificationIcon } from "./react-components/Menu/NotificationBar"
+import { NotificationMenu, NotificationIcon } from "./react-components/Menu/NotificationBar";
+import { ReportMenu, ManageReports } from "./react-components/Menu/Report";
 
 const appSettings = {
     minDate: new Date("December 1 2019"),
@@ -23,7 +24,8 @@ const appSettings = {
 };
 
 let users = [
-    { username: "admin", password: "admin", shareables: [], shared: [] },
+    //admin probably does not need shareables or shared
+    { username: "admin", password: "admin", shareables: [], shared: [], reports: [] },
     { username: "user", password: "user", shareables: [], shared: [] },
     { username: "user2", password: "user2", shareables: [], shared: [] },
 ];
@@ -48,7 +50,7 @@ class App extends React.Component {
         currentPopup: "",
         idcounts: 1,
         currentUser: users[1],
-        showNotification: true,
+        showNotification: false,
     };
 
     renderPopup(currentPopup) {
@@ -87,9 +89,24 @@ class App extends React.Component {
             currentMarker: this.state.selectedShareable,
         }
 
+        const ReportMenuProps = {
+            reportMarker: this.reportMarker.bind(this),
+            enterPressed: this.setCurrentMode.bind(this),
+            //the if condition is because we dont know if currentuser will be null
+            currentUserUsername: 
+                this.state.currentUser === null ?
+                null : this.state.currentUser.username,
+            shareable: this.state.selectedShareable,
+        }
+
         const ManageUsersProps = {
             users: users,
             deleteUser: this.deleteUser.bind(this),
+        }
+
+        const ManageReportsProps = {
+            reports: users[0].reports,
+            deleteReportedShareable: this.deleteMarker.bind(this),
         }
 
         switch (currentPopup) {
@@ -98,14 +115,15 @@ class App extends React.Component {
             case "image":
                 return <ImageMenu {...ImageMenuProps} />;
             case "notification":
-                return (
-                    <NotificationMenu
-                        {...NotificationMenuProps}/>
-                );
+                return <NotificationMenu {...NotificationMenuProps}/>;
+            case "report":
+                return <ReportMenu {...ReportMenuProps}/>  
             case "login":
                 return <UserStatusMenu {...UserStatusMenuProps} />;
             case "manageUser":
                 return <ManageUsers {...ManageUsersProps} />;
+            case "manageReports":
+                return <ManageReports {...ManageReportsProps} />;
             default:
                 return null;
         }
@@ -161,6 +179,7 @@ class App extends React.Component {
             edit: this.editMarker.bind(this),
             delete: this.deleteMarker.bind(this),
             share: this.shareMarkerState.bind(this),
+            report: this.reportMarkerState.bind(this),
         };
 
         const PopoutButtonIconProps = {
@@ -177,6 +196,7 @@ class App extends React.Component {
 
         const AdminProps = {
             openUserManage: () => this.setState({ currentMode: "manageUser", currentPopup: "manageUser"}),
+            openReports: () => this.setState({currentMode: "manageReports", currentPopup: "manageReports"})
         }
 
         let leftMenuView;
@@ -353,6 +373,22 @@ class App extends React.Component {
         this.setState({ currentShareable: this.state.selectedShareable });
         this.setState({ currentPopup: "notification" });
         this.setState({ currentMode: "editing" });
+    }
+
+    reportMarkerState(){
+        this.setState({
+            currentShareable: this.state.selectedShareable,
+            currentPopup: "report",
+            currentMode: "editing" //not sure if you need this one i honestly dont know how this works
+        })
+    }
+
+    reportMarker(reportMessage, username, shareable){
+        let report = {};
+        report.message = reportMessage;
+        report.userReporting = username;
+        report.shareable = shareable;
+        users[0].reports.push(report);
     }
 
     setCurrentMode() {
