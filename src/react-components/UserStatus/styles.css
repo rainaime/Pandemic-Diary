@@ -33,3 +33,9 @@ button {
 .login-buttons > * {
     width: 50%;
 }
+
+.hoverOrange:hover{
+    color: #ff7c43;
+}
+
+

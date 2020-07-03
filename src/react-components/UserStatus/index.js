@@ -7,19 +7,19 @@ import SignUp from "./SignUp";
 class UserStatus extends React.Component {
     render() {
         // TODO: Get user status from server (phase 2)
-        const messageStyle = { color: "white", fontWeight: "bold", display: "inline" };
+        const messageStyle = {fontWeight: "bold", display: "inline" };
         const message = this.props.currentUser ? (
             <h2 className="userStatus" style={messageStyle}>
                 Welcome back, {this.props.currentUser.username}!
             </h2>
         ) : (
-            <button className="userStatus" type="button" onClick={this.props.openLoginMenu} style={messageStyle}>
+            <button className="userStatus hoverOrange" type="button" onClick={this.props.openLoginMenu} style={messageStyle}>
                 Login or Sign Up Here!
             </button>
         );
 
         const logOut = this.props.currentUser ? (
-            <button className="userStatus" onClick={this.props.logout}>Log Out</button>
+            <button className="userStatus hoverOrange" onClick={this.props.logout}>Log Out</button>
         ) : null;
 
         return (
