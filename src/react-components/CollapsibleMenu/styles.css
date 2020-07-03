@@ -50,3 +50,7 @@
     font-size: 16px;
     text-transform: capitalize;
 }
+
+.menu-views span:hover {
+    color: #ff7c43;
+}

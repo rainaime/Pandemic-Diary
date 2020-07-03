@@ -33,3 +33,7 @@ button {
 .login-buttons > * {
     width: 50%;
 }
+
+.userStatusButton:hover{
+    color: #ff7c43;
+}

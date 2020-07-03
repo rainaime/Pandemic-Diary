@@ -1,5 +1,5 @@
 import React from "react";
-import HorizontalScroll from "react-scroll-horizontal";
+// import HorizontalScroll from "react-scroll-horizontal";
 import Colors from "../../site-styles/Colors";
 import "./styles.css";
 
