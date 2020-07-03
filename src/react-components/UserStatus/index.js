@@ -13,13 +13,13 @@ class UserStatus extends React.Component {
                 Welcome back, {this.props.currentUser.username}!
             </h2>
         ) : (
-            <button className="userStatusButton" type="button" onClick={this.props.openLoginMenu} style={messageStyle}>
+            <button className="userStatus hoverOrange" type="button" onClick={this.props.openLoginMenu} style={messageStyle}>
                 Login or Sign Up Here!
             </button>
         );
 
         const logOut = this.props.currentUser ? (
-            <button className="userStatusButton" onClick={this.props.logout}>Log Out</button>
+            <button className="userStatus hoverOrange" onClick={this.props.logout}>Log Out</button>
         ) : null;
 
         return (

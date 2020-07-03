@@ -64,7 +64,7 @@ export class SignUp extends Component {
                     <button
                         type="button"
                         value="Back to Login"
-                        className="loginButton"
+                        className="loginButton hoverOrange"
                         onClick={() => {
                             this.props.backToLogin();
                             this.setState({ invalidSignUp: false });
@@ -75,7 +75,7 @@ export class SignUp extends Component {
                     <button
                         type="button"
                         value="Register"
-                        className="SignInButton"
+                        className="SignInButton hoverOrange"
                         onClick={this.addNewUser.bind(this)}>
                         Register
                     </button>

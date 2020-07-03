@@ -69,7 +69,7 @@ export class Login extends Component {
                         <button
                             type="button"
                             value="Login"
-                            className="loginButton"
+                            className="loginButton hoverOrange"
                             onClick={this.loginAttempt}>
                             Login
                         </button>
@@ -77,7 +77,7 @@ export class Login extends Component {
                         <button
                             type="button"
                             value="Sign In"
-                            className="SignInButton"
+                            className="SignInButton hoverOrange"
                             onClick={this.props.goToSignup}>
                             Sign Up
                         </button>

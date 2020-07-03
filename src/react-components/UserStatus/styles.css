@@ -34,6 +34,8 @@ button {
     width: 50%;
 }
 
-.userStatusButton:hover{
+.hoverOrange:hover{
     color: #ff7c43;
 }
+
+
