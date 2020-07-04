@@ -19,7 +19,9 @@ const mainStyle = {
 
 const pandocFeatures = (
     <>
-        <h1 className="landingPage_title" style={{ color: Colors.textAccent1 }}>Features</h1>
+        <h1 className="landingPage_title" style={{ color: Colors.textAccent1 }}>
+            Features
+        </h1>
         <p>Here are some examples of user interactions that are available:</p>
         <div className="landingPage_features_flex">
             <div>
@@ -33,14 +35,16 @@ const pandocFeatures = (
                     Selecting a date to travel to: by clicking and dragging on the Timeline, you can
                     see content specific to a certain day.
                 </p>
-                <img height="100" alt="" src="/timeline.png" />
+                <div>
+                    <img alt="" src="/timeline.png" />
+                </div>
             </div>
 
             <div>
-                <p>
-                    Viewing News specific to a certain day
-                </p>
-                    <img height="300" alt="" src="/news.png" />
+                <p>Viewing News specific to a certain day</p>
+                <div>
+                <img alt="" src="/news.png" />
+                </div>
             </div>
             <div>
                 <p>
@@ -49,7 +53,9 @@ const pandocFeatures = (
                     somewhere on the to place the marker. A popup window will appear, allowing you
                     to modify the contents of the marker you placed.
                 </p>
-                <img height="300" alt="" src="/addingmarkers.gif" />
+                <div>
+                <img alt="" src="/addingmarkers.gif" />
+                </div>
             </div>
             <div>
                 <p>
@@ -64,7 +70,9 @@ const pandocFeatures = (
                     Editing markers you’ve placed: currently, there is the option to share your
                     marker, edit its contents, or delete it.
                 </p>
-                <img height="300" alt="" src="/editingmarkers.png" />
+                <div>
+                <img alt="" src="/editingmarkers.png" />
+                </div>
             </div>
             <div>
                 <p>
@@ -72,7 +80,9 @@ const pandocFeatures = (
                     typing in the user’s username), the other user will see the shareable pop up in
                     their notifications box.
                 </p>
-                <img height="300" alt="" src="/sharedmarkers.png" />
+                <div>
+                <img alt="" src="/sharedmarkers.png" />
+                </div>
             </div>
             <div>
                 <p>
@@ -108,8 +118,10 @@ const LandingPage = (
                 </Link>
             </div>
         </div>
-        <div className="landingPage_features" style={{backgroundColor: Colors.background + "D3", color: Colors.textColorLight}}>
-        {pandocFeatures}
+        <div
+            className="landingPage_features"
+            style={{ backgroundColor: Colors.background + "D3", color: Colors.textColorLight }}>
+            {pandocFeatures}
         </div>
     </div>
 );
