@@ -21,6 +21,17 @@ export class Login extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
+    usernameRef = React.createRef();
+    passwordRef = React.createRef();
+
+    componentDidUpdate() {
+        if (this.props.shouldClear) {
+            this.usernameRef.current.value = "";
+            this.passwordRef.current.value = "";
+            this.props.onPopupExit();
+        }
+    }
+
     //try login if user presses enter
     keyPressed(e) {
         if (e.key === "Enter") {
@@ -37,6 +48,8 @@ export class Login extends Component {
     //run callback function when user tries to login
     loginAttempt = () => {
         this.props.loginCallback(this.state.username, this.state.password);
+        this.usernameRef.current.value = "";
+        this.passwordRef.current.value = "";
     };
 
     render() {
@@ -51,6 +64,7 @@ export class Login extends Component {
                     <div className="login-item">
                         <label htmlFor="username">Username:</label>
                         <input
+                            ref={this.usernameRef}
                             type="text"
                             name="username"
                             placeholder="Username"
@@ -61,6 +75,7 @@ export class Login extends Component {
                     <div className="login-item">
                         <label htmlFor="password">Password:</label>
                         <input
+                            ref={this.passwordRef}
                             type="password"
                             name="password"
                             placeholder="Password"

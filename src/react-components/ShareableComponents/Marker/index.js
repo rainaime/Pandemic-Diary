@@ -83,6 +83,14 @@ class MarkerIcon extends React.Component {
  * - updateCurrentDate: function to update current date
  */
 class MarkerMenu extends React.Component {
+    inputRef = React.createRef();
+
+    componentDidUpdate() {
+        if (this.props.shouldClear) {
+            this.inputRef.current.value = "";
+            this.props.onPopupExit();
+        }
+    }
 
     render() {
         //initially created then the default selectedType is News
@@ -97,6 +105,7 @@ class MarkerMenu extends React.Component {
                     100 characters.
                 </p>
                 <textarea
+                    ref={this.inputRef}
                     value={this.props.state.content}
                     id="textArea"
                     className="text_area"

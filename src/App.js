@@ -72,7 +72,6 @@ class App extends React.Component {
         }
         example.img.src = "/marker.png"
         this.addToShareableArray(example)
-
     }
 
     renderPopup(currentPopup) {
@@ -83,6 +82,8 @@ class App extends React.Component {
             updateArticleType: this.updateArticleType.bind(this),
             shareableDate: this.state.shareableDate,
             updateCurrentDate: this.updateCurrentDate.bind(this),
+            shouldClear: this.state.popupExit,
+            onPopupExit: this.onPopupExit.bind(this)
         };
 
         const ImageMenuProps = {
@@ -91,6 +92,8 @@ class App extends React.Component {
             updateArticleType: this.updateArticleType.bind(this),
             shareableDate: this.state.shareableDate,
             updateCurrentDate: this.updateCurrentDate.bind(this),
+            shouldClear: this.state.popupExit,
+            onPopupExit: this.onPopupExit.bind(this)
         };
 
         const UserStatusMenuProps = {
@@ -102,6 +105,8 @@ class App extends React.Component {
                 users.push(newUser);
             },
             users: users,
+            shouldClear: this.state.popupExit,
+            onPopupExit: this.onPopupExit.bind(this)
         };
 
         const NotificationMenuProps = {
@@ -119,6 +124,8 @@ class App extends React.Component {
                 this.state.currentUser === null ?
                 null : this.state.currentUser.username,
             shareable: this.state.selectedShareable,
+            shouldClear: this.state.popupExit,
+            onPopupExit: this.onPopupExit.bind(this)
         }
 
         const ManageUsersProps = {
@@ -177,6 +184,8 @@ class App extends React.Component {
             currentUser: this.state.currentUser,
             openLoginMenu: () => this.setState({ currentMode: "login", currentPopup: "login" }),
             logout: () => this.updateCurrentUser(null),
+            shouldClear: this.state.popupExit,
+            onPopupExit: this.onPopupExit.bind(this)
         };
 
         const FilterProps  = {
@@ -421,7 +430,11 @@ class App extends React.Component {
 
     setCurrentMode() {
         this.setState({ currentMode: "normal" });
-        console.log("enter")
+        this.setState({ popupExit: true })
+    }
+
+    onPopupExit() {
+        this.setState({ popupExit: false });
     }
 
     updateCurrentUser(user) {
@@ -484,11 +497,8 @@ class App extends React.Component {
     renderNotification(){
         if (this.state.showNotification){
             this.setState({showNotification: false})
-            if (this.state.currentUser != null)
-                this.setState({currentUser: {shared: []}})
         } else {
             this.setState({showNotification: true})
-
         }
     }
 

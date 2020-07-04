@@ -8,6 +8,16 @@ class ReportMenu extends React.Component {
             reportMessage: "",
         };
     }
+
+    inputRef = React.createRef();
+
+    componentDidUpdate() {
+        if (this.props.shouldClear) {
+            this.inputRef.current.value = "";
+            this.props.onPopupExit();
+        }
+    }
+
     render() {
         return (
             <>
@@ -22,6 +32,7 @@ class ReportMenu extends React.Component {
                 </p>
                 <form>
                     <textarea
+                        ref={this.inputRef}
                         className="text_area"
                         onChange={(e) => this.setState({ reportMessage: e.target.value })}
                         onKeyPress={(event) => {

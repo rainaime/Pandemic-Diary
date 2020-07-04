@@ -18,6 +18,17 @@ export class SignUp extends Component {
         invalidSignUp: false,
     };
 
+    usernameRef = React.createRef();
+    passwordRef = React.createRef();
+
+    componentDidUpdate() {
+        if (this.props.shouldClear) {
+            this.usernameRef.current.value = "";
+            this.passwordRef.current.value = "";
+            this.props.onPopupExit();
+        }
+    }
+
     //add new user if this is a new user
     addNewUser() {
         let usedUserName = false;
@@ -32,6 +43,9 @@ export class SignUp extends Component {
             this.props.addUser(this.state);
             this.setState({ invalidSignUp: false });
         }
+
+        this.usernameRef.current.value = "";
+        this.passwordRef.current.value = "";
     }
 
     render() {
@@ -46,6 +60,7 @@ export class SignUp extends Component {
                     <div className="login-item">
                         <label htmlFor="username">New username: </label>
                         <input
+                            ref={this.usernameRef}
                             type="text"
                             name="username"
                             placeholder="Username"
@@ -57,6 +72,7 @@ export class SignUp extends Component {
                     <div className="login-item">
                         <label htmlFor="password">New password: </label>
                         <input
+                            ref={this.passwordRef}
                             type="password"
                             name="password"
                             placeholder="Password"

@@ -56,7 +56,6 @@ class ShareablePopup extends React.Component {
                     <span>
                         <span className="content">{shareableContent.date}</span>
                         <br></br>
-                        {/* TODO: Bug when adding shareable while not logged in it doesnt show up as  */}
                         {shareableContent.content}
                     </span>
                 </div>

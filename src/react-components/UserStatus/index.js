@@ -86,6 +86,8 @@ class UserStatusMenu extends React.Component {
                     this.setState({ currentComp: "signup" });
                     this.setState({invalidLogin: false});
                 }}
+                shouldClear={this.props.shouldClear}
+                onPopupExit={this.props.onPopupExit}
             />
         );
         const signupComp = (
@@ -95,6 +97,8 @@ class UserStatusMenu extends React.Component {
                 }}
                 usersList={this.props.users}
                 addUser={(newUser) => {this.props.addUser(newUser); this.loginCallback(newUser.username, newUser.password)}}
+                shouldClear={this.props.shouldClear}
+                onPopupExit={this.props.onPopupExit}
             />
         );
 

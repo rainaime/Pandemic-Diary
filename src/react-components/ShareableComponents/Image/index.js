@@ -78,9 +78,16 @@ class ImageIcon extends React.Component {
  * - updateCurrentDate: function to update current date
  */
 class ImageMenu extends React.Component {
+    inputRef = React.createRef();
+
+    componentDidUpdate() {
+        if (this.props.shouldClear) {
+            this.inputRef.current.value = "";
+            this.props.onPopupExit();
+        }
+    }
+
     submitImage(e) {
-        //TODO this seems like a messy implementation the content probably should not be an img but the default was placed as an img object so idk
-        //need to check that the file being passed is actually an image file - appears that photo just wont show if wrong file but still
         const imgUrl = URL.createObjectURL(e.target.files[0]);
         this.props.image.content = <img style={{maxWidth: '90%', maxHeight: '90%'}} src={imgUrl} alt=""/>
     }
@@ -100,6 +107,7 @@ class ImageMenu extends React.Component {
                 </p>
                 <form action="image upload">
                     <input
+                        ref={this.inputRef}
                         type="file"
                         accept="image/*"
                         name="fileupload"
