@@ -1,43 +1,27 @@
 {
-  "name": "pandemic_diary",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@react-google-maps/api": "^1.9.9",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "react": "^16.13.1",
-    "react-device-detect": "^1.13.1",
-    "react-dom": "^16.13.1",
-    "react-draggable": "^4.4.3",
-    "react-google-maps-api": "^1.0.8",
-    "react-indiana-drag-scroll": "^1.6.1",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.13.1"
-  }
+    "name": "pandemic-diary",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "concurrently \"npm run db\" \"npm run server\" \"npm run client\"",
+        "db": "cd server && if [ ! -d ./data ]; then mkdir ./data; fi && mongod --dbpath ./data",
+        "server": "cd server && nodemon server.js",
+        "client": "cd client && npm start",
+        "client-install": "cd client && npm install"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/csc309-summer-2020/team01.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/csc309-summer-2020/team01/issues"
+    },
+    "homepage": "https://github.com/csc309-summer-2020/team01#readme",
+    "dependencies": {
+        "concurrently": "^5.2.0",
+        "nodemon": "^2.0.4"
+    }
 }
