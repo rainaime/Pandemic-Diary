@@ -26,8 +26,9 @@ class ShareablePopup extends React.Component {
             shareableContent.username = null;
             shareableContent.date = null;
         }
+        const position = this.props.position;
         return (
-            <div className="selectedShareable" style={this.props.style}>
+            <div className="selectedShareable" style={{...this.props.style, top: position.y, left: position.x}}>
                 <div className="selectedShareable_buttons">
                     <h3 className="header-style">
                         {shareableContent.username}

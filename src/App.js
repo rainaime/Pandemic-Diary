@@ -1,13 +1,17 @@
-import React from "react";
+import React, { createRef } from "react";
 import "./App.css";
 import Colors from "./site-styles/Colors";
 import SiteHeader from "./react-components/SiteHeader";
 import Maps from "./react-components/Maps";
+import { Marker, OverlayView } from "@react-google-maps/api";
 import Filter from "./react-components/Filter";
 import { Admin, ManageUsers } from "./react-components/UserFeatures/Admin";
 import { ReportMenu, ManageReports } from "./react-components/UserFeatures/Report";
 import { UserInfo } from "./react-components/UserFeatures/UserInfo";
-import { NotificationMenu, NotificationIcon } from "./react-components/UserFeatures/NotificationBar";
+import {
+    NotificationMenu,
+    NotificationIcon,
+} from "./react-components/UserFeatures/NotificationBar";
 import Tweets from "./react-components/Tweets";
 import News from "./react-components/News";
 import CollapsibleMenu from "./react-components/CollapsibleMenu";
@@ -31,30 +35,35 @@ let users = [
 ];
 
 class App extends React.Component {
-    state = {
-        currentLeftMenuView: "filter",
-        currentRightMenuView: "news",
-        currentMode: "normal",
-        shareables: [],
-        selectedShareable: {
-            x: -200,
-            y: -200,
-            content: "",
-            user: null,
-            type: null,
-        },
-        currentShareable: null,
-        currentDate: new Date(),
-        selectedDate: new Date(),
-        selectedShareableType: "All",
-        currentPopup: "",
-        idcounts: 2,
-        currentUser: users[1],
-        showNotification: false,
-    };
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            currentLeftMenuView: "filter",
+            currentRightMenuView: "news",
+            currentMode: "normal",
+            shareables: [],
+            selectedShareable: {
+                center: {lat: 43.6623, lng: -79.3932},
+                content: "",
+                user: null,
+                type: null,
+            },
+            shareablePopupPos: {x: -1000, y: -1000},
+            mapCtx: null,
+            currentShareable: null,
+            currentDate: new Date(),
+            selectedDate: new Date(),
+            selectedShareableType: "All",
+            currentPopup: "",
+            idcounts: 2,
+            currentUser: users[1],
+            showNotification: false,
+        };
+    }
 
     //this is just to hardcode an example marker
-    componentDidMount(){
+    componentDidMount() {
         let example = {
             content: "example content",
             date: new Date(),
@@ -64,14 +73,15 @@ class App extends React.Component {
             selectedType: "News",
             type: "marker",
             width: 20,
-            x: 459,
-            y: 305.75, 
+            center: {
+                lat: 43.6723,
+                lng: -79.3932,
+            },
             user: users[1],
             img: new Image(),
-
-        }
-        example.img.src = "/marker.png"
-        this.addToShareableArray(example)
+        };
+        example.img.src = "/marker.png";
+        this.addToShareableArray(example);
     }
 
     renderPopup(currentPopup) {
@@ -83,7 +93,7 @@ class App extends React.Component {
             shareableDate: this.state.shareableDate,
             updateCurrentDate: this.updateCurrentDate.bind(this),
             shouldClear: this.state.popupExit,
-            onPopupExit: this.onPopupExit.bind(this)
+            onPopupExit: this.onPopupExit.bind(this),
         };
 
         const ImageMenuProps = {
@@ -93,7 +103,7 @@ class App extends React.Component {
             shareableDate: this.state.shareableDate,
             updateCurrentDate: this.updateCurrentDate.bind(this),
             shouldClear: this.state.popupExit,
-            onPopupExit: this.onPopupExit.bind(this)
+            onPopupExit: this.onPopupExit.bind(this),
         };
 
         const UserStatusMenuProps = {
@@ -106,7 +116,7 @@ class App extends React.Component {
             },
             users: users,
             shouldClear: this.state.popupExit,
-            onPopupExit: this.onPopupExit.bind(this)
+            onPopupExit: this.onPopupExit.bind(this),
         };
 
         const NotificationMenuProps = {
@@ -114,29 +124,28 @@ class App extends React.Component {
             currentUser: this.state.currentUser,
             enterPressed: this.setCurrentMode.bind(this),
             currentMarker: this.state.selectedShareable,
-        }
+        };
 
         const ReportMenuProps = {
             reportMarker: this.reportMarker.bind(this),
             enterPressed: this.setCurrentMode.bind(this),
             //the if condition is because we dont know if currentuser will be null
-            currentUserUsername: 
-                this.state.currentUser === null ?
-                null : this.state.currentUser.username,
+            currentUserUsername:
+                this.state.currentUser === null ? null : this.state.currentUser.username,
             shareable: this.state.selectedShareable,
             shouldClear: this.state.popupExit,
-            onPopupExit: this.onPopupExit.bind(this)
-        }
+            onPopupExit: this.onPopupExit.bind(this),
+        };
 
         const ManageUsersProps = {
             users: users,
             deleteUser: this.deleteUser.bind(this),
-        }
+        };
 
         const ManageReportsProps = {
             reports: users[0].reports,
             deleteReportedShareable: this.deleteReportedShareable.bind(this),
-        }
+        };
 
         switch (currentPopup) {
             case "marker":
@@ -144,9 +153,9 @@ class App extends React.Component {
             case "image":
                 return <ImageMenu {...ImageMenuProps} />;
             case "notification":
-                return <NotificationMenu {...NotificationMenuProps}/>;
+                return <NotificationMenu {...NotificationMenuProps} />;
             case "report":
-                return <ReportMenu {...ReportMenuProps}/>  
+                return <ReportMenu {...ReportMenuProps} />;
             case "login":
                 return <UserStatusMenu {...UserStatusMenuProps} />;
             case "manageUser":
@@ -156,6 +165,52 @@ class App extends React.Component {
             default:
                 return null;
         }
+    }
+
+    bindMap(map) {
+        this.setState({
+            mapCtx: map,
+        });
+    }
+
+    /**
+     * https://stackoverflow.com/questions/5471848/how-to-get-screen-xy-from-google-maps-v3-latlng
+     */
+    computeXYOfSelectedShareable() {
+        const map = this.state.mapCtx;
+
+        if (map === null || window === null || this.state.selectedShareable.center === undefined) {
+            return {x: -999, y: -999};
+        }
+
+        const numTiles = 1 << map.getZoom();
+        const projection = map.getProjection();
+        if (projection === undefined) {
+            return {x: -999, y: -999};
+        }
+        const lat = this.state.selectedShareable.center.lat;
+        const lng = this.state.selectedShareable.center.lng;
+        var worldCoordinate = projection.fromLatLngToPoint(new window.google.maps.LatLng(lat, lng));
+        var pixelCoordinate = new window.google.maps.Point(
+            worldCoordinate.x * numTiles,
+            worldCoordinate.y * numTiles
+        );
+
+        var topLeft = new window.google.maps.LatLng(
+            map.getBounds().getNorthEast().lat(),
+            map.getBounds().getSouthWest().lng()
+        );
+
+        var topLeftWorldCoordinate = projection.fromLatLngToPoint(topLeft);
+        var topLeftPixelCoordinate = new window.google.maps.Point(
+            topLeftWorldCoordinate.x * numTiles,
+            topLeftWorldCoordinate.y * numTiles
+        );
+
+        return new window.google.maps.Point(
+            pixelCoordinate.x - topLeftPixelCoordinate.x,
+            pixelCoordinate.y - topLeftPixelCoordinate.y
+        );
     }
 
     render() {
@@ -173,8 +228,6 @@ class App extends React.Component {
                         : "visible",
             },
             selectedShareable: {
-                top: this.state.selectedShareable.y + 25,
-                left: this.state.selectedShareable.x,
                 backgroundColor: Colors.background,
                 color: Colors.textColorLight,
             },
@@ -185,23 +238,24 @@ class App extends React.Component {
             openLoginMenu: () => this.setState({ currentMode: "login", currentPopup: "login" }),
             logout: () => this.updateCurrentUser(null),
             shouldClear: this.state.popupExit,
-            onPopupExit: this.onPopupExit.bind(this)
+            onPopupExit: this.onPopupExit.bind(this),
         };
 
-        const FilterProps  = {
+        const FilterProps = {
             selectType: this.selectCallback.bind(this),
             currentUser: this.state.currentUser,
         };
 
         const MapsProps = {
+            bindMap: this.bindMap.bind(this),
             currentDate: this.state.currentDate,
             shareables: this.state.shareables,
             currentShareable: this.state.currentShareable,
             addToShareableArray: this.addToShareableArray.bind(this),
             selectedType: this.state.selectedShareableType,
-            updateSelectedShareable: (s) => this.setState({ selectedShareable: s }),
             inAddMode: this.state.currentMode === "placingShareable",
             onShareablePlaced: this.onShareablePlaced.bind(this),
+            onZoomOrDrag: (function() {this.setState({shareablePopupPos: this.computeXYOfSelectedShareable()})}).bind(this)
         };
 
         const ShareablePopupProps = {
@@ -211,6 +265,7 @@ class App extends React.Component {
             delete: this.deleteMarker.bind(this),
             share: this.shareMarkerState.bind(this),
             report: this.reportMarkerState.bind(this),
+            position: this.state.shareablePopupPos,
         };
 
         const PopoutButtonIconProps = {
@@ -226,20 +281,22 @@ class App extends React.Component {
         };
 
         const AdminProps = {
-            openUserManage: () => this.setState({ currentMode: "manageUser", currentPopup: "manageUser"}),
-            openReports: () => this.setState({currentMode: "manageReports", currentPopup: "manageReports"})
-        }
+            openUserManage: () =>
+                this.setState({ currentMode: "manageUser", currentPopup: "manageUser" }),
+            openReports: () =>
+                this.setState({ currentMode: "manageReports", currentPopup: "manageReports" }),
+        };
 
         let leftMenuView;
-        switch(this.state.currentLeftMenuView) {
+        switch (this.state.currentLeftMenuView) {
             case "filter":
-                leftMenuView = <Filter {...FilterProps}/>;
+                leftMenuView = <Filter {...FilterProps} />;
                 break;
             case "info":
                 if (this.state.currentUser && this.state.currentUser.username === "admin") {
-                    leftMenuView = <Admin {...AdminProps}/>
+                    leftMenuView = <Admin {...AdminProps} />;
                 } else {
-                    leftMenuView = <UserInfo currentUser={this.state.currentUser}/>
+                    leftMenuView = <UserInfo currentUser={this.state.currentUser} />;
                 }
                 break;
             default:
@@ -248,12 +305,12 @@ class App extends React.Component {
         }
 
         let rightMenuView;
-        switch(this.state.currentRightMenuView) {
+        switch (this.state.currentRightMenuView) {
             case "tweets":
-                rightMenuView = <Tweets user={this.state.currentUser}/>;
+                rightMenuView = <Tweets user={this.state.currentUser} />;
                 break;
             case "news":
-                rightMenuView = <News currentDate={this.state.currentDate}/>;
+                rightMenuView = <News currentDate={this.state.currentDate} />;
                 break;
             default:
                 rightMenuView = null;
@@ -261,22 +318,29 @@ class App extends React.Component {
         }
 
         return (
-            <div className="App" style={{...dynamicStyles.cursor, backgroundColor: Colors.backgroundDarkAccent}}>
+            <div
+                className="App"
+                style={{ ...dynamicStyles.cursor, backgroundColor: Colors.backgroundDarkAccent }}>
                 <SiteHeader>
-                    <span className="currentDate"><i className="fas fa-calendar-alt"></i>{this.state.currentDate.toDateString()}</span>
-                    {this.state.currentUser != null && 
-                    <button className="button" 
-                        onClick={this.renderNotification.bind(this)}>
-                        <i className="fas fa-bell"></i>Notifications
-                    </button>}
-                    {/* <input type="image" src="./share.png" 
-                        onClick={this.renderNotification.bind(this)}
-                        style={{maxWidth: "100%", maxHeight: "100%"}}/> */}
+                    <span className="currentDate">
+                        <i className="fas fa-calendar-alt"></i>
+                        {this.state.currentDate.toDateString()}
+                    </span>
+                    {this.state.currentUser != null && (
+                        <button className="button" onClick={this.renderNotification.bind(this)}>
+                            <i className="fas fa-bell"></i>Notifications
+                        </button>
+                    )}
                     <UserStatus {...UserStatusProps} />
                 </SiteHeader>
 
                 <div className="mainBody">
-                    <CollapsibleMenu views={["filter", "info"]} switchView={(newView) => {this.setState({currentLeftMenuView: newView})}} position="left">
+                    <CollapsibleMenu
+                        views={["filter", "info"]}
+                        switchView={(newView) => {
+                            this.setState({ currentLeftMenuView: newView });
+                        }}
+                        position="left">
                         {leftMenuView}
                     </CollapsibleMenu>
 
@@ -284,13 +348,33 @@ class App extends React.Component {
                      * the Maps component from google-map-react which conflict with flexboxes */}
                     <div className="outerMapDiv">
                         <div className="innerMapDiv">
-                {this.state.showNotification && <NotificationIcon user={this.state.currentUser}/>}
+                            {this.state.showNotification && (
+                                <NotificationIcon user={this.state.currentUser} />
+                            )}
                             <Maps {...MapsProps}>
                                 <ShareablePopup
+                                    key={1}
                                     className="selectedShareable"
                                     style={dynamicStyles.selectedShareable}
                                     {...ShareablePopupProps}
-                                />
+                                />{this.state.shareables.map((s, i) => (
+                                            <Marker
+                                                key={i + 2}
+                                                options={{
+                                                    // TODO: Need to change the underlying representation of ImageIcon and MarkerIcon, then the icon URL can be changed.
+                                                    icon: {
+                                                        url:
+                                                            "https://developers.google.com/maps/images/maps-icon.svg",
+                                                    },
+                                                }}
+                                                onClick={() => {this.setState({shareablePopupPos: {x: -1000, y: -1000}})}}
+                                                onMouseOver={() => {
+                                                    this.setState({ selectedShareable: s });
+                                                    this.setState({shareablePopupPos: this.computeXYOfSelectedShareable()});
+                                                }}
+                                                position={s.center}
+                                            />
+                                        ))}
                             </Maps>
                         </div>
                         <div style={dynamicStyles.popupBox} className="popupBox">
@@ -302,7 +386,12 @@ class App extends React.Component {
                             <ImageIcon {...PopoutButtonIconProps} />
                         </PopoutButton>
                     </div>
-                    <CollapsibleMenu views={["news", "tweets"]} switchView={(newView) => {this.setState({currentRightMenuView: newView})}} position="right">
+                    <CollapsibleMenu
+                        views={["news", "tweets"]}
+                        switchView={(newView) => {
+                            this.setState({ currentRightMenuView: newView });
+                        }}
+                        position="right">
                         {rightMenuView}
                     </CollapsibleMenu>
                 </div>
@@ -311,20 +400,20 @@ class App extends React.Component {
         );
     }
 
-    deleteUser(e, user){
-        e.preventDefault()
+    deleteUser(e, user) {
+        e.preventDefault();
         //filter shareables in state
         this.setState((prevState) => ({
             shareables: prevState.shareables.filter(
-                (element) => !user.shareables.includes(element)),
+                (element) => !user.shareables.includes(element)
+            ),
         }));
 
-        users = users.filter((element) => user !== element);//filter users lsit
+        users = users.filter((element) => user !== element); //filter users lsit
 
         this.setState({
             selectedShareable: {
-                x: -200,
-                y: -200,
+                center: {lat: 63.6623, lng: -79.3932},
                 content: "",
                 user: null,
                 shareableType: null,
@@ -368,6 +457,7 @@ class App extends React.Component {
     }
 
     onShareablePlaced(popupType) {
+        console.log(this.state.currentShareable);
         this.setState({
             currentMode: "editingShareable",
             currentPopup: this.state.currentShareable.type,
@@ -389,20 +479,19 @@ class App extends React.Component {
 
     deleteMarker(marker) {
         this.setState((prevState) => ({
-            shareables: prevState.shareables.filter(
-                (element) => element.id !== marker.id
-            ),
+            shareables: prevState.shareables.filter((element) => element.id !== marker.id),
         }));
-
         const selectedShareableCopy = Object.assign({}, this.state.selectedShareable);
-        selectedShareableCopy.x = -200;
-        selectedShareableCopy.y = -200;
+        selectedShareableCopy.center = {
+            lat: 1000,
+            lng: 1000,
+        };
         this.setState({ selectedShareable: selectedShareableCopy });
     }
 
     deleteReportedShareable(marker) {
         this.deleteMarker(marker);
-        marker.user.shareables = marker.user.shareables.filter((s) => s !== marker)
+        marker.user.shareables = marker.user.shareables.filter((s) => s !== marker);
         users[0].reports = users[0].reports.filter((s) => s.shareable !== marker);
     }
 
@@ -412,15 +501,15 @@ class App extends React.Component {
         this.setState({ currentMode: "editing" });
     }
 
-    reportMarkerState(){
+    reportMarkerState() {
         this.setState({
             currentShareable: this.state.selectedShareable,
             currentPopup: "report",
-            currentMode: "editing"
-        })
+            currentMode: "editing",
+        });
     }
 
-    reportMarker(reportMessage, username, shareable){
+    reportMarker(reportMessage, username, shareable) {
         let report = {};
         report.message = reportMessage;
         report.userReporting = username;
@@ -430,7 +519,7 @@ class App extends React.Component {
 
     setCurrentMode() {
         this.setState({ currentMode: "normal" });
-        this.setState({ popupExit: true })
+        this.setState({ popupExit: true });
     }
 
     onPopupExit() {
@@ -439,7 +528,7 @@ class App extends React.Component {
 
     updateCurrentUser(user) {
         this.setState({ currentUser: user });
-        this.setState({showNotification: false})
+        this.setState({ showNotification: false });
     }
 
     userCanEdit() {
@@ -461,11 +550,11 @@ class App extends React.Component {
         else return this.state.selectedShareable.user.username;
     }
 
-    shareShareable(username){
-        let user = null
-        users.forEach(element => {
-            if (element.username === username){
-                user = element
+    shareShareable(username) {
+        let user = null;
+        users.forEach((element) => {
+            if (element.username === username) {
+                user = element;
             }
         });
 
@@ -485,8 +574,7 @@ class App extends React.Component {
         this.setState({ selectedShareableType: type });
         this.setState({
             selectedShareable: {
-                x: -200,
-                y: -200,
+                center: {lat: 1000, lng: 1000},
                 content: "",
                 user: null,
                 shareableType: null,
@@ -494,11 +582,11 @@ class App extends React.Component {
         });
     }
 
-    renderNotification(){
-        if (this.state.showNotification){
-            this.setState({showNotification: false})
+    renderNotification() {
+        if (this.state.showNotification) {
+            this.setState({ showNotification: false });
         } else {
-            this.setState({showNotification: true})
+            this.setState({ showNotification: true });
         }
     }
 
@@ -513,8 +601,7 @@ class App extends React.Component {
         this.setState({ currentDate: time });
         this.setState({
             selectedShareable: {
-                x: -200,
-                y: -200,
+                center: {lat: 1000, lng: 1000},
                 content: "",
                 user: null,
                 shareableType: null,

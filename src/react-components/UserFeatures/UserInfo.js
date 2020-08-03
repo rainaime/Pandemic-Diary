@@ -28,8 +28,8 @@ export class UserInfo extends Component {
                     {/* there is a bug here that when a shareable is deleted
                         the mutation does not affect this array as well which causes the render here to render deleted shareables*/}
                     {/* content_container does not scroll rn */}
-                    {this.props.currentUser.shareables.map((shareable) =>
-                        this.renderShareable(shareable)
+                    {this.props.currentUser.shareables.map((shareable, i) =>
+                        this.renderShareable(shareable, i)
                     )}
                 </div>
             </div>
@@ -37,9 +37,9 @@ export class UserInfo extends Component {
     }
 
     //render shareables to display
-    renderShareable(shareable) {
+    renderShareable(shareable, i) {
         return (
-            <div style={{ border: "1px solid white" }}>
+            <div key={i} style={{ border: "1px solid white" }}>
                 {shareable.date.toDateString()}: <br/>
                 {shareable.content}
             </div>
