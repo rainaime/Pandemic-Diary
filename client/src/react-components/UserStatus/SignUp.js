@@ -4,7 +4,7 @@ import "./styles.css";
 /**
  * User SignUp functionality
  *
- * Props: 
+ * Props:
  * - backToLogin: change state to transit back to login
  * - usersList: list of users
  * - addUser: function to add new user and run callback function
@@ -30,7 +30,18 @@ export class SignUp extends Component {
     }
 
     //add new user if this is a new user
-    addNewUser() {
+    addNewUser = async () => {
+        const response = await fetch("http://localhost:5000/register", {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            redirect: "manual",
+            body: JSON.stringify({ username: this.state.username, password: this.state.password }),
+        });
         let usedUserName = false;
         for (const user of this.props.usersList) {
             if (this.state.username === user.username) {
@@ -46,7 +57,7 @@ export class SignUp extends Component {
 
         this.usernameRef.current.value = "";
         this.passwordRef.current.value = "";
-    }
+    };
 
     render() {
         return (
@@ -56,7 +67,7 @@ export class SignUp extends Component {
                     You may register for an account here. Doing so enables you to interact with
                     other users in fun ways: share content, view their diaries, and more!
                 </p>
-                <form className="login">
+                <form className="login" action="/register" method="post">
                     <div className="login-item">
                         <label htmlFor="username">New username: </label>
                         <input
@@ -86,24 +97,24 @@ export class SignUp extends Component {
                     ) : null}
 
                     <div className="login-buttons">
-                    <button
-                        type="button"
-                        value="Back to Login"
-                        className="loginButton hoverOrange"
-                        onClick={() => {
-                            this.props.backToLogin();
-                            this.setState({ invalidSignUp: false });
-                        }}>
-                        Back to Login
-                    </button>
+                        <button
+                            type="button"
+                            value="Back to Login"
+                            className="loginButton hoverOrange"
+                            onClick={() => {
+                                this.props.backToLogin();
+                                this.setState({ invalidSignUp: false });
+                            }}>
+                            Back to Login
+                        </button>
 
-                    <button
-                        type="button"
-                        value="Register"
-                        className="SignInButton hoverOrange"
-                        onClick={this.addNewUser.bind(this)}>
-                        Register
-                    </button>
+                        <button
+                            type="button"
+                            value="Register"
+                            className="SignInButton hoverOrange"
+                            onClick={this.addNewUser.bind(this)}>
+                            Register
+                        </button>
                     </div>
                 </form>
             </>

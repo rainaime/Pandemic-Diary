@@ -46,7 +46,19 @@ export class Login extends Component {
     }
 
     //run callback function when user tries to login
-    loginAttempt = () => {
+    loginAttempt = async () => {
+        const response = await fetch("http://localhost:5000/login", {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            redirect: "manual",
+            body: JSON.stringify(this.state),
+        })
+        console.log(response)
         this.props.loginCallback(this.state.username, this.state.password);
         this.usernameRef.current.value = "";
         this.passwordRef.current.value = "";
@@ -60,7 +72,7 @@ export class Login extends Component {
                     You may login to your account here. Doing so enables you to interact with
                     other users in fun ways: share content, view their diaries, and more!
                 </p>
-                <form className="login">
+                <form className="login" action="/login" method="post">
                     <div className="login-item">
                         <label htmlFor="username">Username:</label>
                         <input
