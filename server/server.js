@@ -15,6 +15,7 @@ mongoose.set("useFindAndModify", false); // for some deprecation issues
 
 // import the mongoose models
 const { User } = require("./models/user");
+const { Tweet } = require("./models/tweet");
 
 // to validate object IDs
 const { ObjectID } = require("mongodb");
@@ -94,6 +95,40 @@ app.get("/logout", (req, res) => {
             res.status(200).send("Successful logout");
         }
     });
+});
+
+
+// A route to create new tweet. If successful, the tweet is saved in the
+// tweets data so any users can use it
+app.post("/tweet", (req, res) => {
+    const username = req.body.username;
+    const content = req.body.content;
+
+    const tweet = new Tweet({
+        username: username,
+        content: content,
+    });
+
+    tweet.save()
+        .then((user) => {
+            res.status(200).send("Tweet successfully stored");
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(400).send("Bad request");
+        });
+});
+
+// A route to get all tweets saved.
+app.get("/tweet", (req, res) => {
+    Tweet.find().then(
+        tweets => {
+            res.send({ tweets });
+        },
+        error => {
+            res.status(500).send(error); // server error
+        }
+    );
 });
 
 app.get('*', function(req, res) {
