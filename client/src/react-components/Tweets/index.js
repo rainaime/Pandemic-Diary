@@ -1,5 +1,5 @@
-import React from "react";
 import "./styles.css";
+import React, { Component } from "react";
 
 import Tweet from "./Tweet";
 import TweetsForm from "./TweetsForm";
@@ -38,13 +38,46 @@ class Tweets extends React.Component {
             return;
         }
         //this is where we update new tweet to the serverr
-        this.setState({
-            maxId: this.state.maxId + 1,
-            tweets: [
-                ...this.state.tweets,
-                { tweetId: this.state.maxId + 1, content: tweet, username: this.props.user.username},
-            ],
+//        this.setState({
+//            maxId: this.state.maxId + 1,
+//            tweets: [
+//                ...this.state.tweets,
+//                { tweetId: this.state.maxId + 1, content: tweet, username: this.props.user.username},
+//            ],
+//        });
+
+        const response = fetch("http://localhost:5000/tweet", {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            redirect: "manual",
+            body: JSON.stringify({ username: this.props.user.username, content: tweet }),
         });
+        
+        this.updateTweet(this)
+    }
+
+    //get tweet from server
+    updateTweet(tweet) {
+        const response = fetch("http://localhost:5000/tweet", {
+            method: "GET",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            redirect: "manual",
+        });
+        
+        console.log(response)
+        console.log(response.promise)
+        
+//        tweet.setState({tweets: response.tweets})
     }
 
     render() {
