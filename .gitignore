@@ -120,3 +120,5 @@ dist
 
 # Server database
 server/data
+# Client production build
+server/build

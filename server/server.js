@@ -1,8 +1,10 @@
 "use strict";
 
+const path = require("path");
 const express = require("express");
 // starting the express server
 const app = express();
+app.use(express.static(path.join(__dirname, "build")));
 
 const cors = require("cors");
 app.use(cors());
@@ -58,7 +60,6 @@ app.post("/login", (req, res) => {
             }
         })
         .catch((error) => {
-            console.log(error);
             res.status(400).send("Bad request");
         });
 });
@@ -79,7 +80,6 @@ app.post("/register", (req, res) => {
             res.status(200).send("Account successfully created");
         })
         .catch((error) => {
-            console.log(error);
             res.status(400).send("Bad request");
         });
 });
@@ -94,6 +94,10 @@ app.get("/logout", (req, res) => {
             res.status(200).send("Successful logout");
         }
     });
+});
+
+app.get('*', function(req, res) {
+    res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 /*************************************************/

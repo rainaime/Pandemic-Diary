@@ -58,7 +58,6 @@ export class Login extends Component {
             redirect: "manual",
             body: JSON.stringify(this.state),
         })
-        console.log(response)
         this.props.loginCallback(this.state.username, this.state.password);
         this.usernameRef.current.value = "";
         this.passwordRef.current.value = "";

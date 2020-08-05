@@ -4,11 +4,12 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "concurrently \"npm run db\" \"npm run server\" \"npm run client\"",
+        "postinstall": "cd client && npm i",
+        "start": "npm run client-build && concurrently \"npm run db\" \"npm run server\"",
         "db": "cd server && if [ ! -d ./data ]; then mkdir ./data; fi && mongod --dbpath ./data",
         "server": "cd server && nodemon server.js",
         "client": "cd client && npm start",
-        "client-install": "cd client && npm install"
+        "client-build": "cd client && npm run build && rm -rf ../server/build && mv build ../server"
     },
     "repository": {
         "type": "git",

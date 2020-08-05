@@ -357,14 +357,14 @@ class App extends React.Component {
                                     className="selectedShareable"
                                     style={dynamicStyles.selectedShareable}
                                     {...ShareablePopupProps}
-                                />{this.state.shareables.map((s, i) => (
-                                            <Marker
+                                />{this.state.shareables.map((s, i) => {
+                                    return <Marker
                                                 key={i + 2}
                                                 options={{
                                                     // TODO: Need to change the underlying representation of ImageIcon and MarkerIcon, then the icon URL can be changed.
                                                     icon: {
                                                         url:
-                                                            "https://developers.google.com/maps/images/maps-icon.svg",
+                                                            "/marker.png",
                                                     },
                                                 }}
                                                 onClick={() => {this.setState({shareablePopupPos: {x: -1000, y: -1000}})}}
@@ -374,7 +374,7 @@ class App extends React.Component {
                                                 }}
                                                 position={s.center}
                                             />
-                                        ))}
+                                        })}
                             </Maps>
                         </div>
                         <div style={dynamicStyles.popupBox} className="popupBox">
@@ -457,7 +457,6 @@ class App extends React.Component {
     }
 
     onShareablePlaced(popupType) {
-        console.log(this.state.currentShareable);
         this.setState({
             currentMode: "editingShareable",
             currentPopup: this.state.currentShareable.type,

@@ -28,7 +28,10 @@ class Maps extends React.Component {
     handleClick(e) {
         if (this.props.inAddMode) {
             const n = Object.assign({}, this.props.currentShareable);
-            n.center = Object.keys(e.latLng).reduce((newCoords, pos) => ({...newCoords, [pos]: e.latLng[pos].call()}), {});
+            n.center = Object.keys(e.latLng).reduce(
+                (newCoords, pos) => ({ ...newCoords, [pos]: e.latLng[pos].call() }),
+                {}
+            );
             n.date = this.props.currentDate;
             this.props.addToShareableArray(n);
             this.props.onShareablePlaced(n.type);
@@ -36,16 +39,20 @@ class Maps extends React.Component {
     }
 
     drawMarkers() {
-        return this.props.children.flat(1).map((child) => {
-            if (child.type.name !== "Marker") {
-                return child;
-            } else {
-                const t = React.cloneElement(child, {});
-                t.props.options.icon.scaledSize = new window.google.maps.Size(30, 30);
-                this.state.markers.push(t);
-                return t;
-            }
-        });
+        return this.props.children
+            .map((child) => {
+                if (!Array.isArray(child)) {
+                    return child;
+                } else {
+                    return child.map((c) => {
+                        const t = React.cloneElement(c, {});
+                        t.props.options.icon.scaledSize = new window.google.maps.Size(20, 30);
+                        this.state.markers.push(t);
+                        return t;
+                    });
+                }
+            })
+            .flat(1);
     }
 
     render() {
@@ -56,7 +63,9 @@ class Maps extends React.Component {
                     this.setState({ isGoogleMapsAPILoaded: true });
                 }}>
                 <GoogleMap
-                    onLoad={(map) => {this.props.bindMap(map);}}
+                    onLoad={(map) => {
+                        this.props.bindMap(map);
+                    }}
                     mapContainerStyle={{
                         height: "100%",
                         width: "100%",
