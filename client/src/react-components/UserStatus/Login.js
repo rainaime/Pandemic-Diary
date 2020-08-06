@@ -47,7 +47,7 @@ export class Login extends Component {
 
     //run callback function when user tries to login
     loginAttempt = () => {
-        fetch("http://localhost:5000/login", {
+        fetch("/login", {
             method: "POST",
             mode: "cors",
             cache: "no-cache",
