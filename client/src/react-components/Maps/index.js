@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { GoogleMap, Marker, LoadScript } from "@react-google-maps/api";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import React, { useRef, useState } from "react";
 
 const options = {
     fullscreenControlOptions: { position: 6 },

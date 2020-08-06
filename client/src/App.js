@@ -1,27 +1,29 @@
-import React from "react";
-import { withRouter } from "react-router-dom";
 import "./App.css";
-import Colors from "./site-styles/Colors";
-import SiteHeader from "./react-components/SiteHeader";
-import Maps from "./react-components/Maps";
-import { Marker, OverlayView } from "@react-google-maps/api";
-import Filter from "./react-components/Filter";
+
 import { Admin, ManageUsers } from "./react-components/UserFeatures/Admin";
-import { ReportMenu, ManageReports } from "./react-components/UserFeatures/Report";
-import { UserInfo } from "./react-components/UserFeatures/UserInfo";
-import {
-    NotificationMenu,
-    NotificationIcon,
-} from "./react-components/UserFeatures/NotificationBar";
-import Tweets from "./react-components/Tweets";
-import News from "./react-components/News";
-import CollapsibleMenu from "./react-components/CollapsibleMenu";
-import Timeline from "./react-components/Timeline";
-import PopoutButton from "./react-components/PopoutButton";
-import { UserStatus, UserStatusMenu } from "./react-components/UserStatus";
-import ShareablePopup from "./react-components/ShareableComponents";
 import { ImageIcon, ImageMenu } from "./react-components/ShareableComponents/Image";
+import { ManageReports, ReportMenu } from "./react-components/UserFeatures/Report";
+import { Marker, OverlayView } from "@react-google-maps/api";
 import { MarkerIcon, MarkerMenu } from "./react-components/ShareableComponents/Marker";
+import {
+    NotificationIcon,
+    NotificationMenu,
+} from "./react-components/UserFeatures/NotificationBar";
+import { UserStatus, UserStatusMenu } from "./react-components/UserStatus";
+
+import CollapsibleMenu from "./react-components/CollapsibleMenu";
+import Colors from "./site-styles/Colors";
+import Filter from "./react-components/Filter";
+import Maps from "./react-components/Maps";
+import News from "./react-components/News";
+import PopoutButton from "./react-components/PopoutButton";
+import React from "react";
+import ShareablePopup from "./react-components/ShareableComponents";
+import SiteHeader from "./react-components/SiteHeader";
+import Timeline from "./react-components/Timeline";
+import Tweets from "./react-components/Tweets";
+import { UserInfo } from "./react-components/UserFeatures/UserInfo";
+import { withRouter } from "react-router-dom";
 
 const appSettings = {
     minDate: new Date("December 1 2019"),
