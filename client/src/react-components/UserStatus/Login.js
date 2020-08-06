@@ -6,7 +6,6 @@ import "./styles.css";
  *
  * Props: 
  * - loginCallback: calls the login callback function
- * - invalidLogin: function to set the state as invalid login
  * - goToSignup: function to set states for the sign up
  */
 export class Login extends Component {
@@ -16,6 +15,7 @@ export class Login extends Component {
         this.state = {
             username: "",
             password: "",
+            loginMessage: "",
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -46,8 +46,8 @@ export class Login extends Component {
     }
 
     //run callback function when user tries to login
-    loginAttempt = async () => {
-        const response = await fetch("http://localhost:5000/login", {
+    loginAttempt = () => {
+        fetch("http://localhost:5000/login", {
             method: "POST",
             mode: "cors",
             cache: "no-cache",
@@ -56,11 +56,28 @@ export class Login extends Component {
                 "Content-Type": "application/json",
             },
             redirect: "manual",
-            body: JSON.stringify(this.state),
+            body: JSON.stringify({
+                username: this.state.username,
+                password: this.state.password,
+            }),
+        }).then((res) => {
+            const type = res.headers.get("content-type");
+            console.log(type, res)
+            if (type && type.indexOf("application/json") !== -1) {
+                return res.json().then((data) => {
+                    this.props.onLoginSuccess(data.username);
+                });
+            } else {
+                return res.text().then((data) => {
+                    this.setState({
+                        loginMessage: data,
+                    });
+                })
+            }
+        }).then(() => {
+            this.usernameRef.current.value = "";
+            this.passwordRef.current.value = "";
         })
-        this.props.loginCallback(this.state.username, this.state.password);
-        this.usernameRef.current.value = "";
-        this.passwordRef.current.value = "";
     };
 
     render() {
@@ -95,8 +112,8 @@ export class Login extends Component {
                             className="userInput"></input>
                     </div>
 
-                    {this.props.invalidLogin ? (
-                        <span className="loginInvalidMessage">Invalid Username or Password</span>
+                    {this.state.loginMessage ? (
+                        <span className="loginInvalidMessage">{this.state.loginMessage}</span>
                     ) : null}
 
                     <div className="login-buttons">

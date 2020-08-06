@@ -130,7 +130,8 @@ ReactDOM.render(
     <React.StrictMode>
         <BrowserRouter>
             <Switch>
-                <Route exact path="/App" render={() => <App />} />
+                <Route exact path="/App" render={() => <App showLogin={false}/>} />
+                <Route exact path="/App/login" render={() => <App showLogin={true}/>}/>
                 <Route path="/" render={() => LandingPage} />
             </Switch>
         </BrowserRouter>

@@ -15,7 +15,7 @@ export class SignUp extends Component {
         password: "",
         shared: [],
         shareables: [],
-        invalidSignUp: false,
+        signupMessage: "",
     };
 
     usernameRef = React.createRef();
@@ -41,22 +41,23 @@ export class SignUp extends Component {
             },
             redirect: "manual",
             body: JSON.stringify({ username: this.state.username, password: this.state.password }),
-        });
-        let usedUserName = false;
-        for (const user of this.props.usersList) {
-            if (this.state.username === user.username) {
-                usedUserName = true;
-                this.setState({ invalidSignUp: true });
+        }).then((res) => {
+            const type = res.headers.get("content-type");
+            if (type && type.indexOf("application/json") !== -1) {
+                return res.json().then((data) => {
+                    this.props.onSignupSuccess(data.username);
+                    this.usernameRef.current.value = "";
+                    this.passwordRef.current.value = "";
+                });
+            } else {
+                return res.text().then((data) => {
+                    this.setState({
+                        signupMessage: data,
+                    });
+                    this.passwordRef.current.value = "";
+                })
             }
-        }
-
-        if (!usedUserName) {
-            this.props.addUser(this.state);
-            this.setState({ invalidSignUp: false });
-        }
-
-        this.usernameRef.current.value = "";
-        this.passwordRef.current.value = "";
+        });
     };
 
     render() {
@@ -92,8 +93,8 @@ export class SignUp extends Component {
                             }}
                             className="userInput"></input>
                     </div>
-                    {this.state.invalidSignUp ? (
-                        <span className="signUpValidMessage">Username already being used</span>
+                    {this.state.signupMessage ? (
+                        <span className="signUpValidMessage">{this.state.signupMessage}</span>
                     ) : null}
 
                     <div className="login-buttons">

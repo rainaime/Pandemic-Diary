@@ -28,6 +28,16 @@ app.use(bodyParser.json());
 const session = require("express-session");
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Express middleware to check whether there is an active user on the session
+// cookie.
+const sessionChecker = (req, res, next) => {
+    if (req.session.user) {
+        res.redirect("/"); // Redirect to the main App landing page
+    } else {
+        next(); // Continue with the route.
+    }
+};
+
 // Create a session cookie
 app.use(
     session({
@@ -41,6 +51,16 @@ app.use(
     })
 );
 
+// Inject the sessionChecker middleware to all routes. Runs before the route
+// handler to check whether the current session has a logged in user.
+app.get("/", sessionChecker, (req, res) => {
+    if (req.session.user) {
+        res.redirect("/App");
+    } else {
+        next();
+    }
+});
+
 // A route to login and create a session
 app.post("/login", (req, res) => {
     const username = req.body.username;
@@ -51,17 +71,21 @@ app.post("/login", (req, res) => {
     User.findByUserPassword(username, password)
         .then((user) => {
             if (!user) {
-                res.status(401).send("Username doesn't exist");
+                res.status(401);
             } else {
                 // Add the user's id to the session cookie.
                 // We can check later if this exists to ensure we are logged in.
                 req.session.user = user._id;
                 req.session.username = user.username;
-                res.status(200).send("Successful login");
+                res.status(200).send({
+                    message: "Successful login",
+                    username: user.username,
+                });
             }
         })
         .catch((error) => {
-            res.status(400).send("Bad request");
+            console.log(error);
+            res.status(401).send(error);
         });
 });
 
@@ -76,13 +100,20 @@ app.post("/register", (req, res) => {
         password: password,
     });
 
-    user.save()
-        .then((user) => {
-            res.status(200).send("Account successfully created");
-        })
-        .catch((error) => {
-            res.status(400).send("Bad request");
+    user.save().then((user) => {
+        req.session.user = user._id;
+        req.session.username = user.username;
+        res.status(200).send({
+            message: "Successful login",
+            username: user.username,
         });
+    }).catch((err) => {
+        if (err.code === 11000) {
+            res.status(400).send("User already exists");
+        } else {
+            res.status(401).send("Passwords must contain at least 10 characters")
+        }
+    });
 });
 
 // A route to logout a user, destroying the associated session
@@ -97,7 +128,6 @@ app.get("/logout", (req, res) => {
     });
 });
 
-
 // A route to create new tweet. If successful, the tweet is saved in the
 // tweets data so any users can use it
 app.post("/tweet", (req, res) => {
@@ -109,9 +139,10 @@ app.post("/tweet", (req, res) => {
         content: content,
     });
 
-    tweet.save()
+    tweet
+        .save()
         .then((tweets) => {
-            res.status(200).send({tweets});
+            res.status(200).send({ tweets });
         })
         .catch((error) => {
             console.log(error);
@@ -122,17 +153,17 @@ app.post("/tweet", (req, res) => {
 // A route to get all tweets saved.
 app.get("/tweet", (req, res) => {
     Tweet.find().then(
-        tweets => {
-//            res.render('index', tweets);
+        (tweets) => {
+            //            res.render('index', tweets);
             res.send({ tweets });
         },
-        error => {
+        (error) => {
             res.status(500).send(error); // server error
         }
     );
 });
 
-app.get('*', function(req, res) {
+app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 

@@ -5,7 +5,8 @@
     "main": "index.js",
     "scripts": {
         "postinstall": "cd client && npm i",
-        "start": "npm run client-build && concurrently \"npm run db\" \"npm run server\"",
+        "start": "npm run client-build && npm run backend",
+        "backend": "concurrently \"npm run db\" \"npm run server\"",
         "db": "cd server && if [ ! -d ./data ]; then mkdir ./data; fi && mongod --dbpath ./data",
         "server": "cd server && nodemon server.js",
         "client": "cd client && npm start",

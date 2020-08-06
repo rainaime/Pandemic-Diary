@@ -1,4 +1,5 @@
-import React, { createRef } from "react";
+import React from "react";
+import { withRouter } from "react-router-dom";
 import "./App.css";
 import Colors from "./site-styles/Colors";
 import SiteHeader from "./react-components/SiteHeader";
@@ -41,23 +42,23 @@ class App extends React.Component {
         this.state = {
             currentLeftMenuView: "filter",
             currentRightMenuView: "news",
-            currentMode: "normal",
+            currentMode: this.props.showLogin ? "login" : "normal",
+            currentPopup: this.props.showLogin ? "login" : "",
             shareables: [],
             selectedShareable: {
-                center: {lat: 43.6623, lng: -79.3932},
+                center: { lat: 43.6623, lng: -79.3932 },
                 content: "",
                 user: null,
                 type: null,
             },
-            shareablePopupPos: {x: -1000, y: -1000},
+            shareablePopupPos: { x: -1000, y: -1000 },
             mapCtx: null,
             currentShareable: null,
             currentDate: new Date(),
             selectedDate: new Date(),
             selectedShareableType: "All",
-            currentPopup: "",
             idcounts: 2,
-            currentUser: users[1],
+            currentUser: null,
             showNotification: false,
         };
     }
@@ -107,10 +108,8 @@ class App extends React.Component {
         };
 
         const UserStatusMenuProps = {
+            onValidationSuccess: (username) => {console.log(username); this.setState({currentUser: username, currentMode: "normal"})},
             updateCurrentUser: this.updateCurrentUser.bind(this),
-            onSuccess: () => {
-                this.setState({ currentMode: "normal" });
-            },
             addUser: (newUser) => {
                 users.push(newUser);
             },
@@ -180,13 +179,13 @@ class App extends React.Component {
         const map = this.state.mapCtx;
 
         if (map === null || window === null || this.state.selectedShareable.center === undefined) {
-            return {x: -999, y: -999};
+            return { x: -999, y: -999 };
         }
 
         const numTiles = 1 << map.getZoom();
         const projection = map.getProjection();
         if (projection === undefined) {
-            return {x: -999, y: -999};
+            return { x: -999, y: -999 };
         }
         const lat = this.state.selectedShareable.center.lat;
         const lng = this.state.selectedShareable.center.lng;
@@ -235,7 +234,7 @@ class App extends React.Component {
 
         const UserStatusProps = {
             currentUser: this.state.currentUser,
-            openLoginMenu: () => this.setState({ currentMode: "login", currentPopup: "login" }),
+            openLoginMenu: () => {this.props.history.push("/App/login"); this.setState({ currentMode: "login", currentPopup: "login" })},
             logout: () => this.updateCurrentUser(null),
             shouldClear: this.state.popupExit,
             onPopupExit: this.onPopupExit.bind(this),
@@ -255,7 +254,9 @@ class App extends React.Component {
             selectedType: this.state.selectedShareableType,
             inAddMode: this.state.currentMode === "placingShareable",
             onShareablePlaced: this.onShareablePlaced.bind(this),
-            onZoomOrDrag: (function() {this.setState({shareablePopupPos: this.computeXYOfSelectedShareable()})}).bind(this)
+            onZoomOrDrag: function () {
+                this.setState({ shareablePopupPos: this.computeXYOfSelectedShareable() });
+            }.bind(this),
         };
 
         const ShareablePopupProps = {
@@ -316,6 +317,7 @@ class App extends React.Component {
                 rightMenuView = null;
                 break;
         }
+        console.log(this.state.currentMode, this.state.currentPopout)
 
         return (
             <div
@@ -357,28 +359,42 @@ class App extends React.Component {
                                     className="selectedShareable"
                                     style={dynamicStyles.selectedShareable}
                                     {...ShareablePopupProps}
-                                />{this.state.shareables.map((s, i) => {
-                                    return <Marker
-                                                key={i + 2}
-                                                options={{
-                                                    // TODO: Need to change the underlying representation of ImageIcon and MarkerIcon, then the icon URL can be changed.
-                                                    icon: {
-                                                        url:
-                                                            "/marker.png",
-                                                    },
-                                                }}
-                                                onClick={() => {this.setState({shareablePopupPos: {x: -1000, y: -1000}})}}
-                                                onMouseOver={() => {
-                                                    this.setState({ selectedShareable: s });
-                                                    this.setState({shareablePopupPos: this.computeXYOfSelectedShareable()});
-                                                }}
-                                                position={s.center}
-                                            />
-                                        })}
+                                />
+                                {this.state.shareables.map((s, i) => {
+                                    return (
+                                        <Marker
+                                            key={i + 2}
+                                            options={{
+                                                // TODO: Need to change the underlying representation of ImageIcon and MarkerIcon, then the icon URL can be changed.
+                                                icon: {
+                                                    url: "/marker.png",
+                                                },
+                                            }}
+                                            onClick={() => {
+                                                this.setState({
+                                                    shareablePopupPos: { x: -1000, y: -1000 },
+                                                });
+                                            }}
+                                            onMouseOver={() => {
+                                                this.setState({ selectedShareable: s });
+                                                this.setState({
+                                                    shareablePopupPos: this.computeXYOfSelectedShareable(),
+                                                });
+                                            }}
+                                            position={s.center}
+                                        />
+                                    );
+                                })}
                             </Maps>
                         </div>
                         <div style={dynamicStyles.popupBox} className="popupBox">
-                            <span onClick={this.setCurrentMode.bind(this)}>x</span>
+                            <span
+                                onClick={() => {
+                                    this.props.history.push("/App");
+                                    this.setCurrentMode.call(this);
+                                }}>
+                                x
+                            </span>
                             {this.renderPopup(this.state.currentPopup)}
                         </div>
                         <PopoutButton position="bottom-right">
@@ -413,7 +429,7 @@ class App extends React.Component {
 
         this.setState({
             selectedShareable: {
-                center: {lat: 63.6623, lng: -79.3932},
+                center: { lat: 63.6623, lng: -79.3932 },
                 content: "",
                 user: null,
                 shareableType: null,
@@ -573,7 +589,7 @@ class App extends React.Component {
         this.setState({ selectedShareableType: type });
         this.setState({
             selectedShareable: {
-                center: {lat: 1000, lng: 1000},
+                center: { lat: 1000, lng: 1000 },
                 content: "",
                 user: null,
                 shareableType: null,
@@ -600,7 +616,7 @@ class App extends React.Component {
         this.setState({ currentDate: time });
         this.setState({
             selectedShareable: {
-                center: {lat: 1000, lng: 1000},
+                center: { lat: 1000, lng: 1000 },
                 content: "",
                 user: null,
                 shareableType: null,
@@ -609,4 +625,4 @@ class App extends React.Component {
     }
 }
 
-export default App;
+export default withRouter(App);
