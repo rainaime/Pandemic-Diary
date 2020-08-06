@@ -19,7 +19,7 @@ class TweetsForm extends React.Component {
             <div className="add_tweet_container">
                 <input
                     ref={this.inputRef}
-                    autoComplete={false}
+                    autoComplete="false"
                     id="tweet_context"
                     type="text"
                     name="new_tweet"

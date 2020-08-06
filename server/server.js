@@ -110,8 +110,8 @@ app.post("/tweet", (req, res) => {
     });
 
     tweet.save()
-        .then((user) => {
-            res.status(200).send("Tweet successfully stored");
+        .then((tweets) => {
+            res.status(200).send({tweets});
         })
         .catch((error) => {
             console.log(error);
@@ -123,6 +123,7 @@ app.post("/tweet", (req, res) => {
 app.get("/tweet", (req, res) => {
     Tweet.find().then(
         tweets => {
+//            res.render('index', tweets);
             res.send({ tweets });
         },
         error => {
