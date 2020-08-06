@@ -19,13 +19,16 @@ const canvasSettings = {
 class TimelineDate extends React.Component {
     render() {
         return (
-            <span className="timelineDate" style={{...this.props.style,
-                top: `calc(100% - ${(isBrowser ? 4 : 2.5)*this.props.ypos}px)`,
-                left: this.props.xpos,
-                backgroundColor: Colors.backgroundDarkAccent,
-                color: Colors.textColorLight,
-            }}>
-            {this.props.date.toDateString()}
+            <span
+                className="timelineDate"
+                style={{
+                    ...this.props.style,
+                    top: `calc(100% - ${(isBrowser ? 4 : 2.5) * this.props.ypos}px)`,
+                    left: this.props.xpos,
+                    backgroundColor: Colors.backgroundDarkAccent,
+                    color: Colors.textColorLight,
+                }}>
+                {this.props.date.toDateString()}
             </span>
         );
     }
@@ -51,22 +54,31 @@ class Timeline extends React.Component {
             mouseDown: !isBrowser,
             hover: true,
             timelineDate_ypos: 0,
+            currentDate: this.props.currentDate,
         };
-        this.canvasRef = React.createRef();
-    }
 
-    render() {
         // Don't require tap-and-hold on mobile devices.
-        const timelineBehaviour = {
+        this.timelineBehaviour = {
             onMouseDown: null,
             onMouseUp: null,
         };
 
         if (isBrowser) {
-            timelineBehaviour.onMouseDown = () => this.setState({ mouseDown: true });
-            timelineBehaviour.onMouseUp = () => this.setState({ mouseDown: false });
+            this.timelineBehaviour.onMouseDown = () => this.setState({ mouseDown: true });
+            this.timelineBehaviour.onMouseUp = () => {
+                this.setState({ mouseDown: false });
+                this.props.updateCurrentDate(this.state.currentDate);
+            };
+        } else {
+            this.timelineBehaviour.onMouseUp = () => {
+                this.props.updateCurrentDate(this.state.currentDate);
+            };
         }
 
+        this.canvasRef = React.createRef();
+    }
+
+    render() {
         return (
             <div
                 style={{
@@ -94,7 +106,7 @@ class Timeline extends React.Component {
                         visibility:
                             !this.state.hover && !this.flashIfNotInteracted ? "hidden" : "visible",
                     }}
-                    date={this.props.currentDate}
+                    date={this.state.currentDate}
                     xpos={this.state.currentPos}
                     ypos={this.state.timelineDate_ypos}
                     state={this.props.state}
@@ -102,7 +114,7 @@ class Timeline extends React.Component {
                 <canvas
                     ref={this.canvasRef}
                     className="timeline"
-                    {...timelineBehaviour}
+                    {...this.timelineBehaviour}
                     onMouseMove={this.handleMouseOver.bind(this)}
                     onMouseEnter={() => {
                         this.setState({ hover: true });
@@ -190,9 +202,8 @@ class Timeline extends React.Component {
         tempDate.setDate(this.props.minDate.getDate() + (xpos / ctx.canvas.width) * daysBetween);
         this.setState({
             currentPos: xpos - 25,
+            currentDate: tempDate,
         });
-
-        this.props.updateCurrentDate(tempDate);
     }
 
     // Update position with the user's last interaction at position described by 'e'.

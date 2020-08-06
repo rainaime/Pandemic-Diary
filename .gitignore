@@ -122,3 +122,4 @@ dist
 server/data
 # Client production build
 server/build
+client/build
