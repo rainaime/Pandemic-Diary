@@ -6,7 +6,7 @@
     "scripts": {
         "postinstall": "cd client && npm i",
         "start": "npm run client-build && npm run backend",
-        "backend": "concurrently \"npm run db\" \"npm run server\"",
+        "backend": "if [ -z $MONGODB_URI ]; then concurrently \"npm run db\" \"npm run server\"; else npm run server; fi",
         "db": "cd server && if [ ! -d ./data ]; then mkdir ./data; fi && mongod --dbpath ./data",
         "server": "cd server && nodemon server.js",
         "client": "cd client && npm start",
