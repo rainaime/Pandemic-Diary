@@ -29,6 +29,9 @@ app.use(bodyParser.json());
 const session = require("express-session");
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Fetch from external API
+const fetch = require("node-fetch");
+
 // Express middleware to check whether there is an active user on the session
 // cookie.
 const sessionChecker = (req, res, next) => {
@@ -101,20 +104,22 @@ app.post("/register", (req, res) => {
         password: password,
     });
 
-    user.save().then((user) => {
-        req.session.user = user._id;
-        req.session.username = user.username;
-        res.status(200).send({
-            message: "Successful login",
-            username: user.username,
+    user.save()
+        .then((user) => {
+            req.session.user = user._id;
+            req.session.username = user.username;
+            res.status(200).send({
+                message: "Successful login",
+                username: user.username,
+            });
+        })
+        .catch((err) => {
+            if (err.code === 11000) {
+                res.status(400).send("User already exists");
+            } else {
+                res.status(401).send("Passwords must contain at least 10 characters");
+            }
         });
-    }).catch((err) => {
-        if (err.code === 11000) {
-            res.status(400).send("User already exists");
-        } else {
-            res.status(401).send("Passwords must contain at least 10 characters")
-        }
-    });
 });
 
 // A route to logout a user, destroying the associated session
@@ -182,8 +187,9 @@ app.post("/shareable", (req, res) => {
     const shareable = new Shareable(req.body);
 
     console.log(shareable);
-    
-    shareable.save()
+
+    shareable
+        .save()
         .then((share) => {
             //TODO fix what sends here
             res.status(200).send(share);
@@ -197,10 +203,10 @@ app.post("/shareable", (req, res) => {
 // A route to get all shareable saved.
 app.get("/shareable", (req, res) => {
     Shareable.find().then(
-        shareable => {
+        (shareable) => {
             res.send({ shareable });
         },
-        error => {
+        (error) => {
             res.status(500).send(error); // server error
         }
     );
@@ -210,26 +216,26 @@ app.get("/shareable", (req, res) => {
 app.patch("/shareable/:id", (req, res) => {
     // console.log("step one")
     // console.log(req.params.id)
-    const id = req.body._id
-    
+    const id = req.body._id;
+
     if (!ObjectID.isValid(id)) {
         res.status(404).send();
         return;
     }
 
     Shareable.findByIdAndUpdate(id, req.body)
-        .then(result => {
-            if (!result){
-                console.log
+        .then((result) => {
+            if (!result) {
+                console.log;
                 res.status(404).send();
             } else {
-                console.log(result)
-                res.send(result)
+                console.log(result);
+                res.send(result);
             }
         })
-        .catch(error => {
+        .catch((error) => {
             res.status(400).send();
-        })
+        });
 });
 
 // A route to delete a single shareable by its id.
@@ -244,19 +250,59 @@ app.delete("/shareable/:id", (req, res) => {
 
     // Delete a student by their id
     Shareable.findByIdAndRemove(id)
-        .then(result => {
+        .then((result) => {
             if (!result) {
                 res.status(404).send();
             } else {
                 res.send(result);
             }
         })
-        .catch(error => {
+        .catch((error) => {
             res.status(500).send(); // server error, could not delete.
         });
 });
-    
-app.get('*', function(req, res) {
+
+// Route to fetch news articles from external news source.
+app.get("/news", (req, res) => {
+    const date = req.query.date;
+    const htmlRegex = /<[^>]*>?/gm;
+
+    // Validate date
+    if (new Date(date) === "Invalid Date" || isNaN(new Date(date))) {
+        res.status(400);
+    }
+
+    const start = new Date(new Date(date).toDateString());
+    const end = new Date(start.toDateString());
+    end.setTime(start.getTime() + 86400000);
+
+    const reqUrl = `https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/NewsSearchAPI?autoCorrect=false&pageNumber=1&pageSize=10&q=covid%20canada&safeSearch=true&fromPublishedDate=${start.toISOString()}&toPublishedDate=${end.toISOString()}`;
+    // Perform call
+    fetch(reqUrl, {
+        method: "GET",
+        headers: {
+            "x-rapidapi-host": "contextualwebsearch-websearch-v1.p.rapidapi.com",
+            "x-rapidapi-key": "11db6c5ae1msha4c449476dbaa9ep143b31jsn26807366109a",
+        },
+    })
+        .then((res) => {
+            console.log(res);
+            return res.json();
+        })
+        .then((json) => {
+            const obj = json.value.map((a) => {
+                return {
+                    title: a.title.replace(htmlRegex, ""),
+                    url: a.url,
+                    description: a.description.replace(htmlRegex, ""),
+                    urlToImage: a.image.url.replace(htmlRegex, ""),
+                };
+            });
+            res.status(200).send(obj);
+        });
+});
+
+app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
