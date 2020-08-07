@@ -32,6 +32,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Fetch from external API
 const fetch = require("node-fetch");
 
+// Rate limiter
+const rateLimit = require("express-rate-limit");
+
 // Express middleware to check whether there is an active user on the session
 // cookie.
 const sessionChecker = (req, res, next) => {
@@ -263,7 +266,11 @@ app.delete("/shareable/:id", (req, res) => {
 });
 
 // Route to fetch news articles from external news source.
-app.get("/news", (req, res) => {
+app.get("/news", rateLimit({
+    windowMs: 60 * 1000, // Rate-limit this endpoint to 5 per minute.
+    max: 10,
+    message: "Slow down! Too many requests.",
+}), (req, res) => {
     const date = req.query.date;
     const htmlRegex = /<[^>]*>?/gm;
 
@@ -286,7 +293,6 @@ app.get("/news", (req, res) => {
         },
     })
         .then((res) => {
-            console.log(res);
             return res.json();
         })
         .then((json) => {

@@ -36,6 +36,7 @@ class News extends React.Component {
 
         this.state = {
             articles: [],
+            statusString: "Loading news for the day...",
         };
     }
 
@@ -46,6 +47,10 @@ class News extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.currentDate !== this.props.currentDate) {
             if (this.props.currentDate < new Date()) {
+                this.setState({
+                    statusString: "Loading news for the day...",
+                    articles: [],
+                })
                 this.getArticles(this.props.currentDate);
             }
         }
@@ -60,8 +65,16 @@ class News extends React.Component {
         })
             .then((res) => {
                 if (res.status === 200) {
+                    this.setState({ statusString: "" });
                     return res.json();
+                } else if (res.status === 429) {
+                    this.setState({
+                        statusString:
+                            "Slow down! You may only view the news for 10 days per minute.",
+                    });
+                    return [];
                 } else {
+                    this.setState({ statusString: "Some error occurred :( Please try again later." });
                     return [];
                 }
             })
@@ -69,7 +82,6 @@ class News extends React.Component {
                 this.setState({
                     articles: val,
                 });
-                console.log(val);
             });
     }
 
@@ -85,7 +97,7 @@ class News extends React.Component {
                 "You can't view news from the future!"
             )
         ) : (
-            "Loading articles..."
+            <div className="news-container">{this.state.statusString}</div>
         );
     }
 }
