@@ -17,14 +17,15 @@ class ShareablePopup extends React.Component {
     render() {
         let shareableContent = {};
         if (this.props.shareable.user !== null) {
-            shareableContent.username = this.props.shareable.user.username;
-            shareableContent.date = this.props.shareable.date.toDateString();
-            if (this.props.shareable !== null) {
-                shareableContent.content = this.props.shareable.content;
-            }
+            shareableContent.authorName = this.props.shareable.authorName;
+            // TODO shareable.date when switched to json 
+            // shareableContent.date = this.props.shareable.date.toDateString();
         } else {
             shareableContent.username = null;
             shareableContent.date = null;
+        }
+        if (this.props.shareable !== null) {
+            shareableContent.content = this.props.shareable.content;
         }
         const position = this.props.position;
         return (

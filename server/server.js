@@ -16,6 +16,7 @@ mongoose.set("useFindAndModify", false); // for some deprecation issues
 // import the mongoose models
 const { User } = require("./models/user");
 const { Tweet } = require("./models/tweet");
+const { Shareable } = require("./models/shareable");
 
 // to validate object IDs
 const { ObjectID } = require("mongodb");
@@ -128,6 +129,19 @@ app.get("/logout", (req, res) => {
     });
 });
 
+// A route to get all tweets saved.
+app.get("/users", (req, res) => {
+    User.find().then(
+        (users) => {
+            //            res.render('index', tweets);
+            res.send({ users });
+        },
+        (error) => {
+            res.status(500).send(error); // server error
+        }
+    );
+});
+
 // A route to create new tweet. If successful, the tweet is saved in the
 // tweets data so any users can use it
 app.post("/tweet", (req, res) => {
@@ -163,7 +177,86 @@ app.get("/tweet", (req, res) => {
     );
 });
 
-app.get("*", function (req, res) {
+// A route to create new shareable
+app.post("/shareable", (req, res) => {
+    const shareable = new Shareable(req.body);
+
+    console.log(shareable);
+    
+    shareable.save()
+        .then((share) => {
+            //TODO fix what sends here
+            res.status(200).send(share);
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(400).send("Bad request");
+        });
+});
+
+// A route to get all shareable saved.
+app.get("/shareable", (req, res) => {
+    Shareable.find().then(
+        shareable => {
+            res.send({ shareable });
+        },
+        error => {
+            res.status(500).send(error); // server error
+        }
+    );
+});
+
+// A route to update a single shareable by its id.
+app.patch("/shareable/:id", (req, res) => {
+    // console.log("step one")
+    // console.log(req.params.id)
+    const id = req.body._id
+    
+    if (!ObjectID.isValid(id)) {
+        res.status(404).send();
+        return;
+    }
+
+    Shareable.findByIdAndUpdate(id, req.body)
+        .then(result => {
+            if (!result){
+                console.log
+                res.status(404).send();
+            } else {
+                console.log(result)
+                res.send(result)
+            }
+        })
+        .catch(error => {
+            res.status(400).send();
+        })
+});
+
+// A route to delete a single shareable by its id.
+app.delete("/shareable/:id", (req, res) => {
+    const id = req.body._id;
+
+    // Validate id
+    if (!ObjectID.isValid(id)) {
+        res.status(404).send();
+        return;
+    }
+
+    // Delete a student by their id
+    Shareable.findByIdAndRemove(id)
+        .then(result => {
+            if (!result) {
+                res.status(404).send();
+            } else {
+                res.send(result);
+            }
+        })
+        .catch(error => {
+            res.status(500).send(); // server error, could not delete.
+        });
+});
+    
+app.get('*', function(req, res) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 

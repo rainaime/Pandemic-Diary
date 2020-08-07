@@ -76,7 +76,7 @@ class Maps extends React.Component {
                     zoom={10}
                     onClick={this.handleClick.bind(this)}
                     options={options}>
-                    {this.state.isGoogleMapsAPILoaded && this.drawMarkers()})}
+                    {this.state.isGoogleMapsAPILoaded && this.drawMarkers()}
                 </GoogleMap>
             </LoadScript>
         );

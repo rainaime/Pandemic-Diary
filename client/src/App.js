@@ -28,12 +28,16 @@ const appSettings = {
     maxDate: new Date("December 31 2020"),
 };
 
-let users = [
-    //admin probably does not need shareables or shared
-    { username: "admin", password: "admin", shareables: [], shared: [], reports: [] },
-    { username: "user", password: "user", shareables: [], shared: [] },
-    { username: "user2", password: "user2", shareables: [], shared: [] },
-];
+// let users = [
+//     //admin probably does not need shareables or shared
+//     { username: "admin", password: "admin", shareables: [], shared: [], reports: [] },
+//     { username: "user", password: "user", shareables: [], shared: [] },
+//     { username: "user2", password: "user2", shareables: [], shared: [] },
+// ]
+
+
+let users = [];
+
 
 class App extends React.Component {
     constructor(props) {
@@ -57,7 +61,7 @@ class App extends React.Component {
             currentDate: new Date(),
             selectedDate: new Date(),
             selectedShareableType: "All",
-            idcounts: 2,
+            idcounts: 2, //this should come from server
             currentUser: null,
             showNotification: false,
         };
@@ -82,7 +86,24 @@ class App extends React.Component {
             img: new Image(),
         };
         example.img.src = "/marker.png";
-        this.addToShareableArray(example);
+        // this.addToShareableArray(example);
+
+        fetch("http://localhost:5000/users").then((res) => {
+            res.json().then((data) => {
+                users = data.users;
+
+            })
+            console.log(res.body)
+        }).then((res) => {
+            console.log(res)
+        })
+
+        const response = fetch("http://localhost:5000/shareable").then((res) => {
+            res.json().then((data) => {
+                this.setState({shareables: data.shareable});
+                console.log(this.state.shareables)
+            })
+        })
     }
 
     renderPopup(currentPopup) {
@@ -142,7 +163,8 @@ class App extends React.Component {
         };
 
         const ManageReportsProps = {
-            reports: users[0].reports,
+            reports: [], //TODO need to setup admin user
+            // reports: users[0].reports,
             deleteReportedShareable: this.deleteReportedShareable.bind(this),
         };
 
@@ -317,7 +339,7 @@ class App extends React.Component {
                 rightMenuView = null;
                 break;
         }
-        console.log(this.state.currentMode, this.state.currentPopout)
+        // console.log(this.state.currentMode, this.state.currentPopout)
 
         return (
             <div
@@ -441,28 +463,55 @@ class App extends React.Component {
         this.state.currentShareable.updateSelectedType(selectedType);
     }
 
-    addToShareableArray(shareable) {
+    addToShareableArray = async (shareable) => {
         shareable.id = this.state.idcounts;
 
-        //probably should not be giving the whole user object for shareable to use
+        //give currentUsername to shareable
         shareable.user = this.state.currentUser;
 
+        //TODO shareable content is not updated at this point
+        
+        //do we need id counts
         this.setState({
             idcounts: this.state.idcounts + 1,
         });
 
+        
         this.setState({
             shareables: [...this.state.shareables, shareable],
             currentShareable: shareable,
         });
+        
+        // currentUser will not have access to his shareables
+        // if (this.state.currentUser) {
+        //     console.log(this.state.currentUser);
+        //     this.setState({
+        //         currentUser: Object.assign(this.state.currentUser, {
+        //             shareables: [...this.state.currentUser.shareables, shareable],
+        //         }),
+        //     });
+        // }
 
-        if (this.state.currentUser) {
-            this.setState({
-                currentUser: Object.assign(this.state.currentUser, {
-                    shareables: [...this.state.currentUser.shareables, shareable],
-                }),
-            });
+        const response = await fetch("http://localhost:5000/shareable", {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            redirect: "manual",
+            body: JSON.stringify(shareable),
+        }) 
+
+        console.log(shareable)
+
+        if (response.ok){
+            console.log("we okay")
         }
+
+
+
     }
 
     enterAddingMode(shareableType) {
@@ -502,6 +551,19 @@ class App extends React.Component {
             lng: 1000,
         };
         this.setState({ selectedShareable: selectedShareableCopy });
+
+        //fetch request to delete marker
+        const response = fetch("http://localhost:5000/shareable/:id", {
+            method: "DELETE",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            redirect: "manual",
+            body: JSON.stringify(marker),
+        }) 
     }
 
     deleteReportedShareable(marker) {
@@ -533,6 +595,23 @@ class App extends React.Component {
     }
 
     setCurrentMode() {
+        /** TODO: we need to call fetch and update the server when a shareable
+            is done editing, so far the only way to be "done" editing is when you leave the editor
+            i.e switching form editing mode to normal mode
+
+        **/
+        const response = fetch("http://localhost:5000/shareable/:id", {
+            method: "PATCH",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            redirect: "manual",
+            body: JSON.stringify(this.state.selectedShareable),
+        }) 
+
         this.setState({ currentMode: "normal" });
         this.setState({ popupExit: true });
     }
