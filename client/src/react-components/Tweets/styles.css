@@ -2,6 +2,7 @@
     flex-grow: 1;
     padding: 12px;
     overflow: scroll !important;
+    height: 50%;
 }
 
 .tweet_container::-webkit-scrollbar{

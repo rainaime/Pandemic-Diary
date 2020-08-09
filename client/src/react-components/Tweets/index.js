@@ -54,7 +54,7 @@ class Tweets extends React.Component {
             redirect: "manual",
             body: JSON.stringify(newTweet),
         }).then((res) => {
-//            this.updateTweet(this);
+            this.updateTweet(this);
         })
     }
 
