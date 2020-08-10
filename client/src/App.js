@@ -44,6 +44,7 @@ let users = [];
 class App extends React.Component {
     constructor(props) {
         super(props);
+        this.readCookie();
 
         this.state = {
             currentLeftMenuView: "filter",
@@ -67,6 +68,23 @@ class App extends React.Component {
             currentUser: null,
             showNotification: false,
         };
+    }
+
+    readCookie() {
+        fetch("/check-session")
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                }
+            })
+            .then(json => {
+                if (json && json.currentUser) {
+                    this.setState({ currentUser: json.currentUser });
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            });
     }
 
     //this is just to hardcode an example marker
@@ -131,7 +149,7 @@ class App extends React.Component {
         };
 
         const UserStatusMenuProps = {
-            onValidationSuccess: (username) => {console.log(username); this.setState({currentUser: username, currentMode: "normal"})},
+            onValidationSuccess: (username) => {this.setState({currentUser: username, currentMode: "normal"})},
             updateCurrentUser: this.updateCurrentUser.bind(this),
             addUser: (newUser) => {
                 users.push(newUser);
@@ -623,8 +641,22 @@ class App extends React.Component {
     }
 
     updateCurrentUser(user) {
-        this.setState({ currentUser: user });
-        this.setState({ showNotification: false });
+        if (user) {
+            this.setState({ currentUser: user });
+            this.setState({ showNotification: false });
+        } else {
+            this.props.history.push("/App");
+            fetch("/logout")
+                .then(() => {
+                    this.setState({
+                        currentUser: null,
+                        showNotification: false,
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
     }
 
     userCanEdit() {

@@ -17,11 +17,6 @@ const ShareableSchema = new mongoose.Schema({
      height: {
           type: Number,
      },
-     id: {
-          type: Number,
-          required: true,
-          unique: true, //should probably fix this for better security
-     }, 
      selectedType: {
           type: String,
      }, 
@@ -55,7 +50,22 @@ ShareableSchema.statics.findById = function (id) {
      });
  };
 
+ShareableSchema.statics.findByDate = function(date) {
+    const Set = this;
+
+    const start = new Date(new Date(date).toDateString());
+    const end = new Date(start.toDateString());
+    end.setTime(start.getTime() + 86400000);
+
+    return Set.find({
+        date: {
+            $gte: start,
+            $lt: end
+        }
+    });
+};
+
 // make a model using the Shareable schema
 const Shareable = mongoose.model("Shareable", ShareableSchema);
 
-module.exports = { Shareable }
+module.exports = { Shareable };

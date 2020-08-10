@@ -1,39 +1,35 @@
 "use strict";
 
-const path = require("path");
 const express = require("express");
-// starting the express server
 const app = express();
-app.use(express.static(path.join(__dirname, "build")));
-
+const path = require("path");
 const cors = require("cors");
-app.use(cors());
+const bodyParser = require("body-parser");
 
-// mongoose and mongo connection
+const session = require("express-session");
+
+// For fetching from external APIs.
+const fetch = require("node-fetch");
+const rateLimit = require("express-rate-limit");
+
+// Mongoose models
 const { mongoose } = require("./db/mongoose");
-mongoose.set("useFindAndModify", false); // for some deprecation issues
-
-// import the mongoose models
+const { ObjectID } = require("mongodb");
 const { User } = require("./models/user");
 const { Tweet } = require("./models/tweet");
 const { Shareable } = require("./models/shareable");
 
-// to validate object IDs
-const { ObjectID } = require("mongodb");
+// starting the express server
+app.use(express.static(path.join(__dirname, "build")));
+app.use(cors());
+
+// mongoose and mongo connection
+mongoose.set("useFindAndModify", false); // for some deprecation issues
 
 // body-parser: middleware for parsing HTTP JSON body into a usable object
-const bodyParser = require("body-parser");
 app.use(bodyParser.json());
-
 // express-session for managing user sessions
-const session = require("express-session");
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Fetch from external API
-const fetch = require("node-fetch");
-
-// Rate limiter
-const rateLimit = require("express-rate-limit");
 
 // Express middleware to check whether there is an active user on the session
 // cookie.
@@ -45,6 +41,11 @@ const sessionChecker = (req, res, next) => {
     }
 };
 
+///////////////////////////////////////////////////////////////////////////////
+// START OF EXPRESS ROUTES
+///////////////////////////////////////////////////////////////////////////////
+
+// SESSION-RELATED ROUTES
 // Create a session cookie
 app.use(
     session({
@@ -65,6 +66,15 @@ app.get("/", sessionChecker, (req, res) => {
         res.redirect("/App");
     } else {
         next();
+    }
+});
+
+app.get("/check-session", (req, res) => {
+    console.log(req.session);
+    if (req.session.user) {
+        res.status(200).send({ currentUser: req.session.username });
+    } else {
+        res.status(401).send();
     }
 });
 
@@ -120,6 +130,7 @@ app.post("/register", (req, res) => {
             if (err.code === 11000) {
                 res.status(400).send("User already exists");
             } else {
+                console.log(err);
                 res.status(401).send("Passwords must contain at least 10 characters");
             }
         });
@@ -137,7 +148,11 @@ app.get("/logout", (req, res) => {
     });
 });
 
-// A route to get all tweets saved.
+///////////////////////////////////////////////////////////////////////////////
+// USER-RELATED ROUTES
+///////////////////////////////////////////////////////////////////////////////
+
+// A route to get all users. TODO: I doubt this is a good idea
 app.get("/users", (req, res) => {
     User.find().then(
         (users) => {
@@ -149,6 +164,10 @@ app.get("/users", (req, res) => {
         }
     );
 });
+
+///////////////////////////////////////////////////////////////////////////////
+// TWEET-RELATED ROUTES
+///////////////////////////////////////////////////////////////////////////////
 
 // A route to create new tweet. If successful, the tweet is saved in the
 // tweets data so any users can use it
@@ -176,7 +195,6 @@ app.post("/tweet", (req, res) => {
 app.get("/tweet", (req, res) => {
     Tweet.find().then(
         (tweets) => {
-            //            res.render('index', tweets);
             res.send({ tweets });
         },
         (error) => {
@@ -184,6 +202,12 @@ app.get("/tweet", (req, res) => {
         }
     );
 });
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// SHAREABLE-RELATED ROUTES
+///////////////////////////////////////////////////////////////////////////////
 
 // A route to create new shareable
 app.post("/shareable", (req, res) => {
@@ -265,56 +289,66 @@ app.delete("/shareable/:id", (req, res) => {
         });
 });
 
+///////////////////////////////////////////////////////////////////////////////
+// NEWS-RELATED ROUTES
+///////////////////////////////////////////////////////////////////////////////
+
 // Route to fetch news articles from external news source.
-app.get("/news", rateLimit({
-    windowMs: 60 * 1000, // Rate-limit this endpoint to 5 per minute.
-    max: 10,
-    message: "Slow down! Too many requests.",
-}), (req, res) => {
-    const date = req.query.date;
-    const htmlRegex = /<[^>]*>?/gm;
+app.get(
+    "/news",
+    rateLimit({
+        windowMs: 60 * 1000, // Rate-limit this endpoint to 5 per minute.
+        max: 10,
+        message: "Slow down! Too many requests.",
+    }),
+    (req, res) => {
+        const date = req.query.date;
+        const htmlRegex = /<[^>]*>?/gm;
 
-    // Validate date
-    if (new Date(date) === "Invalid Date" || isNaN(new Date(date))) {
-        res.status(400);
-    }
+        // Validate date
+        if (new Date(date) === "Invalid Date" || isNaN(new Date(date))) {
+            res.status(400);
+        }
 
-    const start = new Date(new Date(date).toDateString());
-    const end = new Date(start.toDateString());
-    end.setTime(start.getTime() + 86400000);
+        const start = new Date(new Date(date).toDateString());
+        const end = new Date(start.toDateString());
+        end.setTime(start.getTime() + 86400000);
 
-    const reqUrl = `https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/NewsSearchAPI?autoCorrect=false&pageNumber=1&pageSize=10&q=covid%20canada&safeSearch=true&fromPublishedDate=${start.toISOString()}&toPublishedDate=${end.toISOString()}`;
-    // Perform call
-    fetch(reqUrl, {
-        method: "GET",
-        headers: {
-            "x-rapidapi-host": "contextualwebsearch-websearch-v1.p.rapidapi.com",
-            "x-rapidapi-key": "11db6c5ae1msha4c449476dbaa9ep143b31jsn26807366109a",
-        },
-    })
-        .then((res) => {
-            return res.json();
+        const reqUrl = `https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/NewsSearchAPI?autoCorrect=false&pageNumber=1&pageSize=10&q=covid%20canada&safeSearch=true&fromPublishedDate=${start.toISOString()}&toPublishedDate=${end.toISOString()}`;
+        // Perform call
+        fetch(reqUrl, {
+            method: "GET",
+            headers: {
+                "x-rapidapi-host": "contextualwebsearch-websearch-v1.p.rapidapi.com",
+                "x-rapidapi-key": "11db6c5ae1msha4c449476dbaa9ep143b31jsn26807366109a",
+            },
         })
-        .then((json) => {
-            const obj = json.value.map((a) => {
-                return {
-                    title: a.title.replace(htmlRegex, ""),
-                    url: a.url,
-                    description: a.description.replace(htmlRegex, ""),
-                    urlToImage: a.image.url.replace(htmlRegex, ""),
-                };
+            .then((res) => {
+                return res.json();
+            })
+            .then((json) => {
+                const obj = json.value.map((a) => {
+                    return {
+                        title: a.title.replace(htmlRegex, ""),
+                        url: a.url,
+                        description: a.description.replace(htmlRegex, ""),
+                        urlToImage: a.image.url.replace(htmlRegex, ""),
+                    };
+                });
+                res.status(200).send(obj);
             });
-            res.status(200).send(obj);
-        });
-});
+    }
+);
+
+/*************************************************/
+// Express server listening...
+// Serve built create-react-app on port.
+const port = process.env.PORT || 5000;
 
 app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-/*************************************************/
-// Express server listening...
-const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log(`Listening on port ${port}...`);
 });
