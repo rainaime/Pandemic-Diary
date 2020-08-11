@@ -4,7 +4,7 @@ import "./styles.css";
 /**
  * User login functionality
  *
- * Props: 
+ * Props:
  * - loginCallback: calls the login callback function
  * - goToSignup: function to set states for the sign up
  */
@@ -60,24 +60,26 @@ export class Login extends Component {
                 username: this.state.username,
                 password: this.state.password,
             }),
-        }).then((res) => {
-            const type = res.headers.get("content-type");
-            console.log(type, res)
-            if (type && type.indexOf("application/json") !== -1) {
-                return res.json().then((data) => {
-                    this.props.onLoginSuccess(data.username);
-                });
-            } else {
-                return res.text().then((data) => {
-                    this.setState({
-                        loginMessage: data,
-                    });
-                })
-            }
-        }).then(() => {
-            this.usernameRef.current.value = "";
-            this.passwordRef.current.value = "";
         })
+            .then((res) => {
+                const type = res.headers.get("content-type");
+                console.log(type, res);
+                if (type && type.indexOf("application/json") !== -1) {
+                    return res.json().then((data) => {
+                        this.props.onLoginSuccess(data.username);
+                    });
+                } else {
+                    return res.text().then((data) => {
+                        this.setState({
+                            loginMessage: data,
+                        });
+                    });
+                }
+            })
+            .then(() => {
+                if (this.usernameRef.current) this.usernameRef.current.value = "";
+                if (this.passwordRef.current) this.passwordRef.current.value = "";
+            });
     };
 
     render() {
@@ -85,8 +87,8 @@ export class Login extends Component {
             <>
                 <h1 className="popupBox_title">Login</h1>
                 <p className="popupBox_instructions">
-                    You may login to your account here. Doing so enables you to interact with
-                    other users in fun ways: share content, view their diaries, and more!
+                    You may login to your account here. Doing so enables you to interact with other
+                    users in fun ways: share content, view their diaries, and more!
                 </p>
                 <form className="login" action="/login" method="post">
                     <div className="login-item">

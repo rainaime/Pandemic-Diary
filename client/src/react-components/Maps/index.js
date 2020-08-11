@@ -27,14 +27,18 @@ class Maps extends React.Component {
 
     handleClick(e) {
         if (this.props.inAddMode) {
-            const n = Object.assign({}, this.props.currentShareable);
-            n.center = Object.keys(e.latLng).reduce(
-                (newCoords, pos) => ({ ...newCoords, [pos]: e.latLng[pos].call() }),
-                {}
-            );
-            n.date = this.props.currentDate;
-            this.props.addToShareableArray(n);
-            this.props.onShareablePlaced(n.type);
+            this.props.updateSelectedShareable({
+                center: Object.keys(e.latLng).reduce((newCoords, pos) => ({ ...newCoords, [pos]: e.latLng[pos].call() }), {})
+            });
+            //console.log("...", this.props.currentShareable)
+            //const n = Object.assign({}, this.props.currentShareable);
+            //n.center = Object.keys(e.latLng).reduce(
+            //    (newCoords, pos) => ({ ...newCoords, [pos]: e.latLng[pos].call() }),
+            //    {}
+            //);
+            //n.date = this.props.currentDate;
+            //this.props.addToShareableArray(n);
+            this.props.onShareablePlaced();
         }
     }
 

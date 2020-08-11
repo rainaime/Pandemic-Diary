@@ -4,7 +4,7 @@ import "./style.css";
 /**
  * Marker for user to display on the map
  *
- * Props: 
+ * Props:
  * - date: date on the map
  * - onClick: function to set mode to add this marker
  */
@@ -15,40 +15,17 @@ class MarkerIcon extends React.Component {
         height: 30,
         img: new Image(),
         content: "",
-        dateText: '',
-        selectedType: '',
-
-        updateSelectedType: this.updateSelectedType,
-        updateDate: this.updateDate,
     };
 
-    //set image to undefined when first mounted
-    componentWillUnmount() {
-        Image.img = undefined;
-    }
-
-    //update date of marker
-    updateDate(date) {
-        this.date = date
-    }
-
-    //update selected type of marker
-    updateSelectedType(type) {
-        this.selectedType = type;
-    }
-
     render() {
-        this.updateDate.bind(this);
-        this.updateSelectedType.bind(this);
-
         const marker = (
             <img
                 className="popoutButton-children"
-                style={{...this.props.style, width: 16, height: 24}}
+                style={{ ...this.props.style, width: 16, height: 24 }}
                 src="/marker.png"
                 alt="marker"
                 onClick={() => {
-                    this.props.onClick(this.state);
+                    this.props.onClick(Object.assign({}, this.state));
                 }}
             />
         );
@@ -72,7 +49,7 @@ class MarkerIcon extends React.Component {
 /**
  * A popup to change marker's content, type and date
  *
- * Props: 
+ * Props:
  * - state: currently selected marker
  * - updateDate: function to update the date of the marker to the currently selected date
  * - enterPressed: function to set the mode to normal
@@ -81,20 +58,34 @@ class MarkerIcon extends React.Component {
  * - updateCurrentDate: function to update current date
  */
 class MarkerMenu extends React.Component {
+    state = {
+        selectedDate: this.props.currentShareable ? this.props.currentShareable.date : new Date(),
+        selectedArticle: this.props.currentShareable ? this.props.currentShareable.article : "News",
+        content: this.props.currentShareable ? this.props.currentShareable.content : "",
+    };
+
     inputRef = React.createRef();
 
     componentDidUpdate() {
         if (this.props.shouldClear) {
+            this.updateSelectedShareable();
             this.inputRef.current.value = "";
             this.props.onPopupExit();
         }
     }
 
+    updateSelectedShareable() {
+        console.log("Update");
+        this.props.updateSelectedShareable({
+            date: this.state.selectedDate,
+            article: this.state.selectedArticle,
+            content: this.state.content,
+        });
+
+        this.props.returnToApp();
+    }
+
     render() {
-        //initially created then the default selectedType is News
-        if(this.props.state.selectedType == null){
-            this.props.updateArticleType("News");
-        }
         return (
             <>
                 <h1 className="popupBox_title">Edit your marker!</h1>
@@ -104,40 +95,36 @@ class MarkerMenu extends React.Component {
                 </p>
                 <textarea
                     ref={this.inputRef}
-                    value={this.props.state.content}
                     id="textArea"
                     className="text_area"
                     type="text"
                     maxLength="100"
                     onChange={(e) => {
-                        this.setState({value: e.target.value});
-                        this.props.state.content = e.target.value
+                        this.setState({ content: e.target.value }, () =>
+                            this.props.updateSelectedShareable({ content: this.state.content })
+                        );
                     }}
-                    onKeyPress= {(event) => {
-                        if (event.key === "Enter"){
-                            this.props.enterPressed()
-                        }
+                    onKeyPress={(event) => {
+                        if (event.key === "Enter") this.updateSelectedShareable();
                     }}
                 />
 
                 <div className="dateSection">
-                    <input type="date" value={this.props.state.dateText} min="2019-12-01" max="2020-12-31"
-                    onChange={(e) => {
-                        this.props.state.dateText = e.target.value;
-                        this.props.updateDate(e.target.valueAsDate);
-                        this.props.updateCurrentDate(e.target.valueAsDate);
-                        this.setState({value: e.target.value});
-                    }}/>
+                    <input
+                        type="date"
+                        min={this.props.minDate}
+                        max={this.props.maxDate}
+                        onChange={(e) => this.setState({ selectedDate: e.target.value })}
+                    />
                 </div>
                 <div className="articleType">
-                <select name="article" value={this.props.state.selectedType} onChange={(e) => {
-                        this.props.updateArticleType(e.target.value);
-                        this.setState({value: e.target.value});
-                    }}>
-                    <option value="News">News</option>
-                    <option value="Vacation">Vacation</option>
-                    <option value="Other Stuff">Other Stuff</option>
-                </select>
+                    <select
+                        name="article"
+                        onChange={(e) => this.setState({ value: e.target.value })}>
+                        <option value="News">News</option>
+                        <option value="Vacation">Vacation</option>
+                        <option value="Other Stuff">Other Stuff</option>
+                    </select>
                 </div>
             </>
         );

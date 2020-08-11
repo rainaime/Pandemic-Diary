@@ -67,7 +67,7 @@ class App extends React.Component {
 
             // The shareable currently being modified.
             selectedShareable: {
-                center: { lat: 43.6623, lng: -79.3932 },
+                center: { lat: 1000, lng: 1000 },
                 content: "",
                 user: null,
                 type: null,
@@ -123,6 +123,22 @@ class App extends React.Component {
         });
     }
 
+    setShareableType(type) {
+        const shareableTypes = ["marker", "image"];
+
+        if (shareableTypes.indexOf(type) !== -1) {
+            this.setState({
+                shareableTypeToAdd: type,
+            });
+        } else {
+            // Invalid entry
+            this.setState({
+                currentMode: "normal",
+                currentPopup: "",
+            });
+        }
+    }
+
     updateSelectedPopupPos() {
         this.setState({
             shareablePopupPos: this.computeXYOfSelectedShareable(),
@@ -132,6 +148,24 @@ class App extends React.Component {
     updateCurrentDate(date) {
         this.setState({
             currentDate: date,
+        });
+    }
+
+    updateSelectedShareable(newData) {
+        // We don't need this to be updated immediately as the next update will
+        // trigger a refresh.
+        const old = this.state.selectedShareable;
+        this.setState({ selectedShareable: Object.assign(old, newData) }, () => {
+            this.setState(
+                {
+                    shareables: this.state.shareables.filter((s) => s !== old),
+                },
+                () => {
+                    this.setState({
+                        shareables: [...this.state.shareables, this.state.selectedShareable],
+                    });
+                }
+            );
         });
     }
 
@@ -150,10 +184,16 @@ class App extends React.Component {
                     options={{ icon: { url: "/marker.png" } }}
                     onClick={() => this.setState({ shareablePopupPos: { x: -1000, y: -1000 } })}
                     onMouseOver={() => {
-                        this.setState({
-                            selectedShareable: s,
-                            shareablePopupPos: this.computeXYOfSelectedShareable(),
-                        });
+                        this.setState(
+                            {
+                                selectedShareable: s,
+                            },
+                            () => {
+                                this.setState({
+                                    shareablePopupPos: this.computeXYOfSelectedShareable(),
+                                });
+                            }
+                        );
                     }}
                     position={s.center}
                 />
@@ -161,11 +201,25 @@ class App extends React.Component {
         });
     }
 
-    enterAddingMode(shareableType) {
-        this.setState({
-            currentMode: "placingShareable",
-            currentShareable: shareableType,
-        });
+    enterAddingMode(shareable) {
+        console.log(">>>", this.state.selectedShareable, shareable);
+        this.setState(
+            {
+                shareablePopupPos: { x: -1000, y: -1000 },
+            },
+            () => {
+                this.setState(
+                    {
+                        currentMode: "placingShareable",
+                        selectedShareable: Object.assign(shareable, {
+                            date: this.state.currentDate,
+                            user: this.state.currentUser,
+                        }),
+                    },
+                    () => this.computeXYOfSelectedShareable()
+                );
+            }
+        );
     }
 
     addToShareableArray(shareable) {
@@ -174,10 +228,10 @@ class App extends React.Component {
         });
     }
 
-    onShareablePlaced(popupType) {
+    onShareablePlaced() {
         this.setState({
             currentMode: "editingShareable",
-            currentPopup: this.state.currentShareable.type,
+            currentPopup: this.state.selectedShareable.type,
         });
     }
 
@@ -189,12 +243,15 @@ class App extends React.Component {
     }
 
     returnToApp(username) {
+        this.props.history.push("/App");
         this.setState({
             currentMode: "normal",
             currentPopup: "",
         });
-        if (username && typeof username === "string") {
-            this.updateCurrentUser(username);
+        if ((username && typeof username === "string") || username === null) {
+            this.setState({
+                currentUser: username,
+            });
         }
     }
 
@@ -222,8 +279,12 @@ class App extends React.Component {
     renderPopup() {
         const MarkerMenuProps = {
             currentDate: this.state.currentDate,
-            currentShareable: this.state.currentShareable,
+            currentShareable: this.state.selectedShareable,
             updateCurrentDate: this.updateCurrentDate.bind(this),
+            updateSelectedShareable: this.updateSelectedShareable.bind(this),
+
+            minDate: appSettings.minDate,
+            maxDate: appSettings.maxDate,
 
             returnToApp: this.returnToApp.bind(this),
             shouldClear: this.state.popupExit,
@@ -235,13 +296,16 @@ class App extends React.Component {
             currentShareable: this.state.currentShareable,
             updateCurrentDate: this.updateCurrentDate.bind(this),
 
+            minDate: appSettings.minDate,
+            maxDate: appSettings.maxDate,
+
             returnToApp: this.returnToApp.bind(this),
             shouldClear: this.state.popupExit,
             onExit: () => this.setState({ popupExit: false }),
         };
 
         const UserStatusMenuProps = {
-            returnToApp: this.returnToApp.bind(this),
+            onValidationSuccess: this.returnToApp.bind(this),
             shouldClear: this.state.popupExit,
             onExit: () => this.setState({ popupExit: false }),
         };
@@ -375,10 +439,12 @@ class App extends React.Component {
         };
 
         const MapsProps = {
+            updateSelectedShareable: this.updateSelectedShareable.bind(this),
+            currentUser: this.props.currentUser,
             bindMap: this.bindMap.bind(this),
             currentDate: this.state.currentDate,
             shareables: this.state.shareables,
-            currentShareable: this.state.currentShareable,
+            currentShareable: this.state.selectedShareable,
             addToShareableArray: this.addToShareableArray.bind(this),
             selectedType: this.state.selectedShareableType,
             inAddMode: this.state.currentMode === "placingShareable",
