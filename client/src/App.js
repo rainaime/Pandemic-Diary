@@ -33,7 +33,6 @@ const appSettings = {
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.readCookie();
 
         this.state = {
             // What's currently being displayed on the left and right menus
@@ -202,19 +201,28 @@ class App extends React.Component {
     }
 
     enterAddingMode(shareable) {
-        console.log(">>>", this.state.selectedShareable, shareable);
+        const shareableCopy = Object.assign(shareable, {
+            date: this.state.currentDate,
+            user: this.state.currentUser,
+        });
         this.setState(
             {
                 shareablePopupPos: { x: -1000, y: -1000 },
             },
             () => {
+                fetch("/shareable", {
+                    method: "post",
+                    body: JSON.stringify(shareableCopy),
+                    headers: { Accept: "application/json", "Content-Type": "application/json" },
+                })
+                    .then((res) => {
+                        return res.json();
+                    })
+                    .then((json) => console.log(json));
                 this.setState(
                     {
                         currentMode: "placingShareable",
-                        selectedShareable: Object.assign(shareable, {
-                            date: this.state.currentDate,
-                            user: this.state.currentUser,
-                        }),
+                        selectedShareable: shareableCopy,
                     },
                     () => this.computeXYOfSelectedShareable()
                 );
@@ -257,9 +265,6 @@ class App extends React.Component {
 
     componentDidMount() {
         // Fetch shareables for current date and update this.state.shareables
-    }
-
-    readCookie() {
         fetch("/check-session")
             .then((res) => {
                 if (res.status === 200) {

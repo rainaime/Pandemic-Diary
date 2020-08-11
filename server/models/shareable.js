@@ -1,56 +1,32 @@
 /* Tweets mongoose model */
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
 const ShareableSchema = new mongoose.Schema({
-	content: {
-		type: String,
-//		required: true,
-		minlegth: 1,
+    content: {
+        type: String,
         unique: false,
-     },
-     date: {
-          type: Date,
-     },
-     dateText: {
-          type: String,
-     },
-     height: {
-          type: Number,
-     },
-     selectedType: {
-          type: String,
-     }, 
-     type: {
-          type: String,
-     },
-     width: {
-          type: Number,
-     },
-     center: {
-
-     },
-     user: {
-          type: String,
-     },
-     img: {
-
-     },
+    },
+    date: {
+        type: Date,
+    },
+    center: {
+        lat: {
+            type: Number,
+        },
+        lng: {
+            type: Number,
+        },
+    },
+    type: {
+        type: String,
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId, // Store ID, not username
+        ref: 'User'
+    }
 });
 
-
-ShareableSchema.statics.findById = function (id) {
-     const Set = this;
-
-     return Set.findOne({ id: id }).then((set) => {
-         if (!set) {
-             return Promise.reject("No Shareable with ID"); // a rejected promise
-         } else {
-              return Promise.resolve(set);
-         }
-     });
- };
-
-ShareableSchema.statics.findByDate = function(date) {
+ShareableSchema.statics.findByDate = function (date) {
     const Set = this;
 
     const start = new Date(new Date(date).toDateString());
@@ -60,8 +36,8 @@ ShareableSchema.statics.findByDate = function(date) {
     return Set.find({
         date: {
             $gte: start,
-            $lt: end
-        }
+            $lt: end,
+        },
     });
 };
 

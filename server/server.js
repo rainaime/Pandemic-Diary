@@ -211,9 +211,10 @@ app.get("/tweet", (req, res) => {
 
 // A route to create new shareable
 app.post("/shareable", (req, res) => {
+    console.log(req.session, "ud9say98dsahin321n321ui321>>>>>>>>>>>>>>")
     const shareable = new Shareable(req.body);
 
-    console.log(shareable);
+    console.log("......", req.body);
 
     shareable
         .save()

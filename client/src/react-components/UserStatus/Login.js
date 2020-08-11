@@ -63,7 +63,6 @@ export class Login extends Component {
         })
             .then((res) => {
                 const type = res.headers.get("content-type");
-                console.log(type, res);
                 if (type && type.indexOf("application/json") !== -1) {
                     return res.json().then((data) => {
                         this.props.onLoginSuccess(data.username);

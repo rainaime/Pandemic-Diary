@@ -25,7 +25,10 @@ class MarkerIcon extends React.Component {
                 src="/marker.png"
                 alt="marker"
                 onClick={() => {
-                    this.props.onClick(Object.assign({}, this.state));
+                    this.props.onClick(Object.assign({}, {
+                        type: "marker",
+                        content: "",
+                    }));
                 }}
             />
         );
