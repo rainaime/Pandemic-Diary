@@ -3,8 +3,9 @@ import "./App.css";
 import { Admin, ManageUsers } from "./react-components/UserFeatures/Admin";
 import { ImageIcon, ImageMenu } from "./react-components/ShareableComponents/Image";
 import { ManageReports, ReportMenu } from "./react-components/UserFeatures/Report";
-import { Marker, OverlayView } from "@react-google-maps/api";
+import { Marker } from "@react-google-maps/api";
 import { MarkerIcon, MarkerMenu } from "./react-components/ShareableComponents/Marker";
+import { UserInfo } from "./react-components/UserFeatures/UserInfo";
 import {
     NotificationIcon,
     NotificationMenu,
@@ -22,7 +23,6 @@ import ShareablePopup from "./react-components/ShareableComponents";
 import SiteHeader from "./react-components/SiteHeader";
 import Timeline from "./react-components/Timeline";
 import Tweets from "./react-components/Tweets";
-import { UserInfo } from "./react-components/UserFeatures/UserInfo";
 import { withRouter } from "react-router-dom";
 
 const appSettings = {
@@ -30,165 +30,249 @@ const appSettings = {
     maxDate: new Date("December 31 2020"),
 };
 
-// let users = [
-//     //admin probably does not need shareables or shared
-//     { username: "admin", password: "admin", shareables: [], shared: [], reports: [] },
-//     { username: "user", password: "user", shareables: [], shared: [] },
-//     { username: "user2", password: "user2", shareables: [], shared: [] },
-// ]
-
-
-let users = [];
-
-
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.readCookie();
 
         this.state = {
+            // What's currently being displayed on the left and right menus
             currentLeftMenuView: "filter",
             currentRightMenuView: "news",
+
+            // Mode: One of:
+            //  - "normal"; interacting with the app without adding anything
+            //  - "login"; logging in or registering
+            //  - "placingShareable"; in interactive mode on the app to place shareables
             currentMode: this.props.showLogin ? "login" : "normal",
+
+            // The user currently logged in and interacting with the website.
+            // ONLY used for stylistic purposes. Session should be used to validate requests.
+            currentUsername: null,
+
+            currentDate: new Date(),
+
+            // Popup: One of:
+            //  - "marker"; modifying a Marker shareable
+            //  - "image"; modifying an Image shareable
+            //  - "notification": viewing received notifications
+            //  - "login"
+            //  - "manageUser": modifying user info (admin feature)
+            //  - "report": viewing reported shareables (admin feature)
             currentPopup: this.props.showLogin ? "login" : "",
+            popupExit: false, // Used to trigger input form resets
+
+            // The shareables being displayed on the screen at the moment.
             shareables: [],
+
+            // The shareable currently being modified.
             selectedShareable: {
                 center: { lat: 43.6623, lng: -79.3932 },
                 content: "",
                 user: null,
                 type: null,
             },
+
+            // The location of the popup that appears on the map when hovering over a shareable.
             shareablePopupPos: { x: -1000, y: -1000 },
+
+            // Context for the Maps object, used for calculation of positions.
             mapCtx: null,
-            currentShareable: null,
-            currentDate: new Date(),
-            selectedDate: new Date(),
-            selectedShareableType: "All",
-            idcounts: 2, //this should come from server
-            currentUser: null,
-            showNotification: false,
         };
+    }
+
+    setLeftView(option) {
+        if (option === "filter" || option === "info") {
+            this.setState({
+                currentLeftMenuView: option,
+            });
+        }
+    }
+
+    setRightView(option) {
+        if (option === "tweets" || option === "news") {
+            this.setState({
+                currentRightMenuView: option,
+            });
+        }
+    }
+
+    setCurrentMode(mode) {
+        const appModes = ["normal", "login", "placingShareable"];
+
+        if (appModes.indexOf(mode) !== -1) {
+            this.setState({
+                currentMode: mode,
+            });
+        }
+    }
+
+    setCurrentPopup(popup) {
+        const appPopups = ["marker", "image", "notification", "login", "manageUser", "report"];
+
+        if (appPopups.indexOf(popup) !== -1) {
+            this.setState({
+                currentPopup: popup,
+            });
+        }
+    }
+
+    setSelectedShareable(shareable) {
+        this.setState({
+            selectedShareable: shareable,
+        });
+    }
+
+    updateSelectedPopupPos() {
+        this.setState({
+            shareablePopupPos: this.computeXYOfSelectedShareable(),
+        });
+    }
+
+    updateCurrentDate(date) {
+        this.setState({
+            currentDate: date,
+        });
+    }
+
+    renderNotification() {
+        this.setState({
+            currentMode: "normal",
+            currentPopup: "notification",
+        });
+    }
+
+    renderShareables() {
+        return this.state.shareables.map((s, i) => {
+            return (
+                <Marker
+                    key={i + 2}
+                    options={{ icon: { url: "/marker.png" } }}
+                    onClick={() => this.setState({ shareablePopupPos: { x: -1000, y: -1000 } })}
+                    onMouseOver={() => {
+                        this.setState({
+                            selectedShareable: s,
+                            shareablePopupPos: this.computeXYOfSelectedShareable(),
+                        });
+                    }}
+                    position={s.center}
+                />
+            );
+        });
+    }
+
+    enterAddingMode(shareableType) {
+        this.setState({
+            currentMode: "placingShareable",
+            currentShareable: shareableType,
+        });
+    }
+
+    addToShareableArray(shareable) {
+        this.setState({
+            shareables: [...this.state.shareables, shareable],
+        });
+    }
+
+    onShareablePlaced(popupType) {
+        this.setState({
+            currentMode: "editingShareable",
+            currentPopup: this.state.currentShareable.type,
+        });
+    }
+
+    onContentAdded() {
+        this.setState({
+            currentMode: "normal",
+            currentPopup: "",
+        });
+    }
+
+    returnToApp(username) {
+        this.setState({
+            currentMode: "normal",
+            currentPopup: "",
+        });
+        if (username && typeof username === "string") {
+            this.updateCurrentUser(username);
+        }
+    }
+
+    componentDidMount() {
+        // Fetch shareables for current date and update this.state.shareables
     }
 
     readCookie() {
         fetch("/check-session")
-            .then(res => {
+            .then((res) => {
                 if (res.status === 200) {
                     return res.json();
                 }
             })
-            .then(json => {
+            .then((json) => {
                 if (json && json.currentUser) {
                     this.setState({ currentUser: json.currentUser });
                 }
             })
-            .catch(err => {
+            .catch((err) => {
                 console.log(err);
             });
     }
 
-    //this is just to hardcode an example marker
-    componentDidMount() {
-        let example = {
-            content: "example content",
-            date: new Date(),
-            dateText: "",
-            height: 30,
-            id: 1,
-            selectedType: "News",
-            type: "marker",
-            width: 20,
-            center: {
-                lat: 43.6723,
-                lng: -79.3932,
-            },
-            user: users[1],
-            img: new Image(),
-        };
-        example.img.src = "/marker.png";
-        // this.addToShareableArray(example);
-
-        fetch("http://localhost:5000/users").then((res) => {
-            res.json().then((data) => {
-                users = data.users;
-
-            })
-            console.log(res.body)
-        }).then((res) => {
-            console.log(res)
-        })
-
-        const response = fetch("http://localhost:5000/shareable").then((res) => {
-            res.json().then((data) => {
-                this.setState({shareables: data.shareable});
-                console.log(this.state.shareables)
-            })
-        })
-    }
-
-    renderPopup(currentPopup) {
+    renderPopup() {
         const MarkerMenuProps = {
-            state: this.state.currentShareable,
-            updateDate: this.updateShareableDate.bind(this),
-            enterPressed: this.setCurrentMode.bind(this),
-            updateArticleType: this.updateArticleType.bind(this),
-            shareableDate: this.state.shareableDate,
+            currentDate: this.state.currentDate,
+            currentShareable: this.state.currentShareable,
             updateCurrentDate: this.updateCurrentDate.bind(this),
+
+            returnToApp: this.returnToApp.bind(this),
             shouldClear: this.state.popupExit,
-            onPopupExit: this.onPopupExit.bind(this),
+            onExit: () => this.setState({ popupExit: false }),
         };
 
         const ImageMenuProps = {
-            image: this.state.currentShareable,
-            updateDate: this.updateShareableDate.bind(this),
-            updateArticleType: this.updateArticleType.bind(this),
-            shareableDate: this.state.shareableDate,
+            currentDate: this.state.currentDate,
+            currentShareable: this.state.currentShareable,
             updateCurrentDate: this.updateCurrentDate.bind(this),
+
+            returnToApp: this.returnToApp.bind(this),
             shouldClear: this.state.popupExit,
-            onPopupExit: this.onPopupExit.bind(this),
+            onExit: () => this.setState({ popupExit: false }),
         };
 
         const UserStatusMenuProps = {
-            onValidationSuccess: (username) => {this.setState({currentUser: username, currentMode: "normal"})},
-            updateCurrentUser: this.updateCurrentUser.bind(this),
-            addUser: (newUser) => {
-                users.push(newUser);
-            },
-            users: users,
+            returnToApp: this.returnToApp.bind(this),
             shouldClear: this.state.popupExit,
-            onPopupExit: this.onPopupExit.bind(this),
+            onExit: () => this.setState({ popupExit: false }),
         };
 
         const NotificationMenuProps = {
-            shareShareable: this.shareShareable.bind(this),
+            shareShareable: undefined, // TODO: This should really be a server call
             currentUser: this.state.currentUser,
-            enterPressed: this.setCurrentMode.bind(this),
-            currentMarker: this.state.selectedShareable,
+            returnToApp: this.returnToApp.bind(this),
+            shouldClear: this.state.popupExit,
+            onExit: () => this.setState({ popupExit: false }),
         };
 
         const ReportMenuProps = {
-            reportMarker: this.reportMarker.bind(this),
-            enterPressed: this.setCurrentMode.bind(this),
-            //the if condition is because we dont know if currentuser will be null
-            currentUserUsername:
-                this.state.currentUser === null ? null : this.state.currentUser.username,
-            shareable: this.state.selectedShareable,
+            reportMarker: undefined, // TODO: This should really be a server call
+            selectedShareable: this.state.selectedShareable,
+            returnToApp: this.returnToApp.bind(this),
             shouldClear: this.state.popupExit,
-            onPopupExit: this.onPopupExit.bind(this),
+            onExit: () => this.setState({ popupExit: false }),
         };
 
         const ManageUsersProps = {
-            users: users,
-            deleteUser: this.deleteUser.bind(this),
+            // TODO: Inside of ManageUsers, make a call to the SERVER
+            //deleteUser: this.deleteUser.bind(this), // TODO: This should really be a server call
         };
 
         const ManageReportsProps = {
-            reports: [], //TODO need to setup admin user
-            // reports: users[0].reports,
-            deleteReportedShareable: this.deleteReportedShareable.bind(this),
+            // TODO: Inside of ManageReports, make a call to the SERVER
+            // deleteReportedShareable: this.deleteReportedShareable.bind(this),
         };
 
-        switch (currentPopup) {
+        switch (this.state.currentPopup) {
             case "marker":
                 return <MarkerMenu {...MarkerMenuProps} />;
             case "image":
@@ -276,15 +360,18 @@ class App extends React.Component {
 
         const UserStatusProps = {
             currentUser: this.state.currentUser,
-            openLoginMenu: () => {this.props.history.push("/App/login"); this.setState({ currentMode: "login", currentPopup: "login" })},
-            logout: () => this.updateCurrentUser(null),
+            openLoginMenu: () => {
+                this.props.history.push("/App/login");
+                this.setState({ currentMode: "login", currentPopup: "login" });
+            },
+            logout: () => this.returnToApp(null),
             shouldClear: this.state.popupExit,
-            onPopupExit: this.onPopupExit.bind(this),
+            onPopupExit: () => this.setState({ popupExit: false }),
         };
 
         const FilterProps = {
-            selectType: this.selectCallback.bind(this),
-            currentUser: this.state.currentUser,
+            //selectType: this.selectCallback.bind(this),
+            //currentUser: this.state.currentUsername,
         };
 
         const MapsProps = {
@@ -303,11 +390,11 @@ class App extends React.Component {
 
         const ShareablePopupProps = {
             shareable: this.state.selectedShareable,
-            editable: this.userCanEdit.bind(this),
-            edit: this.editMarker.bind(this),
-            delete: this.deleteMarker.bind(this),
-            share: this.shareMarkerState.bind(this),
-            report: this.reportMarkerState.bind(this),
+            //editable: this.userCanEdit.bind(this),
+            //edit: this.editMarker.bind(this),
+            //delete: this.deleteMarker.bind(this),
+            //share: this.shareMarkerState.bind(this),
+            //report: this.reportMarkerState.bind(this),
             position: this.state.shareablePopupPos,
         };
 
@@ -359,83 +446,52 @@ class App extends React.Component {
                 rightMenuView = null;
                 break;
         }
-        // console.log(this.state.currentMode, this.state.currentPopout)
 
         return (
             <div
                 className="App"
-                style={{ ...dynamicStyles.cursor, backgroundColor: Colors.backgroundDarkAccent }}>
+                style={{
+                    ...dynamicStyles.cursor,
+                    backgroundColor: Colors.backgroundDarkAccent,
+                }}>
                 <SiteHeader>
-                    <span className="currentDate">
+                    <span className="current-date">
                         <i className="fas fa-calendar-alt"></i>
                         {this.state.currentDate.toDateString()}
                     </span>
-                    {this.state.currentUser != null && (
-                        <button className="button" onClick={this.renderNotification.bind(this)}>
-                            <i className="fas fa-bell"></i>Notifications
+                    {this.state.currentUser && (
+                        <button onClick={this.renderNotification.bind(this)}>
+                            <i className="fas fa-bell"></i>
+                            Notifications
                         </button>
                     )}
                     <UserStatus {...UserStatusProps} />
                 </SiteHeader>
-
                 <div className="mainBody">
                     <CollapsibleMenu
                         views={["filter", "info"]}
-                        switchView={(newView) => {
-                            this.setState({ currentLeftMenuView: newView });
-                        }}
+                        switchView={this.setLeftView.bind(this)}
                         position="left">
                         {leftMenuView}
                     </CollapsibleMenu>
-
-                    {/* outerMapDiv and innerMapDiv were added due to an extra wrapper div being created by
-                     * the Maps component from google-map-react which conflict with flexboxes */}
-                    <div className="outerMapDiv">
-                        <div className="innerMapDiv">
+                    <div className="outer-map-wrapper">
+                        <div className="inner-map-wrapper">
                             {this.state.showNotification && (
                                 <NotificationIcon user={this.state.currentUser} />
                             )}
                             <Maps {...MapsProps}>
                                 <ShareablePopup
                                     key={1}
-                                    className="selectedShareable"
+                                    className="selected-shareable"
                                     style={dynamicStyles.selectedShareable}
                                     {...ShareablePopupProps}
                                 />
-                                {this.state.shareables.map((s, i) => {
-                                    return (
-                                        <Marker
-                                            key={i + 2}
-                                            options={{
-                                                // TODO: Need to change the underlying representation of ImageIcon and MarkerIcon, then the icon URL can be changed.
-                                                icon: {
-                                                    url: "/marker.png",
-                                                },
-                                            }}
-                                            onClick={() => {
-                                                this.setState({
-                                                    shareablePopupPos: { x: -1000, y: -1000 },
-                                                });
-                                            }}
-                                            onMouseOver={() => {
-                                                this.setState({ selectedShareable: s });
-                                                this.setState({
-                                                    shareablePopupPos: this.computeXYOfSelectedShareable(),
-                                                });
-                                            }}
-                                            position={s.center}
-                                        />
-                                    );
-                                })}
+                                {this.renderShareables()}
                             </Maps>
                         </div>
-                        <div style={dynamicStyles.popupBox} className="popupBox">
-                            <span
-                                onClick={() => {
-                                    this.props.history.push("/App");
-                                    this.setCurrentMode.call(this);
-                                }}>
-                                x
+                        <div style={dynamicStyles.popupBox} className="popup-box">
+                            <span onClick={this.returnToApp.bind(this)}>
+                                <i className="fas fa-window-close"></i>
                             </span>
                             {this.renderPopup(this.state.currentPopup)}
                         </div>
@@ -446,9 +502,7 @@ class App extends React.Component {
                     </div>
                     <CollapsibleMenu
                         views={["news", "tweets"]}
-                        switchView={(newView) => {
-                            this.setState({ currentRightMenuView: newView });
-                        }}
+                        switchView={this.setRightView.bind(this)}
                         position="right">
                         {rightMenuView}
                     </CollapsibleMenu>
@@ -456,285 +510,6 @@ class App extends React.Component {
                 <Timeline {...TimelineProps} />
             </div>
         );
-    }
-
-    deleteUser(e, user) {
-        e.preventDefault();
-        //filter shareables in state
-        this.setState((prevState) => ({
-            shareables: prevState.shareables.filter(
-                (element) => !user.shareables.includes(element)
-            ),
-        }));
-
-        users = users.filter((element) => user !== element); //filter users lsit
-
-        this.setState({
-            selectedShareable: {
-                center: { lat: 63.6623, lng: -79.3932 },
-                content: "",
-                user: null,
-                shareableType: null,
-            },
-        });
-    }
-
-    updateArticleType(selectedType) {
-        this.state.currentShareable.updateSelectedType(selectedType);
-    }
-
-    addToShareableArray = async (shareable) => {
-        shareable.id = this.state.idcounts;
-
-        //give currentUsername to shareable
-        shareable.user = this.state.currentUser;
-
-        //TODO shareable content is not updated at this point
-        
-        //do we need id counts
-        this.setState({
-            idcounts: this.state.idcounts + 1,
-        });
-
-        
-        this.setState({
-            shareables: [...this.state.shareables, shareable],
-            currentShareable: shareable,
-        });
-        
-        // currentUser will not have access to his shareables
-        // if (this.state.currentUser) {
-        //     console.log(this.state.currentUser);
-        //     this.setState({
-        //         currentUser: Object.assign(this.state.currentUser, {
-        //             shareables: [...this.state.currentUser.shareables, shareable],
-        //         }),
-        //     });
-        // }
-
-        const response = await fetch("http://localhost:5000/shareable", {
-            method: "POST",
-            mode: "cors",
-            cache: "no-cache",
-            credentials: "same-origin",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            redirect: "manual",
-            body: JSON.stringify(shareable),
-        }) 
-
-        console.log(shareable)
-
-        if (response.ok){
-            console.log("we okay")
-        }
-
-
-
-    }
-
-    enterAddingMode(shareableType) {
-        this.setState({
-            currentMode: "placingShareable",
-            currentShareable: shareableType,
-        });
-    }
-
-    onShareablePlaced(popupType) {
-        this.setState({
-            currentMode: "editingShareable",
-            currentPopup: this.state.currentShareable.type,
-        });
-    }
-
-    onContentAdded() {
-        this.setState({
-            currentMode: "normal",
-            currentPopup: "",
-        });
-    }
-
-    editMarker() {
-        this.setState({ currentShareable: this.state.selectedShareable });
-        this.setState({ currentMode: "editingShareable" });
-        this.setState({ currentPopup: this.state.selectedShareable.type });
-    }
-
-    deleteMarker(marker) {
-        this.setState((prevState) => ({
-            shareables: prevState.shareables.filter((element) => element.id !== marker.id),
-        }));
-        const selectedShareableCopy = Object.assign({}, this.state.selectedShareable);
-        selectedShareableCopy.center = {
-            lat: 1000,
-            lng: 1000,
-        };
-        this.setState({ selectedShareable: selectedShareableCopy });
-
-        //fetch request to delete marker
-        const response = fetch("http://localhost:5000/shareable/:id", {
-            method: "DELETE",
-            mode: "cors",
-            cache: "no-cache",
-            credentials: "same-origin",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            redirect: "manual",
-            body: JSON.stringify(marker),
-        }) 
-    }
-
-    deleteReportedShareable(marker) {
-        this.deleteMarker(marker);
-        marker.user.shareables = marker.user.shareables.filter((s) => s !== marker);
-        users[0].reports = users[0].reports.filter((s) => s.shareable !== marker);
-    }
-
-    shareMarkerState() {
-        this.setState({ currentShareable: this.state.selectedShareable });
-        this.setState({ currentPopup: "notification" });
-        this.setState({ currentMode: "editing" });
-    }
-
-    reportMarkerState() {
-        this.setState({
-            currentShareable: this.state.selectedShareable,
-            currentPopup: "report",
-            currentMode: "editing",
-        });
-    }
-
-    reportMarker(reportMessage, username, shareable) {
-        let report = {};
-        report.message = reportMessage;
-        report.userReporting = username;
-        report.shareable = shareable;
-        users[0].reports.push(report);
-    }
-
-    setCurrentMode() {
-        /** TODO: we need to call fetch and update the server when a shareable
-            is done editing, so far the only way to be "done" editing is when you leave the editor
-            i.e switching form editing mode to normal mode
-
-        **/
-        const response = fetch("http://localhost:5000/shareable/:id", {
-            method: "PATCH",
-            mode: "cors",
-            cache: "no-cache",
-            credentials: "same-origin",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            redirect: "manual",
-            body: JSON.stringify(this.state.selectedShareable),
-        }) 
-
-        this.setState({ currentMode: "normal" });
-        this.setState({ popupExit: true });
-    }
-
-    onPopupExit() {
-        this.setState({ popupExit: false });
-    }
-
-    updateCurrentUser(user) {
-        if (user) {
-            this.setState({ currentUser: user });
-            this.setState({ showNotification: false });
-        } else {
-            this.props.history.push("/App");
-            fetch("/logout")
-                .then(() => {
-                    this.setState({
-                        currentUser: null,
-                        showNotification: false,
-                    });
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        }
-    }
-
-    userCanEdit() {
-        if (this.state.selectedShareable.user !== this.state.currentUser) {
-            if (this.state.currentUser != null && this.state.currentUser.username !== "admin") {
-                return {
-                    visibility: "hidden",
-                };
-            }
-
-            return {
-                visibility: "hidden",
-            };
-        }
-    }
-
-    getShareableUser() {
-        if (this.state.selectedShareable.user === null) return null;
-        else return this.state.selectedShareable.user.username;
-    }
-
-    shareShareable(username) {
-        let user = null;
-        users.forEach((element) => {
-            if (element.username === username) {
-                user = element;
-            }
-        });
-
-        if (user === null) return false;
-        else {
-            user.shared.push(this.state.selectedShareable);
-            return true;
-        }
-    }
-
-    getMarkerDate() {
-        if (this.state.selectedShareable != null && this.state.selectedShareable.date != null)
-            return this.state.selectedShareable.date.toDateString();
-    }
-
-    selectCallback(type) {
-        this.setState({ selectedShareableType: type });
-        this.setState({
-            selectedShareable: {
-                center: { lat: 1000, lng: 1000 },
-                content: "",
-                user: null,
-                shareableType: null,
-            },
-        });
-    }
-
-    renderNotification() {
-        if (this.state.showNotification) {
-            this.setState({ showNotification: false });
-        } else {
-            this.setState({ showNotification: true });
-        }
-    }
-
-    updateShareableDate(time) {
-        time.setTime(time.getTime() + time.getTimezoneOffset() * 60 * 1000);
-        this.state.currentShareable.updateDate(time);
-    }
-
-    //change Time Line
-    updateCurrentDate(time) {
-        time.setTime(time.getTime() + time.getTimezoneOffset() * 60 * 1000);
-        this.setState({ currentDate: time });
-        this.setState({
-            selectedShareable: {
-                center: { lat: 1000, lng: 1000 },
-                content: "",
-                user: null,
-                shareableType: null,
-            },
-        });
     }
 }
 

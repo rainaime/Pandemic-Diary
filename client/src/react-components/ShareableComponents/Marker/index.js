@@ -15,7 +15,6 @@ class MarkerIcon extends React.Component {
         height: 30,
         img: new Image(),
         content: "",
-        id: '',
         dateText: '',
         selectedType: '',
 
