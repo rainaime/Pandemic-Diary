@@ -527,7 +527,7 @@ class App extends React.Component {
                 if (this.state.currentUser && this.state.currentUser.username === "admin") {
                     leftMenuView = <Admin {...AdminProps} />;
                 } else {
-                    leftMenuView = <UserInfo currentUser={this.state.currentUser} />;
+                    leftMenuView = <UserInfo currentUser={this.state.currentUser} shareables={this.state.shareables} />;
                 }
                 break;
             default:
