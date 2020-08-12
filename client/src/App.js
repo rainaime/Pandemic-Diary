@@ -147,6 +147,11 @@ class App extends React.Component {
     updateCurrentDate(date) {
         this.setState({
             currentDate: date,
+        }, () => {
+            fetch(`/shareables/${this.state.currentDate}`)
+                .then((res) => res.json())
+                .then((json) => {this.setState({ shareables: json, shareablePopupPos: { x: -1000, y: -1000 }})})
+                .catch((err) => console.log(err))
         });
     }
 
@@ -165,8 +170,7 @@ class App extends React.Component {
                     });
                 }
             );
-        }, 
-        );
+        });
     }
 
     renderNotification() {
@@ -219,19 +223,25 @@ class App extends React.Component {
                     .then((res) => {
                         if (res.status === 200) {
                             return res.json();
-                        } 
+                        }
                     })
-                    .then((json) => {console.log(json); this.setState({
-                        currentMode: "placingShareable",
-                        selectedShareable: json,
-                    }, () => this.computeXYOfSelectedShareable())})
+                    .then((json) => {
+                        console.log(json);
+                        this.setState(
+                            {
+                                currentMode: "placingShareable",
+                                selectedShareable: json,
+                            },
+                            () => this.computeXYOfSelectedShareable()
+                        );
+                    })
                     .catch((err) => {
                         console.log(err);
                         this.setState({
                             currentMode: "normal",
                             selectedShareable: null,
-                        })
-                    })
+                        });
+                    });
             }
         );
     }
@@ -253,10 +263,13 @@ class App extends React.Component {
         this.props.history.push("/App");
         if (this.state.currentMode === "editingShareable") {
             fetch(`/shareable/${this.state.selectedShareable._id}`, {
-                method: "patch",
-                body: this.state.selectedShareable,
-            })
-                .catch((err) => console.log(",...", err))
+                method: "PATCH",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(this.state.selectedShareable),
+            }).catch((err) => console.log(",...", err));
         }
         this.setState({
             currentMode: "normal",
@@ -270,16 +283,14 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        console.log(`/shareables/${this.state.currentDate.toISOString()}`)
         // Fetch shareables for current date and update this.state.shareables
         fetch(`/shareables/${this.state.currentDate.toDateString()}`)
             .then((res) => res.json())
             .then((json) => {
                 this.setState({
                     shareables: json,
-                })
-                console.log(this.state.shareables)
-            })
+                });
+            });
         fetch("/check-session")
             .then((res) => {
                 if (res.status === 200) {
@@ -294,7 +305,6 @@ class App extends React.Component {
             .catch((err) => {
                 console.log(err);
             });
-    
     }
 
     renderPopup() {
@@ -477,6 +487,10 @@ class App extends React.Component {
 
         const ShareablePopupProps = {
             shareable: this.state.selectedShareable,
+            // 'editable' is NOT to be trusted; it's only used to decide 
+            // whether to include the shareable modification buttons or not.
+            // The backend does the actual validation.
+            editable: this.state.selectedShareable.user === this.state.currentUser,
             //editable: this.userCanEdit.bind(this),
             //edit: this.editMarker.bind(this),
             //delete: this.deleteMarker.bind(this),

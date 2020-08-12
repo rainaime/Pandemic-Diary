@@ -70,7 +70,6 @@ app.get("/", sessionChecker, (req, res) => {
 });
 
 app.get("/check-session", (req, res) => {
-    console.log(req.session);
     if (req.session.user) {
         res.status(200).send({ currentUser: req.session.username });
     } else {
@@ -101,7 +100,6 @@ app.post("/login", (req, res) => {
             }
         })
         .catch((error) => {
-            console.log(error);
             res.status(401).send(error);
         });
 });
@@ -227,7 +225,7 @@ app.post("/shareable", (req, res) => {
     } else {
         const query = { username: "Guest" };
         const newData = { username: "Guest", password: "Th3i41s2IhshA656Guie76s9t9Pas876s34wo1rd" };
-        User.findOneAndUpdate(query, newData, { upsert: true }, (err, user) => {
+        User.findOneAndUpdate(query, newData, { upsert: true, new: true }, (err, user) => {
             if (err) {
                 res.status(500).send("Internal server error");
             }
@@ -269,12 +267,9 @@ app.get("/shareable", (req, res) => {
 
 // A route to update a single shareable by its id.
 app.patch("/shareable/:id", (req, res) => {
-    console.log(req)
     const id = req.params.id;
 
-    console.log(id)
     if (!ObjectID.isValid(id)) {
-        console.log("invalid ")
         res.status(400).send();
         return;
     }
@@ -282,14 +277,13 @@ app.patch("/shareable/:id", (req, res) => {
     Shareable.findByIdAndUpdate(id, req.body)
         .then((result) => {
             if (!result) {
-                console.log;
                 res.status(404).send();
             } else {
-                console.log(result);
                 res.send(result);
             }
         })
         .catch((error) => {
+            console.log(error)
             res.status(400).send();
         });
 });

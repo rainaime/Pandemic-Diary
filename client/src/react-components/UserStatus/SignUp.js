@@ -46,18 +46,19 @@ export class SignUp extends Component {
             if (type && type.indexOf("application/json") !== -1) {
                 return res.json().then((data) => {
                     this.props.onSignupSuccess(data.username);
-                    this.usernameRef.current.value = "";
-                    this.passwordRef.current.value = "";
                 });
             } else {
                 return res.text().then((data) => {
                     this.setState({
                         signupMessage: data,
                     });
-                    this.passwordRef.current.value = "";
                 })
             }
-        });
+        })
+            .then(() => {
+                if (this.usernameRef.current) this.usernameRef.current.value = "";
+                if (this.passwordRef.current) this.passwordRef.current.value = "";
+            });
     };
 
     render() {
