@@ -49,7 +49,7 @@ export class UserInfo extends Component {
     render() {
         return (
             <div>
-                {this.props.currentUser === null ? (
+                {this.props.currentUser == null ? (
                     <div>Please login to view user info. </div>
                 ) : (
                     this.renderUserInfo()

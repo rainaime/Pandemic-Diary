@@ -37,25 +37,27 @@ class Tweets extends React.Component {
         
         const currentTime = this.getCurrentTime()
         
-        //add current time at the and to ensure every valuse is unique so we don't get E11000 error
-        const username = this.props.user.concat('\\\\split@' + currentTime)
-        const content = tweet.concat('\\\\split@' + currentTime)
-        
-        const newTweet = {username: username, content: content}
+        if(this.props.user != null){
+            //add current time at the and to ensure every valuse is unique so we don't get E11000 error
+            const username = this.props.user.concat('\\\\split@' + currentTime)
+            const content = tweet.concat('\\\\split@' + currentTime)
 
-        const response = fetch("http://localhost:5000/tweet", {
-            method: "POST",
-            mode: "cors",
-            cache: "no-cache",
-            credentials: "same-origin",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            redirect: "manual",
-            body: JSON.stringify(newTweet),
-        }).then((res) => {
-            this.updateTweet(this);
-        })
+            const newTweet = {username: username, content: content}
+
+            const response = fetch("http://localhost:5000/tweet", {
+                method: "POST",
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                redirect: "manual",
+                body: JSON.stringify(newTweet),
+            }).then((res) => {
+                this.updateTweet(this);
+            })
+        }
     }
 
     //get tweet from server
