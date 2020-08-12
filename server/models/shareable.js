@@ -21,6 +21,9 @@ const ShareableSchema = new mongoose.Schema({
         type: String,
     },
     user: {
+        type: String,
+    },
+    userId: {
         type: mongoose.Schema.Types.ObjectId, // Store ID, not username
         ref: 'User'
     }
@@ -29,6 +32,7 @@ const ShareableSchema = new mongoose.Schema({
 ShareableSchema.statics.findByDate = function (date) {
     const Set = this;
 
+    console.log(date)
     const start = new Date(new Date(date).toDateString());
     const end = new Date(start.toDateString());
     end.setTime(start.getTime() + 86400000);

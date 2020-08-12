@@ -51,7 +51,7 @@ class ShareablePopup extends React.Component {
                 </div>
                 <div>
                     <span>
-                        <span className="content">{date && date.toDateString()}</span>
+                        <span className="content">{new Date(date).toDateString()}</span>
                         <br></br>
                         {content}
                     </span>

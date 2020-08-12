@@ -165,7 +165,8 @@ class App extends React.Component {
                     });
                 }
             );
-        });
+        }, 
+        );
     }
 
     renderNotification() {
@@ -216,16 +217,21 @@ class App extends React.Component {
                     headers: { Accept: "application/json", "Content-Type": "application/json" },
                 })
                     .then((res) => {
-                        return res.json();
+                        if (res.status === 200) {
+                            return res.json();
+                        } 
                     })
-                    .then((json) => console.log(json));
-                this.setState(
-                    {
+                    .then((json) => {console.log(json); this.setState({
                         currentMode: "placingShareable",
-                        selectedShareable: shareableCopy,
-                    },
-                    () => this.computeXYOfSelectedShareable()
-                );
+                        selectedShareable: json,
+                    }, () => this.computeXYOfSelectedShareable())})
+                    .catch((err) => {
+                        console.log(err);
+                        this.setState({
+                            currentMode: "normal",
+                            selectedShareable: null,
+                        })
+                    })
             }
         );
     }
@@ -243,15 +249,15 @@ class App extends React.Component {
         });
     }
 
-    onContentAdded() {
-        this.setState({
-            currentMode: "normal",
-            currentPopup: "",
-        });
-    }
-
     returnToApp(username) {
         this.props.history.push("/App");
+        if (this.state.currentMode === "editingShareable") {
+            fetch(`/shareable/${this.state.selectedShareable._id}`, {
+                method: "patch",
+                body: this.state.selectedShareable,
+            })
+                .catch((err) => console.log(",...", err))
+        }
         this.setState({
             currentMode: "normal",
             currentPopup: "",
@@ -264,7 +270,16 @@ class App extends React.Component {
     }
 
     componentDidMount() {
+        console.log(`/shareables/${this.state.currentDate.toISOString()}`)
         // Fetch shareables for current date and update this.state.shareables
+        fetch(`/shareables/${this.state.currentDate.toDateString()}`)
+            .then((res) => res.json())
+            .then((json) => {
+                this.setState({
+                    shareables: json,
+                })
+                console.log(this.state.shareables)
+            })
         fetch("/check-session")
             .then((res) => {
                 if (res.status === 200) {
@@ -279,6 +294,7 @@ class App extends React.Component {
             .catch((err) => {
                 console.log(err);
             });
+    
     }
 
     renderPopup() {
@@ -528,7 +544,7 @@ class App extends React.Component {
                 <SiteHeader>
                     <span className="current-date">
                         <i className="fas fa-calendar-alt"></i>
-                        {this.state.currentDate.toDateString()}
+                        {new Date(this.state.currentDate).toDateString()}
                     </span>
                     {this.state.currentUser && (
                         <button onClick={this.renderNotification.bind(this)}>

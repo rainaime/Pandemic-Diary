@@ -211,23 +211,50 @@ app.get("/tweet", (req, res) => {
 
 // A route to create new shareable
 app.post("/shareable", (req, res) => {
-    console.log(req.session, "ud9say98dsahin321n321ui321>>>>>>>>>>>>>>")
-    const shareable = new Shareable(req.body);
+    let shareable;
 
-    console.log("......", req.body);
-
-    shareable
-        .save()
-        .then((share) => {
-            //TODO fix what sends here
-            res.status(200).send(share);
+    if (req.session.user) {
+        shareable = new Shareable(Object.assign(req.body), req.session);
+        shareable
+            .save()
+            .then((s) => {
+                res.status(200).send(s);
+            })
+            .catch((err) => {
+                console.log(error);
+                res.status(400).send("Bad request");
+            })
+    } else {
+        const query = { username: "Guest" };
+        const newData = { username: "Guest", password: "Th3i41s2IhshA656Guie76s9t9Pas876s34wo1rd" };
+        User.findOneAndUpdate(query, newData, { upsert: true }, (err, user) => {
+            if (err) {
+                res.status(500).send("Internal server error");
+            }
+            shareable = new Shareable(Object.assign(req.body, {
+                user: user.username,
+                userId: user._id,
+            }));
+            shareable
+                .save()
+                .then((s) => {
+                    res.status(200).send(s);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(400).send("Bad request");
+                })
         })
-        .catch((error) => {
-            console.log(error);
-            res.status(400).send("Bad request");
-        });
+    }
 });
 
+// A route to get shareables for a specific day.
+app.get("/shareables/:date", (req, res) => {
+    Shareable.findByDate(req.params.date)
+        .then((s) => {
+            res.status(200).send(s);
+        })
+})
 // A route to get all shareable saved.
 app.get("/shareable", (req, res) => {
     Shareable.find().then(
@@ -242,12 +269,13 @@ app.get("/shareable", (req, res) => {
 
 // A route to update a single shareable by its id.
 app.patch("/shareable/:id", (req, res) => {
-    // console.log("step one")
-    // console.log(req.params.id)
-    const id = req.body._id;
+    console.log(req)
+    const id = req.params.id;
 
+    console.log(id)
     if (!ObjectID.isValid(id)) {
-        res.status(404).send();
+        console.log("invalid ")
+        res.status(400).send();
         return;
     }
 
