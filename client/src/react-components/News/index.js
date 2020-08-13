@@ -1,6 +1,5 @@
 import React from "react";
 import "./styles.css";
-import dummyArticles from "./dummyArticles";
 
 /**
  * A NewsArticle to be displayed in the News container.
@@ -18,7 +17,7 @@ class NewsArticle extends React.Component {
             <a href={a.url} className="news-article">
                 <p className="news-article-title">{a.title}</p>
                 {a.description}
-                {a.urlToImage ? <img src={a.urlToImage} alt={a.description} /> : null}
+                {a.urlToImage ? <img src={a.urlToImage} alt={a.description} onError={(e) => e.preventDefault()}/> : null}
             </a>
         );
     }

@@ -217,7 +217,7 @@ app.post("/shareable", (req, res) => {
                 res.status(200).send(s);
             })
             .catch((err) => {
-                console.log(error);
+                console.log(err);
                 res.status(400).send("Bad request");
             });
     } else {
@@ -259,33 +259,53 @@ app.patch("/shareable/:id", (req, res) => {
         return;
     }
 
-    console.log(req.session)
     if (req.session.user) {
-        Shareable.findByIdAndUpdate(id, req.body)
-            .then((result) => {
-                if (!result) {
-                    res.status(404).send();
-                } else {
-                    res.send(result);
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-                res.status(400).send();
-            });
+        Shareable.findById(id, (err, s) => {
+            if (err) {
+                console.log(err);
+                res.status(404);
+            }
+
+            // User who sent the request is the user who request. Notice that
+            // we are fetching the document from the database, not using
+            // user input.
+            if (s.user === req.session.username) {
+                // Save the data but don't trust user input for sensitive fields
+                Object.entries(req.body).forEach(([k, v]) => {
+                    if (k !== "_id" && k !== "userId" && k !== "user") {
+                        s[k] = v;
+                    }
+                });
+
+                // Save this shareable.
+                s.save()
+                    .then((doc) => {
+                        if (!doc) {
+                            res.status(404).send();
+                        } else {
+                            res.send(doc);
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        res.status(500);
+                    });
+            }
+        });
     } else {
+        // User is a guest. We'll admit the change but kill the shareable so
+        // that the shareable doesn't remain in our server.
         try {
             res.status(200).send(req.body);
         } catch (error) {
             console.log(error);
-            res.status(404);
         }
     }
 });
 
 // A route to delete a single shareable by its id.
 app.delete("/shareable/:id", (req, res) => {
-    const id = req.body._id;
+    const id = req.params.id;
 
     // Validate id
     if (!ObjectID.isValid(id)) {
@@ -293,18 +313,19 @@ app.delete("/shareable/:id", (req, res) => {
         return;
     }
 
-    // Delete a student by their id
-    Shareable.findByIdAndRemove(id)
-        .then((result) => {
-            if (!result) {
+    Shareable.findOneAndDelete(
+        {
+            user: req.session.username,
+            _id: id,
+        },
+        (err, s) => {
+            if (err || !s) {
                 res.status(404).send();
             } else {
-                res.send(result);
+                res.status(200).send();
             }
-        })
-        .catch((error) => {
-            res.status(500).send(); // server error, could not delete.
-        });
+        }
+    );
 });
 
 ///////////////////////////////////////////////////////////////////////////////

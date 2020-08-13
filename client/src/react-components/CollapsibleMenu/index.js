@@ -15,7 +15,8 @@ import "./styles.css";
 class CollapsibleMenu extends React.Component {
     state = {
         collapsed: false,
-        maximizedSize: "15%",
+        maximizedSize: this.props.maxWidth || "20%",
+        width: this.props.maxWidth || "20%",
     };
 
     /**

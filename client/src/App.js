@@ -168,7 +168,10 @@ class App extends React.Component {
         // trigger a refresh.
         const old = this.state.selectedShareable;
         this.setState({ selectedShareable: Object.assign(old, newData) }, () => {
-            if (newData.date && new Date(newData.date).toDateString() === this.state.currentDate.toDateString()) {
+            if (
+                newData.date &&
+                new Date(newData.date).toDateString() === this.state.currentDate.toDateString()
+            ) {
                 this.setState(
                     {
                         shareables: this.state.shareables.filter((s) => s !== old),
@@ -178,9 +181,12 @@ class App extends React.Component {
                     }
                 );
             } else if (newData.date) {
-                this.setState({
-                    currentDate: new Date(newData.date),
-                }, () => this.getShareablesForCurrentDate());
+                this.setState(
+                    {
+                        currentDate: new Date(newData.date),
+                    },
+                    () => this.getShareablesForCurrentDate()
+                );
             }
         });
     }
@@ -284,7 +290,30 @@ class App extends React.Component {
                     return res.json();
                 }
             })
-            .then((json) => {this.setState({ selectedShareable: json, }); console.log("setting:", json)})
+            .then((json) => this.setState({ selectedShareable: json }))
+            .catch((err) => console.log(err));
+    }
+
+    deleteSelectedShareable() {
+        const id = this.state.selectedShareable._id;
+
+        fetch(`/shareable/${id}`, {
+            method: "delete",
+        })
+            .then((res) => {
+                if (res.status === 200) {
+                    this.setState({
+                        selectedShareable: {
+                            center: { lat: 1000, lng: 1000 },
+                            content: "",
+                            user: null,
+                            type: null,
+                        },
+                        shareablePopupPos: { x: -1000, y: -1000 },
+                        shareables: this.state.shareables.filter((s) => s._id !== id),
+                    });
+                }
+            })
             .catch((err) => console.log(err));
     }
 
@@ -316,7 +345,7 @@ class App extends React.Component {
             .then((json) => {
                 this.setState({
                     shareables: json,
-                    shareablePopupPos: { x: -1000, y: -1000 }
+                    shareablePopupPos: { x: -1000, y: -1000 },
                 });
             });
     }
@@ -525,7 +554,7 @@ class App extends React.Component {
             editable: this.state.selectedShareable.user === this.state.currentUser,
             //editable: this.userCanEdit.bind(this),
             edit: this.editShareable.bind(this),
-            //delete: this.deleteMarker.bind(this),
+            delete: this.deleteSelectedShareable.bind(this),
             //share: this.shareMarkerState.bind(this),
             //report: this.reportMarkerState.bind(this),
             position: this.state.shareablePopupPos,
@@ -609,7 +638,8 @@ class App extends React.Component {
                     <CollapsibleMenu
                         views={["filter", "info"]}
                         switchView={this.setLeftView.bind(this)}
-                        position="left">
+                        position="left"
+                        maxWidth="15%">
                         {leftMenuView}
                     </CollapsibleMenu>
                     <div className="outer-map-wrapper">
@@ -641,7 +671,8 @@ class App extends React.Component {
                     <CollapsibleMenu
                         views={["news", "tweets"]}
                         switchView={this.setRightView.bind(this)}
-                        position="right">
+                        position="right"
+                        maxWidth="25%">
                         {rightMenuView}
                     </CollapsibleMenu>
                 </div>

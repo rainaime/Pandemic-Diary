@@ -3,7 +3,6 @@
     display: flex;
     flex-direction: column;
     font-size: 1vw;
-    width: 15%;
     transition: all 0.3s;
 
     border-radius: 25px;
