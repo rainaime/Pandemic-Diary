@@ -78,7 +78,6 @@ class MarkerMenu extends React.Component {
     }
 
     updateSelectedShareable() {
-        console.log("Update");
         this.props.updateSelectedShareable({
             date: this.state.selectedDate,
             article: this.state.selectedArticle,

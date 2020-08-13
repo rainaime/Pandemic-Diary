@@ -201,8 +201,6 @@ app.get("/tweet", (req, res) => {
     );
 });
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // SHAREABLE-RELATED ROUTES
 ///////////////////////////////////////////////////////////////////////////////
@@ -221,7 +219,7 @@ app.post("/shareable", (req, res) => {
             .catch((err) => {
                 console.log(error);
                 res.status(400).send("Bad request");
-            })
+            });
     } else {
         const query = { username: "Guest" };
         const newData = { username: "Guest", password: "Th3i41s2IhshA656Guie76s9t9Pas876s34wo1rd" };
@@ -229,40 +227,27 @@ app.post("/shareable", (req, res) => {
             if (err) {
                 res.status(500).send("Internal server error");
             }
-            shareable = new Shareable(Object.assign(req.body, {
-                user: user.username,
-                userId: user._id,
-            }));
-            shareable
-                .save()
-                .then((s) => {
-                    res.status(200).send(s);
+            shareable = new Shareable(
+                Object.assign(req.body, {
+                    user: user.username,
+                    userId: user._id,
                 })
-                .catch((err) => {
-                    console.log(err);
-                    res.status(400).send("Bad request");
-                })
-        })
+            );
+            try {
+                res.status(200).send(shareable);
+            } catch (err) {
+                console.log(err);
+                res.status(400).send("Bad request");
+            }
+        });
     }
 });
 
 // A route to get shareables for a specific day.
 app.get("/shareables/:date", (req, res) => {
-    Shareable.findByDate(req.params.date)
-        .then((s) => {
-            res.status(200).send(s);
-        })
-})
-// A route to get all shareable saved.
-app.get("/shareable", (req, res) => {
-    Shareable.find().then(
-        (shareable) => {
-            res.send({ shareable });
-        },
-        (error) => {
-            res.status(500).send(error); // server error
-        }
-    );
+    Shareable.findByDate(req.params.date).then((s) => {
+        res.status(200).send(s);
+    });
 });
 
 // A route to update a single shareable by its id.
@@ -274,18 +259,28 @@ app.patch("/shareable/:id", (req, res) => {
         return;
     }
 
-    Shareable.findByIdAndUpdate(id, req.body)
-        .then((result) => {
-            if (!result) {
-                res.status(404).send();
-            } else {
-                res.send(result);
-            }
-        })
-        .catch((error) => {
-            console.log(error)
-            res.status(400).send();
-        });
+    console.log(req.session)
+    if (req.session.user) {
+        Shareable.findByIdAndUpdate(id, req.body)
+            .then((result) => {
+                if (!result) {
+                    res.status(404).send();
+                } else {
+                    res.send(result);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                res.status(400).send();
+            });
+    } else {
+        try {
+            res.status(200).send(req.body);
+        } catch (error) {
+            console.log(error);
+            res.status(404);
+        }
+    }
 });
 
 // A route to delete a single shareable by its id.

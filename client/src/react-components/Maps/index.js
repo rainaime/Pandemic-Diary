@@ -1,5 +1,5 @@
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import React, { useRef, useState } from "react";
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
+import React from "react";
 
 const options = {
     fullscreenControlOptions: { position: 6 },
@@ -30,14 +30,6 @@ class Maps extends React.Component {
             this.props.updateSelectedShareable({
                 center: Object.keys(e.latLng).reduce((newCoords, pos) => ({ ...newCoords, [pos]: e.latLng[pos].call() }), {})
             });
-            //console.log("...", this.props.currentShareable)
-            //const n = Object.assign({}, this.props.currentShareable);
-            //n.center = Object.keys(e.latLng).reduce(
-            //    (newCoords, pos) => ({ ...newCoords, [pos]: e.latLng[pos].call() }),
-            //    {}
-            //);
-            //n.date = this.props.currentDate;
-            //this.props.addToShareableArray(n);
             this.props.onShareablePlaced();
         }
     }

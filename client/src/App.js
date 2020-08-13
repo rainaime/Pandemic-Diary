@@ -145,14 +145,22 @@ class App extends React.Component {
     }
 
     updateCurrentDate(date) {
-        this.setState({
-            currentDate: date,
-        }, () => {
-            fetch(`/shareables/${this.state.currentDate}`)
-                .then((res) => res.json())
-                .then((json) => {this.setState({ shareables: json, shareablePopupPos: { x: -1000, y: -1000 }})})
-                .catch((err) => console.log(err))
-        });
+        this.setState(
+            {
+                currentDate: date,
+            },
+            () => {
+                fetch(`/shareables/${this.state.currentDate}`)
+                    .then((res) => res.json())
+                    .then((json) => {
+                        this.setState({
+                            shareables: json,
+                            shareablePopupPos: { x: -1000, y: -1000 },
+                        });
+                    })
+                    .catch((err) => console.log(err));
+            }
+        );
     }
 
     updateSelectedShareable(newData) {
@@ -160,16 +168,20 @@ class App extends React.Component {
         // trigger a refresh.
         const old = this.state.selectedShareable;
         this.setState({ selectedShareable: Object.assign(old, newData) }, () => {
-            this.setState(
-                {
-                    shareables: this.state.shareables.filter((s) => s !== old),
-                },
-                () => {
-                    this.setState({
-                        shareables: [...this.state.shareables, this.state.selectedShareable],
-                    });
-                }
-            );
+            if (newData.date && new Date(newData.date).toDateString() === this.state.currentDate.toDateString()) {
+                this.setState(
+                    {
+                        shareables: this.state.shareables.filter((s) => s !== old),
+                    },
+                    () => {
+                        this.addToShareableArray(this.state.selectedShareable);
+                    }
+                );
+            } else if (newData.date) {
+                this.setState({
+                    currentDate: new Date(newData.date),
+                }, () => this.getShareablesForCurrentDate());
+            }
         });
     }
 
@@ -226,7 +238,6 @@ class App extends React.Component {
                         }
                     })
                     .then((json) => {
-                        console.log(json);
                         this.setState(
                             {
                                 currentMode: "placingShareable",
@@ -252,45 +263,66 @@ class App extends React.Component {
         });
     }
 
-    onShareablePlaced() {
+    editShareable() {
         this.setState({
             currentMode: "editingShareable",
             currentPopup: this.state.selectedShareable.type,
         });
     }
 
+    patchSelectedShareable() {
+        fetch(`/shareable/${this.state.selectedShareable._id}`, {
+            method: "PATCH",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(this.state.selectedShareable),
+        })
+            .then((res) => {
+                if (res.status === 200) {
+                    return res.json();
+                }
+            })
+            .then((json) => {this.setState({ selectedShareable: json, }); console.log("setting:", json)})
+            .catch((err) => console.log(err));
+    }
+
     returnToApp(username) {
         this.props.history.push("/App");
         if (this.state.currentMode === "editingShareable") {
-            fetch(`/shareable/${this.state.selectedShareable._id}`, {
-                method: "PATCH",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(this.state.selectedShareable),
-            }).catch((err) => console.log(",...", err));
+            this.patchSelectedShareable();
         }
         this.setState({
             currentMode: "normal",
             currentPopup: "",
         });
-        if ((username && typeof username === "string") || username === null) {
+
+        if (this.state.currentUsername && !username) {
+            fetch("/logout")
+                .then((res) => res)
+                .catch((err) => console.log(err));
+        } else if ((username && typeof username === "string") || username === null) {
             this.setState({
                 currentUser: username,
             });
         }
     }
 
-    componentDidMount() {
+    getShareablesForCurrentDate() {
         // Fetch shareables for current date and update this.state.shareables
         fetch(`/shareables/${this.state.currentDate.toDateString()}`)
             .then((res) => res.json())
             .then((json) => {
                 this.setState({
                     shareables: json,
+                    shareablePopupPos: { x: -1000, y: -1000 }
                 });
             });
+    }
+
+    componentDidMount() {
+        this.getShareablesForCurrentDate();
         fetch("/check-session")
             .then((res) => {
                 if (res.status === 200) {
@@ -479,7 +511,7 @@ class App extends React.Component {
             addToShareableArray: this.addToShareableArray.bind(this),
             selectedType: this.state.selectedShareableType,
             inAddMode: this.state.currentMode === "placingShareable",
-            onShareablePlaced: this.onShareablePlaced.bind(this),
+            onShareablePlaced: this.editShareable.bind(this),
             onZoomOrDrag: function () {
                 this.setState({ shareablePopupPos: this.computeXYOfSelectedShareable() });
             }.bind(this),
@@ -487,12 +519,12 @@ class App extends React.Component {
 
         const ShareablePopupProps = {
             shareable: this.state.selectedShareable,
-            // 'editable' is NOT to be trusted; it's only used to decide 
+            // 'editable' is NOT to be trusted; it's only used to decide
             // whether to include the shareable modification buttons or not.
             // The backend does the actual validation.
             editable: this.state.selectedShareable.user === this.state.currentUser,
             //editable: this.userCanEdit.bind(this),
-            //edit: this.editMarker.bind(this),
+            edit: this.editShareable.bind(this),
             //delete: this.deleteMarker.bind(this),
             //share: this.shareMarkerState.bind(this),
             //report: this.reportMarkerState.bind(this),
@@ -527,7 +559,12 @@ class App extends React.Component {
                 if (this.state.currentUser && this.state.currentUser.username === "admin") {
                     leftMenuView = <Admin {...AdminProps} />;
                 } else {
-                    leftMenuView = <UserInfo currentUser={this.state.currentUser} shareables={this.state.shareables} />;
+                    leftMenuView = (
+                        <UserInfo
+                            currentUser={this.state.currentUser}
+                            shareables={this.state.shareables}
+                        />
+                    );
                 }
                 break;
             default:
