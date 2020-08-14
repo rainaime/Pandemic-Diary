@@ -7,13 +7,21 @@ class NotificationMenu extends React.Component {
     };
 
     submit(e) {
-        if (!this.props.shareShareable(this.state.searchingUsername)) {
-            // this.props.currentUser.shared.push(this.props.currentMarker)
-            this.setState({ error: true });
-        } else {
-            this.props.enterPressed();
-            this.setState({ error: false });
-        }
+        fetch(`/sharing`, {
+            method: "post",
+            body: JSON.stringify({shareable: this.props.selectedShareable, 
+                receiverUser: this.state.searchingUsername}),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((res) => {
+                if (res.status === 200) {
+                    //should set some kind of successful share on front end here
+                    console.log("successful share");
+                }
+            })
+            .catch((err) => console.log(err));
     }
 
     updateUser(e) {
@@ -71,9 +79,11 @@ class NotificationIcon extends React.Component {
                     <>
                         <h3>Markers Shared:</h3>
                         <div className="content_container">
-                            {this.props.user.shared.map((shareable) =>
+                            {/* {this.props.user.shared.map((shareable) =>
                                 this.renderShared(shareable)
-                            )}
+                            )} */}
+                            <h3>SOmething here</h3>
+                            
                         </div>
                     </>
                 )}

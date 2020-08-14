@@ -194,8 +194,9 @@ class App extends React.Component {
     renderNotification() {
         this.setState({
             currentMode: "normal",
-            currentPopup: "notification",
+            currentPopup: "notificationView",
         });
+       
     }
 
     renderShareables() {
@@ -317,6 +318,13 @@ class App extends React.Component {
             .catch((err) => console.log(err));
     }
 
+    shareSelectedShareable(){
+        this.setState({
+            currentMode: "notification",
+            currentPopup: "notification",
+        });
+    }
+
     returnToApp(username) {
         this.props.history.push("/App");
         if (this.state.currentMode === "editingShareable") {
@@ -407,6 +415,7 @@ class App extends React.Component {
             currentUser: this.state.currentUser,
             returnToApp: this.returnToApp.bind(this),
             shouldClear: this.state.popupExit,
+            selectedShareable: this.state.selectedShareable,
             onExit: () => this.setState({ popupExit: false }),
         };
 
@@ -435,6 +444,8 @@ class App extends React.Component {
                 return <ImageMenu {...ImageMenuProps} />;
             case "notification":
                 return <NotificationMenu {...NotificationMenuProps} />;
+            case "notificationView":
+                return <NotificationIcon user={this.state.currentUser} />;
             case "report":
                 return <ReportMenu {...ReportMenuProps} />;
             case "login":
@@ -555,7 +566,7 @@ class App extends React.Component {
             //editable: this.userCanEdit.bind(this),
             edit: this.editShareable.bind(this),
             delete: this.deleteSelectedShareable.bind(this),
-            //share: this.shareMarkerState.bind(this),
+            share: this.shareSelectedShareable.bind(this),
             //report: this.reportMarkerState.bind(this),
             position: this.state.shareablePopupPos,
         };

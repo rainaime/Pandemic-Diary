@@ -18,6 +18,7 @@ const { ObjectID } = require("mongodb");
 const { User } = require("./models/user");
 const { Tweet } = require("./models/tweet");
 const { Shareable } = require("./models/shareable");
+const shareable = require("./models/shareable");
 
 // starting the express server
 app.use(express.static(path.join(__dirname, "build")));
@@ -113,6 +114,7 @@ app.post("/register", (req, res) => {
     const user = new User({
         username: username,
         password: password,
+        shared: [],
     });
 
     user.save()
@@ -161,6 +163,97 @@ app.get("/users", (req, res) => {
             res.status(500).send(error); // server error
         }
     );
+});
+
+///////////////////////////////////////////////////////////////////////////////
+// Sharing-related ROUTES
+///////////////////////////////////////////////////////////////////////////////
+
+// A route to push a shareable to a user's shared.
+app.post("/sharing", (req, res) => {
+    //should only be called with user logged in
+    //
+    const receiverUser = req.body.receiverUser;
+    const shareable = req.body.shareable;
+    
+    //might need an undefined case
+    
+    //TODO: currently only a shareable is stored, we should also share
+    //      the username of the user who shared this marker
+
+    User.findOne({username: receiverUser}).then((user) => {
+        if (!user) {
+            return Promise.reject("User doesn't exist"); // a rejected promise
+        } 
+
+        //then the user exists and we add the shareable to it
+        user.shared.push(shareable);
+        user.save()
+            .then(
+                res.status(200).send("Successful share")
+            )
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send("Could not save");
+            });
+    })
+
+});
+
+// A route to remove a specific shareable from calling user.
+app.delete("/deleteShare", (req, res) => {
+    const shareableID = req.body.shareableID;
+    const user = req.body.user;
+
+    User.findOne({username: user}).then((user) => {
+        //this should almost never happen but I'll keep in case
+        if (!user) {
+            return Promise.reject("User doesn't exist"); // a rejected promise
+        } 
+
+        const shared = user.shared;
+        let index = -1;
+        //find the index of shareable in order to pop it out
+        shared.forEach(shareable => {
+            if (shareable._id === shareableID){
+                index = shared.indexOf(Shareable);
+                // break; //might just change this from a for each to a for loop to allow breaking
+            }
+        })
+        //remove shareable from all shared
+        if (index !== -1){
+            shared.splice(index, 1);
+        } else {
+            return Promise.reject("Could not find shareable");
+        }
+
+        user.shared = shared;
+
+        user.save()
+            .then(
+                res.status(200).send()
+            )
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send("Could not save");
+            });
+        
+    })  
+
+});
+
+// A route to get the shared markers of a specific user.
+app.get("/shared", (req, res) => {
+   const user = req.body.user;
+
+   User.findOne({username: user}).then(user => {
+        if (!user) {
+            return Promise.reject("User doesn't exist"); // a rejected promise
+        } 
+
+        const shared = user.shared;
+        res.status(200).send(shared);
+   })
 });
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -222,7 +315,7 @@ app.post("/shareable", (req, res) => {
             });
     } else {
         const query = { username: "Guest" };
-        const newData = { username: "Guest", password: "Th3i41s2IhshA656Guie76s9t9Pas876s34wo1rd" };
+        const newData = { username: "Guest", password: "Th3i41s2IhshA656Guie76s9t9Pas876s34wo1rd", };
         User.findOneAndUpdate(query, newData, { upsert: true, new: true }, (err, user) => {
             if (err) {
                 res.status(500).send("Internal server error");

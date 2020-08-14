@@ -28,6 +28,10 @@ const UserSchema = new mongoose.Schema({
             message: "Invalid password. Passwords must...", // TODO: Replace with criteria
         },
     },
+    shared: {
+        type: Array,
+        // required: true,
+    }
 });
 
 // Mongoose middleware to encrypt the password before saving to the database.
