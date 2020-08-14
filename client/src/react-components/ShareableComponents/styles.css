@@ -1,7 +1,7 @@
 .selectedShareable {
     position: absolute;
     max-height: 340px;
-    min-width: 240px;
+    max-width: 340px;
     z-index: 15;
     padding: 5px;
     border-radius: 25px;

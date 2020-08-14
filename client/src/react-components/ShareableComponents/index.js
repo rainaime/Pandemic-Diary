@@ -15,7 +15,7 @@ import "./styles.css";
  */
 class ShareablePopup extends React.Component {
     render() {
-        const { user, content, date } = this.props.shareable;
+        const { user, content, date, image_url } = this.props.shareable;
         const position = this.props.position;
 
         return (
@@ -53,7 +53,7 @@ class ShareablePopup extends React.Component {
                     <span>
                         <span className="content">{new Date(date).toDateString()}</span>
                         <br></br>
-                        {content}
+                        {content || <img style={{width: "100%"}} src={image_url} alt="User-submitted content"/>}
                     </span>
                 </div>
             </div>

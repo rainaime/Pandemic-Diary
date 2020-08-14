@@ -51,6 +51,10 @@ class App extends React.Component {
 
             currentDate: new Date(),
 
+            // Contains image form data of the current selectedShareable, if it
+            // is an image-type shareable.
+            currentImageForm: null,
+
             // Popup: One of:
             //  - "marker"; modifying a Marker shareable
             //  - "image"; modifying an Image shareable
@@ -163,6 +167,15 @@ class App extends React.Component {
         );
     }
 
+    updateImageForm(form) {
+        this.setState(
+            {
+                currentImageForm: new FormData(form),
+            },
+            () => {}
+        );
+    }
+
     updateSelectedShareable(newData) {
         // We don't need this to be updated immediately as the next update will
         // trigger a refresh.
@@ -200,26 +213,49 @@ class App extends React.Component {
 
     renderShareables() {
         return this.state.shareables.map((s, i) => {
-            return (
-                <Marker
-                    key={i + 2}
-                    options={{ icon: { url: "/marker.png" } }}
-                    onClick={() => this.setState({ shareablePopupPos: { x: -1000, y: -1000 } })}
-                    onMouseOver={() => {
-                        this.setState(
-                            {
-                                selectedShareable: s,
-                            },
-                            () => {
-                                this.setState({
-                                    shareablePopupPos: this.computeXYOfSelectedShareable(),
-                                });
-                            }
-                        );
-                    }}
-                    position={s.center}
-                />
-            );
+            if (s.type === "marker") {
+                return (
+                    <Marker
+                        key={i + 2}
+                        options={{ icon: { url: "/marker.png" } }}
+                        onClick={() => this.setState({ shareablePopupPos: { x: -1000, y: -1000 } })}
+                        onMouseOver={() => {
+                            this.setState(
+                                {
+                                    selectedShareable: s,
+                                },
+                                () => {
+                                    this.setState({
+                                        shareablePopupPos: this.computeXYOfSelectedShareable(),
+                                    });
+                                }
+                            );
+                        }}
+                        position={s.center}
+                    />
+                );
+            } else {
+                return (
+                    <Marker
+                        key={i + 2}
+                        options={{ icon: { url: s.image_url } }}
+                        onClick={() => this.setState({ shareablePopupPos: { x: -1000, y: -1000 } })}
+                        onMouseOver={() => {
+                            this.setState(
+                                {
+                                    selectedShareable: s,
+                                },
+                                () => {
+                                    this.setState({
+                                        shareablePopupPos: this.computeXYOfSelectedShareable(),
+                                    });
+                                }
+                            );
+                        }}
+                        position={s.center}
+                    />
+                );
+            }
         });
     }
 
@@ -228,38 +264,12 @@ class App extends React.Component {
             date: this.state.currentDate,
             user: this.state.currentUser,
         });
+
         this.setState(
             {
                 shareablePopupPos: { x: -1000, y: -1000 },
             },
-            () => {
-                fetch("/shareable", {
-                    method: "post",
-                    body: JSON.stringify(shareableCopy),
-                    headers: { Accept: "application/json", "Content-Type": "application/json" },
-                })
-                    .then((res) => {
-                        if (res.status === 200) {
-                            return res.json();
-                        }
-                    })
-                    .then((json) => {
-                        this.setState(
-                            {
-                                currentMode: "placingShareable",
-                                selectedShareable: json,
-                            },
-                            () => this.computeXYOfSelectedShareable()
-                        );
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        this.setState({
-                            currentMode: "normal",
-                            selectedShareable: null,
-                        });
-                    });
-            }
+            () => this.postShareable(shareableCopy)
         );
     }
 
@@ -276,21 +286,64 @@ class App extends React.Component {
         });
     }
 
+    postShareable(newShareable) {
+        fetch("/shareable", {
+            method: "post",
+            body: JSON.stringify(newShareable),
+            headers: { Accept: "application/json", "Content-Type": "application/json" },
+        })
+            .then(async (res) => {
+                if (res.status === 200) {
+                    const data = await res.json();
+                    this.setState(
+                        {
+                            currentMode: "placingShareable",
+                            selectedShareable: data,
+                        },
+                        () => this.computeXYOfSelectedShareable()
+                    );
+                }
+            })
+            .catch((err) => {
+                // TODO: add visual feedback like an error box that transitions in to notify the user
+                // that guests cannot upload images, or that there was an error of some kind.
+                this.setState({
+                    currentMode: "normal",
+                    selectedShareable: {
+                        center: { lat: 1000, lng: 1000 },
+                        content: "",
+                        user: null,
+                        type: null,
+                    },
+                });
+            });
+    }
+
     patchSelectedShareable() {
-        fetch(`/shareable/${this.state.selectedShareable._id}`, {
+        const req = {
             method: "PATCH",
             headers: {
                 Accept: "application/json",
-                "Content-Type": "application/json",
+                content: "application/json"
             },
-            body: JSON.stringify(this.state.selectedShareable),
-        })
+        };
+
+        req.body = this.state.selectedShareable.type === "image" ? this.state.currentImageForm : new FormData();
+        Object.entries(this.state.selectedShareable).forEach(([k, v]) =>
+            req.body.append(k, typeof v === "object" ? JSON.stringify(v) : v)
+        );
+
+        fetch(`/shareable/${this.state.selectedShareable._id}`, req)
             .then((res) => {
                 if (res.status === 200) {
                     return res.json();
                 }
             })
-            .then((json) => this.setState({ selectedShareable: json }))
+            .then((json) => {
+                this.setState({ selectedShareable: json }, () => {
+                    if (Object.keys(this.state.selectedShareable)) this.addToShareableArray(this.state.selectedShareable);
+                });
+            })
             .catch((err) => console.log(err));
     }
 
@@ -387,6 +440,7 @@ class App extends React.Component {
             currentDate: this.state.currentDate,
             currentShareable: this.state.currentShareable,
             updateCurrentDate: this.updateCurrentDate.bind(this),
+            updateImageForm: this.updateImageForm.bind(this),
 
             minDate: appSettings.minDate,
             maxDate: appSettings.maxDate,

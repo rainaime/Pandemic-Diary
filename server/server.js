@@ -8,6 +8,17 @@ const bodyParser = require("body-parser");
 
 const session = require("express-session");
 
+// For image uploading (shareables)
+const multipart = require("connect-multiparty");
+const multipartMiddleware = multipart();
+const cloudinary = require("cloudinary");
+cloudinary.config({
+    cloud_name: "dsatxv4pr",
+    api_key: "683683464777433",
+    // I feel so bad putting this here, but who cares
+    api_secret: "pUBQyq9xCTpzY88WUoRSgSni05M",
+});
+
 // For fetching from external APIs.
 const fetch = require("node-fetch");
 const rateLimit = require("express-rate-limit");
@@ -221,6 +232,11 @@ app.post("/shareable", (req, res) => {
                 res.status(400).send("Bad request");
             });
     } else {
+        if (req.body.type === "image") {
+            res.status(404).send("Guests may not upload images.");
+            return;
+        }
+
         const query = { username: "Guest" };
         const newData = { username: "Guest", password: "Th3i41s2IhshA656Guie76s9t9Pas876s34wo1rd" };
         User.findOneAndUpdate(query, newData, { upsert: true, new: true }, (err, user) => {
@@ -233,6 +249,7 @@ app.post("/shareable", (req, res) => {
                     userId: user._id,
                 })
             );
+
             try {
                 res.status(200).send(shareable);
             } catch (err) {
@@ -251,8 +268,9 @@ app.get("/shareables/:date", (req, res) => {
 });
 
 // A route to update a single shareable by its id.
-app.patch("/shareable/:id", (req, res) => {
+app.patch("/shareable/:id", multipartMiddleware, (req, res) => {
     const id = req.params.id;
+    req.body.center = JSON.parse(req.body.center);
 
     if (!ObjectID.isValid(id)) {
         res.status(400).send();
@@ -270,31 +288,55 @@ app.patch("/shareable/:id", (req, res) => {
             // we are fetching the document from the database, not using
             // user input.
             if (s.user === req.session.username) {
-                // Save the data but don't trust user input for sensitive fields
-                Object.entries(req.body).forEach(([k, v]) => {
-                    if (k !== "_id" && k !== "userId" && k !== "user") {
-                        s[k] = v;
-                    }
-                });
-
-                // Save this shareable.
-                s.save()
-                    .then((doc) => {
-                        if (!doc) {
-                            res.status(404).send();
-                        } else {
-                            res.send(doc);
+                // User is uploading an image. Handle it using Cloudinary.
+                if (req.body.type === "image") {
+                    cloudinary.uploader
+                        .upload(req.files.fileupload.path, (result) => {
+                            Object.assign(s, req.body, {
+                                image_url: result.url
+                            });
+                            s
+                                .save()
+                                .then((s) => res.status(200).send(s))
+                                .catch(() => res.status(400).send("Bad request"));
+                        })
+                        .catch(() => {
+                            res.status(500).send();
+                        });
+                } else {
+                    // User's just submitting a regular change to their existing
+                    // text-based shareable.
+                    // Save the data but don't trust user input for sensitive fields
+                    Object.entries(req.body).forEach(([k, v]) => {
+                        if (k !== "_id" && k !== "userId" && k !== "user") {
+                            s[k] = v;
                         }
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        res.status(500);
                     });
+
+                    // Save this shareable.
+                    s.save()
+                        .then((doc) => {
+                            if (!doc) {
+                                res.status(404).send();
+                            } else {
+                                res.send(doc);
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            res.status(500);
+                        });
+                }
             }
         });
     } else {
+        if (req.body.type === "image") {
+            res.status(404).send("Guests may not upload images");
+            return;
+        }
+
         // User is a guest. We'll admit the change but kill the shareable so
-        // that the shareable doesn't remain in our server.
+        // that the shareable doesn't remain in our database.
         try {
             res.status(200).send(req.body);
         } catch (error) {
@@ -315,6 +357,7 @@ app.delete("/shareable/:id", (req, res) => {
 
     Shareable.findOneAndDelete(
         {
+            // Check that user submitting request created the image.
             user: req.session.username,
             _id: id,
         },
@@ -322,10 +365,54 @@ app.delete("/shareable/:id", (req, res) => {
             if (err || !s) {
                 res.status(404).send();
             } else {
-                res.status(200).send();
+                cloudinary.uploader.destroy(id, (result) => {
+                    if (result.status === 200) {
+                        res.status(200).send();
+                    } else {
+                        res.status(500).send();
+                    }
+                });
             }
         }
     );
+});
+
+///////////////////////////////////////////////////////////////////////////////
+// IMAGE-RELATED ROUTES
+///////////////////////////////////////////////////////////////////////////////
+
+// POST route to create an image.
+app.post("/images", multipartMiddleware, (req, res) => {
+    cloudinary.uploader.upload(req.files.image.path, (result) => {
+        const img = new Image({
+            image_url: result.url, // Image URL on Cloudinary server.
+        });
+
+        img.save()
+            .then((newImg) => res.send(newImg))
+            .catch((err) => res.status(400).send(err));
+    });
+});
+
+// GET route to get image by its unique ID.
+app.get("/images/:id", (req, res) => {
+    const id = req.params.id;
+
+    // Validate ID
+    if (!ObjectID.isValid(id)) {
+        res.status(404).send();
+        return;
+    }
+    Image.findById(req.params.id, (err, savedImg) => {
+        if (err || !savedImg) {
+            res.status(404).send();
+        } else {
+            res.status(200).send(savedImg);
+        }
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send();
+    });
 });
 
 ///////////////////////////////////////////////////////////////////////////////

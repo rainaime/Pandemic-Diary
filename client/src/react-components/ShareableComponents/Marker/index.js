@@ -9,43 +9,26 @@ import "./style.css";
  * - onClick: function to set mode to add this marker
  */
 class MarkerIcon extends React.Component {
-    state = {
-        type: "marker",
-        width: 20,
-        height: 30,
-        img: new Image(),
-        content: "",
-    };
-
     render() {
-        const marker = (
+        return (
             <img
                 className="popoutButton-children"
                 style={{ ...this.props.style, width: 16, height: 24 }}
                 src="/marker.png"
                 alt="marker"
                 onClick={() => {
-                    this.props.onClick(Object.assign({}, {
-                        type: "marker",
-                        content: "",
-                    }));
+                    this.props.onClick(
+                        Object.assign(
+                            {},
+                            {
+                                type: "marker",
+                                content: "",
+                            }
+                        )
+                    );
                 }}
             />
         );
-        const img = this.state.img;
-        if (img.src) {
-            return marker;
-        } else {
-            if (!img.complete) {
-                img.onload = () => {
-                    img.src = "/marker.png";
-                    return marker;
-                };
-            } else {
-                img.src = "/marker.png";
-                return marker;
-            }
-        }
     }
 }
 
