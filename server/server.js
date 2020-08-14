@@ -204,7 +204,7 @@ app.post("/sharing", (req, res) => {
 app.delete("/deleteShare", (req, res) => {
     const shareableID = req.body.shareableID;
     const user = req.body.user;
-
+    
     User.findOne({username: user}).then((user) => {
         //this should almost never happen but I'll keep in case
         if (!user) {
@@ -216,7 +216,7 @@ app.delete("/deleteShare", (req, res) => {
         //find the index of shareable in order to pop it out
         shared.forEach(shareable => {
             if (shareable._id === shareableID){
-                index = shared.indexOf(Shareable);
+                index = shared.indexOf(shareable);
                 // break; //might just change this from a for each to a for loop to allow breaking
             }
         })
@@ -243,17 +243,15 @@ app.delete("/deleteShare", (req, res) => {
 });
 
 // A route to get the shared markers of a specific user.
-app.get("/shared:user", (req, res) => {
-   const user = req.param.user;
+app.get("/shared/:user", (req, res) => {
+    const user = req.params.user;
 
-   User.findOne({username: user}).then(user => {
+    User.findOne({username: user}).then(user => {
         if (!user) {
             return Promise.reject("User doesn't exist"); // a rejected promise
         } 
 
-        const shared = user.shared;
-        console.log(shared)
-        res.status(200).send(shared);
+        res.status(200).send(user.shared);
    })
 });
 

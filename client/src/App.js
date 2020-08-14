@@ -699,9 +699,9 @@ class App extends React.Component {
                     </CollapsibleMenu>
                     <div className="outer-map-wrapper">
                         <div className="inner-map-wrapper">
-                            {this.state.showNotification && (
+                            {/* {this.state.showNotification && (
                                 <NotificationIcon user={this.state.currentUser} />
-                            )}
+                            )} */}
                             <Maps {...MapsProps}>
                                 <ShareablePopup
                                     key={1}

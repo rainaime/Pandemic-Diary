@@ -68,73 +68,68 @@ class NotificationIcon extends React.Component {
     }
 
     componentDidMount(){
-        const user = this.props.user;
-        console.log(user)
+        this.getShared()
+    }
 
-        fetch(`/shared/${user}`, {
-            method: "get",
+    getShared = () => {
+        const user = this.props.user;
+
+        fetch(`/shared/${user}`)
+            .then((res) => res.json())
+            .then((json) => {
+                this.setState({
+                    shared: json,
+                })
+            })
+            .catch((err) => console.log(err));
+    }
+    
+    removeShareable(shareable){
+        fetch(`/deleteShare`, {
+            method: "delete",
+            body: JSON.stringify({
+                shareableID: shareable._id,
+                user: this.props.user,
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
         })
             .then((res) => {
                 if (res.status === 200) {
-                    //should set some kind of successful share on front end here
-                    // console.log(res.body);
+                    this.getShared();
                 }
             })
             .catch((err) => console.log(err));
-        // this.setState({shared:})
-    
     }
 
     renderShared(shareable) {
         return (
-            <div style={contentStyle}>
-                <p>{shareable.user.username}:</p>
-                {shareable.content}
+            <div className="sharedContainer">
+                <button id="remove" onClick={() => {
+                    this.removeShareable(shareable)
+                    }}><i class="fas fa-check-square"></i></button>
+                <div className="content">
+                    <p>{shareable.user} - {new Date(shareable.date).toDateString()}:</p>
+                    {shareable.content}
+                </div>
             </div>
         );
     }
 
     render() {
         return (
-            <div>
-            {/* <div style={notificationStyle}> */}
-                {this.props.user === null ? (
-                    <h3>login to use</h3>
-                ) : (
-                    <>
-                        <h3>Markers Shared:</h3>
-                        <div className="content_container">
-                            {/* {this.props.user.shared.map((shareable) =>
-                                this.renderShared(shareable)
-                            )} */}
-                        </div>
-                    </>
+            <>
+            <h3>Markers Shared:</h3>
+            <div className="content_container">
+                {this.state.shared && this.state.shared.map((shareable) =>
+                    this.renderShared(shareable)
                 )}
             </div>
-        );
+            </>
+        )
     }
 }
-
-const contentStyle = {
-    textAlign: "left",
-    paddingLeft: "1vw",
-};
-
-const notificationStyle = {
-    color: "white",
-    display: 'flex',
-    flexDirection: 'column',
-    position: "absolute",
-    wordWrap: "break",
-    top: "30px",
-    right: "4px",
-    width: "50%",
-    height: "30%",
-    zIndex: "10",
-    backgroundColor: "#416E8E",
-    borderRadius: "25px",
-    // backgroundColor: '#003f5c',
-};
 
 const buttonStyle = {
     background: "none",
