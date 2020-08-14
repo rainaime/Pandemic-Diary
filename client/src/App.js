@@ -196,10 +196,17 @@ class App extends React.Component {
     }
 
     renderNotification() {
-        this.setState({
-            currentMode: "normal",
-            currentPopup: "notificationView",
-        });
+        if (this.state.currentPopup === "notificationView"){
+            this.setState({
+                currentMode: "normal",
+                currentPopup: "",
+            });
+        } else {
+            this.setState({
+                currentMode: "something?",
+                currentPopup: "notificationView",
+            });
+        }
        
     }
 
@@ -450,6 +457,10 @@ class App extends React.Component {
             onExit: () => this.setState({ popupExit: false }),
         };
 
+        const NotificationIconProps = {
+            user: this.state.currentUser,
+        };
+
         const ReportMenuProps = {
             reportMarker: undefined, // TODO: This should really be a server call
             selectedShareable: this.state.selectedShareable,
@@ -476,7 +487,7 @@ class App extends React.Component {
             case "notification":
                 return <NotificationMenu {...NotificationMenuProps} />;
             case "notificationView":
-                return <NotificationIcon user={this.state.currentUser} />;
+                return <NotificationIcon {...NotificationIconProps} />;
             case "report":
                 return <ReportMenu {...ReportMenuProps} />;
             case "login":

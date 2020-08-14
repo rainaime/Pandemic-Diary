@@ -243,8 +243,8 @@ app.delete("/deleteShare", (req, res) => {
 });
 
 // A route to get the shared markers of a specific user.
-app.get("/shared", (req, res) => {
-   const user = req.body.user;
+app.get("/shared:user", (req, res) => {
+   const user = req.param.user;
 
    User.findOne({username: user}).then(user => {
         if (!user) {
@@ -252,6 +252,7 @@ app.get("/shared", (req, res) => {
         } 
 
         const shared = user.shared;
+        console.log(shared)
         res.status(200).send(shared);
    })
 });
