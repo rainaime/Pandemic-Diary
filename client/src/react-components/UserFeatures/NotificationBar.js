@@ -111,7 +111,8 @@ class NotificationIcon extends React.Component {
                     }}><i class="fas fa-check-square"></i></button>
                 <div className="content">
                     <p>{shareable.user} - {new Date(shareable.date).toDateString()}:</p>
-                    {shareable.content}
+                    {shareable.content || 
+                    <img style={{width: "100%"}} src={shareable.image_url} alt="User-submitted content"/>}
                 </div>
             </div>
         );
