@@ -70,6 +70,7 @@ class App extends React.Component {
                 content: "",
                 user: null,
                 type: null,
+                article: "", 
             },
 
             // The location of the popup that appears on the map when hovering over a shareable.
@@ -77,6 +78,9 @@ class App extends React.Component {
 
             // Context for the Maps object, used for calculation of positions.
             mapCtx: null,
+            
+            // Indicate which article to fillter out
+            articleType: "News"
         };
     }
 
@@ -338,6 +342,30 @@ class App extends React.Component {
         }
     }
 
+    //filter all the article that is not type this.state.articleType
+    selectArticleType() {
+        if (this.state.articleType != "All"){
+            const newShareables = []
+            this.state.shareables.map((shareable) => {
+                //try to find the reservation with same id
+                if(shareable.article == this.state.articleType){
+                    newShareables.push(shareable)
+                }
+            })
+
+            this.setState({
+                shareables: newShareables
+            });
+        }
+        
+    }
+    
+    setArticleType(type){
+        this.setState({
+            articleType: type,
+        });
+    }
+
     getShareablesForCurrentDate() {
         // Fetch shareables for current date and update this.state.shareables
         fetch(`/shareables/${this.state.currentDate.toDateString()}`)
@@ -347,6 +375,9 @@ class App extends React.Component {
                     shareables: json,
                     shareablePopupPos: { x: -1000, y: -1000 },
                 });
+                this.selectArticleType();
+                console.log(this.state.shareables)
+                console.log(this.state.articleType)
             });
     }
 
@@ -527,6 +558,8 @@ class App extends React.Component {
 
         const FilterProps = {
             //selectType: this.selectCallback.bind(this),
+            selectType: this.setArticleType.bind(this),
+            getShareable: this.getShareablesForCurrentDate.bind(this)
             //currentUser: this.state.currentUsername,
         };
 
