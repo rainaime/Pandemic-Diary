@@ -7,13 +7,23 @@ class NotificationMenu extends React.Component {
     };
 
     submit(e) {
-        if (!this.props.shareShareable(this.state.searchingUsername)) {
-            // this.props.currentUser.shared.push(this.props.currentMarker)
-            this.setState({ error: true });
-        } else {
-            this.props.enterPressed();
-            this.setState({ error: false });
-        }
+        fetch(`/sharing`, {
+            method: "post",
+            body: JSON.stringify({shareable: this.props.selectedShareable, 
+                receiverUser: this.state.searchingUsername}),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((res) => {
+                if (res.status === 200) {
+                    //should set some kind of successful share on front end here
+                    console.log("successful share");
+                }
+            })
+            .catch((err) => console.log(err));
+
+        //TODO: when success exit out of sharing, and notifiy successful share
     }
 
     updateUser(e) {
@@ -53,6 +63,28 @@ class NotificationMenu extends React.Component {
 }
 
 class NotificationIcon extends React.Component {
+    state = {
+        shared: [],
+    }
+
+    componentDidMount(){
+        const user = this.props.user;
+        console.log(user)
+
+        fetch(`/shared/${user}`, {
+            method: "get",
+        })
+            .then((res) => {
+                if (res.status === 200) {
+                    //should set some kind of successful share on front end here
+                    // console.log(res.body);
+                }
+            })
+            .catch((err) => console.log(err));
+        // this.setState({shared:})
+    
+    }
+
     renderShared(shareable) {
         return (
             <div style={contentStyle}>
@@ -64,16 +96,17 @@ class NotificationIcon extends React.Component {
 
     render() {
         return (
-            <div style={notificationStyle}>
+            <div>
+            {/* <div style={notificationStyle}> */}
                 {this.props.user === null ? (
                     <h3>login to use</h3>
                 ) : (
                     <>
                         <h3>Markers Shared:</h3>
                         <div className="content_container">
-                            {this.props.user.shared.map((shareable) =>
+                            {/* {this.props.user.shared.map((shareable) =>
                                 this.renderShared(shareable)
-                            )}
+                            )} */}
                         </div>
                     </>
                 )}

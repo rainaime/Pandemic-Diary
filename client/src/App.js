@@ -74,6 +74,7 @@ class App extends React.Component {
                 content: "",
                 user: null,
                 type: null,
+                article: "", 
             },
 
             // The location of the popup that appears on the map when hovering over a shareable.
@@ -81,6 +82,9 @@ class App extends React.Component {
 
             // Context for the Maps object, used for calculation of positions.
             mapCtx: null,
+            
+            // Indicate which article to fillter out
+            articleType: "News"
         };
     }
 
@@ -205,10 +209,18 @@ class App extends React.Component {
     }
 
     renderNotification() {
-        this.setState({
-            currentMode: "normal",
-            currentPopup: "notification",
-        });
+        if (this.state.currentPopup === "notificationView"){
+            this.setState({
+                currentMode: "normal",
+                currentPopup: "",
+            });
+        } else {
+            this.setState({
+                currentMode: "something?",
+                currentPopup: "notificationView",
+            });
+        }
+       
     }
 
     renderShareables() {
@@ -370,6 +382,13 @@ class App extends React.Component {
             .catch((err) => console.log(err));
     }
 
+    shareSelectedShareable(){
+        this.setState({
+            currentMode: "notification",
+            currentPopup: "notification",
+        });
+    }
+
     returnToApp(username) {
         this.props.history.push("/App");
         if (this.state.currentMode === "editingShareable") {
@@ -391,6 +410,30 @@ class App extends React.Component {
         }
     }
 
+    //filter all the article that is not type this.state.articleType
+    selectArticleType() {
+        if (this.state.articleType != "All"){
+            const newShareables = []
+            this.state.shareables.map((shareable) => {
+                //try to find the reservation with same id
+                if(shareable.article == this.state.articleType){
+                    newShareables.push(shareable)
+                }
+            })
+
+            this.setState({
+                shareables: newShareables
+            });
+        }
+        
+    }
+    
+    setArticleType(type){
+        this.setState({
+            articleType: type,
+        });
+    }
+
     getShareablesForCurrentDate() {
         // Fetch shareables for current date and update this.state.shareables
         fetch(`/shareables/${this.state.currentDate.toDateString()}`)
@@ -400,6 +443,9 @@ class App extends React.Component {
                     shareables: json,
                     shareablePopupPos: { x: -1000, y: -1000 },
                 });
+                this.selectArticleType();
+                console.log(this.state.shareables)
+                console.log(this.state.articleType)
             });
     }
 
@@ -461,7 +507,12 @@ class App extends React.Component {
             currentUser: this.state.currentUser,
             returnToApp: this.returnToApp.bind(this),
             shouldClear: this.state.popupExit,
+            selectedShareable: this.state.selectedShareable,
             onExit: () => this.setState({ popupExit: false }),
+        };
+
+        const NotificationIconProps = {
+            user: this.state.currentUser,
         };
 
         const ReportMenuProps = {
@@ -489,6 +540,8 @@ class App extends React.Component {
                 return <ImageMenu {...ImageMenuProps} />;
             case "notification":
                 return <NotificationMenu {...NotificationMenuProps} />;
+            case "notificationView":
+                return <NotificationIcon {...NotificationIconProps} />;
             case "report":
                 return <ReportMenu {...ReportMenuProps} />;
             case "login":
@@ -581,6 +634,8 @@ class App extends React.Component {
 
         const FilterProps = {
             //selectType: this.selectCallback.bind(this),
+            selectType: this.setArticleType.bind(this),
+            getShareable: this.getShareablesForCurrentDate.bind(this)
             //currentUser: this.state.currentUsername,
         };
 
@@ -609,7 +664,7 @@ class App extends React.Component {
             //editable: this.userCanEdit.bind(this),
             edit: this.editShareable.bind(this),
             delete: this.deleteSelectedShareable.bind(this),
-            //share: this.shareMarkerState.bind(this),
+            share: this.shareSelectedShareable.bind(this),
             //report: this.reportMarkerState.bind(this),
             position: this.state.shareablePopupPos,
         };

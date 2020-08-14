@@ -17,15 +17,11 @@ class MarkerIcon extends React.Component {
                 src="/marker.png"
                 alt="marker"
                 onClick={() => {
-                    this.props.onClick(
-                        Object.assign(
-                            {},
-                            {
-                                type: "marker",
-                                content: "",
-                            }
-                        )
-                    );
+                    this.props.onClick(Object.assign({}, {
+                        type: "marker",
+                        content: "",
+                        article: "News",
+                    }));
                 }}
             />
         );
@@ -105,7 +101,11 @@ class MarkerMenu extends React.Component {
                 <div className="articleType">
                     <select
                         name="article"
-                        onChange={(e) => this.setState({ value: e.target.value })}>
+                        onChange={(e) => {
+                            this.setState({ selectedArticle: e.target.value }, () =>
+                                this.props.updateSelectedShareable({ article: this.state.selectedArticle })
+                            );
+                        }}>
                         <option value="News">News</option>
                         <option value="Vacation">Vacation</option>
                         <option value="Other Stuff">Other Stuff</option>
