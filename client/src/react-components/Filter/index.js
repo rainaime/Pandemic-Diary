@@ -12,6 +12,7 @@ import "./styles.css";
 class Menu extends React.Component {
     updateSelection(selectedType) {
         this.props.selectType(selectedType);
+        this.props.getShareable();
     }
 
     render() {

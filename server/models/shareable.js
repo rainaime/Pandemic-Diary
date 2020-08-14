@@ -20,6 +20,9 @@ const ShareableSchema = new mongoose.Schema({
     type: {
         type: String,
     },
+    article: {
+        type: String,
+    },
     user: {
         type: String,
     },
