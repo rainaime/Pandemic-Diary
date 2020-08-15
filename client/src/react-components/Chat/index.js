@@ -1,23 +1,23 @@
 import "./styles.css";
 import React from "react";
 
-import Tweet from "./Tweet";
-import TweetsForm from "./TweetsForm";
+import ChatMessage from "./ChatMessage";
+import ChatMessageForm from "./ChatMessageForm";
 
 /**
- * Used to display tweets
+ * Used to display chatmessages
  *
  * Props:
  * - currentUser: user currently logged in otherwise null
  */
-class Tweets extends React.Component {
+class ChatMessages extends React.Component {
     state = {
         maxId: 0,
-        tweets: [],
+        chatmessages: [],
     };
 
     componentDidMount() {
-        this.updateTweet(this);
+        this.updateChatMessage(this);
         this.setState({
             maxId: this.state.maxId + 1,
         });
@@ -33,8 +33,8 @@ class Tweets extends React.Component {
         return currTime;
     }
 
-    //add new tweet
-    addNewTweet(tweet) {
+    //add new chatmessage
+    addNewChatMessage(chatmessage) {
         if (this.props.user === null) {
             return;
         }
@@ -44,11 +44,11 @@ class Tweets extends React.Component {
         if (this.props.user != null) {
             //add current time at the and to ensure every valuse is unique so we don't get E11000 error
             const username = this.props.user.concat("\\\\split@" + currentTime);
-            const content = tweet.concat("\\\\split@" + currentTime);
+            const content = chatmessage.concat("\\\\split@" + currentTime);
 
-            const newTweet = { username: username, content: content };
+            const newChatMessage = { username: username, content: content };
 
-            fetch("http://localhost:5000/tweet", {
+            fetch("http://localhost:5000/chatmessage", {
                 method: "POST",
                 mode: "cors",
                 cache: "no-cache",
@@ -57,16 +57,16 @@ class Tweets extends React.Component {
                     "Content-Type": "application/json",
                 },
                 redirect: "manual",
-                body: JSON.stringify(newTweet),
+                body: JSON.stringify(newChatMessage),
             }).then((res) => {
-                this.updateTweet(this);
+                this.updateChatMessage(this);
             });
         }
     }
 
-    //get tweet from server
-    updateTweet(tweet) {
-        fetch("http://localhost:5000/tweet")
+    //get chatmessage from server
+    updateChatMessage(chatmessage) {
+        fetch("http://localhost:5000/chatmessage")
             .then((res) => {
                 if (res.status === 200) {
                     // return a promise that resolves with the JSON body
@@ -74,8 +74,8 @@ class Tweets extends React.Component {
                 }
             })
             .then((json) => {
-                tweet.setState({
-                    tweets: json.tweets.map((t) => {
+                chatmessage.setState({
+                    chatmessages: json.chatmessages.map((t) => {
                         return {
                             username: t.username.split("\\\\split@")[0], // Get rid of current time at end
                             content: t.content.split("\\\\split@")[0], // Get rid of current time at end
@@ -91,14 +91,14 @@ class Tweets extends React.Component {
     render() {
         return (
             <>
-                <div className="tweet_container">
-                    {/* print a tweet component for every tweet */}
-                    {this.state.tweets.map((tweet, i, arr) => (
-                        <Tweet key={i} tweet={tweet} isLast={i === arr.length - 1} />
+                <div className="chatmessage_container">
+                    {/* print a chatmessage component for every chatmessage */}
+                    {this.state.chatmessages.map((chatmessage, i, arr) => (
+                        <ChatMessage key={i} chatmessage={chatmessage} isLast={i === arr.length - 1} />
                     ))}
                 </div>
                 {this.props.user ? (
-                    <TweetsForm addNewTweet={this.addNewTweet.bind(this)} />
+                    <ChatMessageForm addNewChatMessage={this.addNewChatMessage.bind(this)} />
                 ) : (
                     <div
                         style={{
@@ -115,4 +115,4 @@ class Tweets extends React.Component {
     }
 }
 
-export default Tweets;
+export default ChatMessages;

@@ -4,10 +4,5 @@
 }
 
 .dateSection{
-    top: 400px;
-}
-
-.text_area{
-    width: 90%;
-    resize: none;
+    margin: 20px 0;
 }

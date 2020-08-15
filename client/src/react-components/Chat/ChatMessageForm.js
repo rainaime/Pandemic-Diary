@@ -2,12 +2,12 @@ import React from "react";
 import "./styles.css";
 
 /**
- * generate tweets
+ * generate chatmessages
  *
  * Props: 
- * - addNewTweet: function to add new tweets
+ * - addNewChatMessage: function to add new chatmessages
  */
-class TweetsForm extends React.Component {
+class ChatMessagesForm extends React.Component {
     constructor(props) {
         super(props);
 
@@ -16,13 +16,13 @@ class TweetsForm extends React.Component {
 
     render() {
         return (
-            <div className="add_tweet_container">
+            <div className="add_chatmessage_container">
                 <input
                     ref={this.inputRef}
                     autoComplete="false"
-                    id="tweet_context"
+                    id="chatmessage_context"
                     type="text"
-                    name="new_tweet"
+                    name="new_chatmessage"
                     alt="add comments"
                 />
                 <button
@@ -32,14 +32,14 @@ class TweetsForm extends React.Component {
                         if (formVal === "") {
                             return;
                         }
-                        this.props.addNewTweet(formVal);
+                        this.props.addNewChatMessage(formVal);
                         this.inputRef.current.value = "";
                     }}>
                     <i className="fas fa-plus"></i>
-                    Add Tweet
+                    Send Message
                 </button>
             </div>
         );
     }
 }
-export default TweetsForm;
+export default ChatMessagesForm;

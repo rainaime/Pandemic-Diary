@@ -27,7 +27,7 @@ const rateLimit = require("express-rate-limit");
 const { mongoose } = require("./db/mongoose");
 const { ObjectID } = require("mongodb");
 const { User } = require("./models/user");
-const { Tweet } = require("./models/tweet");
+const { ChatMessage } = require("./models/chatmessage");
 const { Shareable } = require("./models/shareable");
 
 // starting the express server
@@ -166,7 +166,7 @@ app.get("/logout", (req, res) => {
 app.get("/users", (req, res) => {
     User.find().then(
         (users) => {
-            //            res.render('index', tweets);
+            //            res.render('index', chatmessages);
             res.send({ users });
         },
         (error) => {
@@ -262,21 +262,21 @@ app.get("/shared/:user", (req, res) => {
 // TWEET-RELATED ROUTES
 ///////////////////////////////////////////////////////////////////////////////
 
-// A route to create new tweet. If successful, the tweet is saved in the
-// tweets data so any users can use it
-app.post("/tweet", (req, res) => {
+// A route to create new chatmessage. If successful, the chatmessage is saved in the
+// chatmessages data so any users can use it
+app.post("/chatmessage", (req, res) => {
     const username = req.body.username;
     const content = req.body.content;
 
-    const tweet = new Tweet({
+    const chatmessage = new ChatMessage({
         username: username,
         content: content,
     });
 
-    tweet
+    chatmessage
         .save()
-        .then((tweets) => {
-            res.status(200).send({ tweets });
+        .then((chatmessages) => {
+            res.status(200).send({ chatmessages });
         })
         .catch((error) => {
             console.log(error);
@@ -284,11 +284,11 @@ app.post("/tweet", (req, res) => {
         });
 });
 
-// A route to get all tweets saved.
-app.get("/tweet", (req, res) => {
-    Tweet.find().then(
-        (tweets) => {
-            res.send({ tweets });
+// A route to get all chatmessages saved.
+app.get("/chatmessage", (req, res) => {
+    ChatMessage.find().then(
+        (chatmessages) => {
+            res.send({ chatmessages });
         },
         (error) => {
             res.status(500).send(error); // server error

@@ -61,7 +61,7 @@
 .popup-box > span:first-of-type {
     position: absolute;
     top: 16px;
-    right: 16px;
+    right: 32px;
     width: 24px;
     height: 24px;
     border-radius: 12px;

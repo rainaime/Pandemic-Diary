@@ -81,6 +81,7 @@ class ImageMenu extends React.Component {
                 </form>
                 <div className="dateSection">
                     <input
+                        title="Change the date you'd like to place this shareable for"
                         type="date"
                         min="2019-12-01"
                         max="2020-12-31"
@@ -96,6 +97,7 @@ class ImageMenu extends React.Component {
                 <div className="articleType">
                     <select
                         name="article"
+                        title="Change the category you'd like to place this shareable in"
                         onChange={(e) => {
                             this.props.updateArticleType(e.target.value);
                             this.setState({ value: e.target.value });

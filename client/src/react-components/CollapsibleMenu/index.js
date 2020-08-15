@@ -47,8 +47,8 @@ class CollapsibleMenu extends React.Component {
                     icon = <i className="fas fa-info"></i>;
                     title = "Show user info";
                     break;
-                case "tweets":
-                    icon = <i className="fab fa-twitter"></i>;
+                case "chat":
+                    icon = <i className="fas fa-comments"></i>
                     title = "Chat with other users";
                     break;
                 case "news":

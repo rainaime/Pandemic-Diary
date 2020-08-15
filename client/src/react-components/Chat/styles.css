@@ -1,4 +1,4 @@
-.tweet_container {
+.chatmessage_container {
     flex-grow: 1;
     padding: 12px;
     overflow: scroll !important;
@@ -7,7 +7,7 @@
     -ms-overflow-style: none;
 }
 
-.tweet_container::-webkit-scrollbar{
+.chatmessage_container::-webkit-scrollbar{
     width: 0;
 }
 
@@ -20,10 +20,10 @@
     word-wrap: break-word;
 }
 
-#tweet_context {
+#chatmessage_context {
     width: 90%;
 }
 
-.add_tweet_container {
+.add_chatmessage_container {
     margin: 12px 0;
 }

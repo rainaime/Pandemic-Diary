@@ -22,7 +22,7 @@ import React from "react";
 import ShareablePopup from "./react-components/ShareableComponents";
 import SiteHeader from "./react-components/SiteHeader";
 import Timeline from "./react-components/Timeline";
-import Tweets from "./react-components/Tweets";
+import ChatMessages from "./react-components/Chat";
 import { SiteHelp } from "./SiteHelp";
 import { withRouter } from "react-router-dom";
 
@@ -107,7 +107,7 @@ class App extends React.Component {
     }
 
     setRightView(option) {
-        if (option === "tweets" || option === "news") {
+        if (option === "chat" || option === "news") {
             this.setState({
                 currentRightMenuView: option,
             });
@@ -433,6 +433,8 @@ class App extends React.Component {
             errorMessage: "",
         });
 
+        console.log(username)
+        console.log(username === false)
         if (this.state.currentUsername && !username) {
             fetch("/logout")
                 .then((res) => res)
@@ -767,8 +769,8 @@ class App extends React.Component {
 
         let rightMenuView;
         switch (this.state.currentRightMenuView) {
-            case "tweets":
-                rightMenuView = <Tweets user={this.state.currentUser} />;
+            case "chat":
+                rightMenuView = <ChatMessages user={this.state.currentUser} />;
                 break;
             case "news":
                 rightMenuView = <News currentDate={this.state.currentDate} />;
@@ -828,7 +830,7 @@ class App extends React.Component {
                         </div>
                         <div style={dynamicStyles.popupBox} className="popup-box">
                             <span onClick={this.returnToApp.bind(this)}>
-                                <i className="fas fa-window-close"></i>
+                                <i style={{ fontSize: 32 }} className="far fa-times-circle"></i>
                             </span>
                             {this.renderPopup(this.state.currentPopup)}
                             <div className="errorMessage">{this.state.errorMessage}</div>
@@ -839,7 +841,7 @@ class App extends React.Component {
                         </PopoutButton>
                     </div>
                     <CollapsibleMenu
-                        views={["news", "tweets"]}
+                        views={["news", "chat"]}
                         currentView={this.state.currentRightMenuView}
                         switchView={this.setRightView.bind(this)}
                         position="right"

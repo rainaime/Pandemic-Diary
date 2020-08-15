@@ -1,10 +1,9 @@
-/* Tweets mongoose model */
+/* ChatMessages mongoose model */
 const mongoose = require('mongoose')
 
-const TweetSchema = new mongoose.Schema({
+const ChatMessageSchema = new mongoose.Schema({
 	username: {
 		type: String,
-//        required: true,
         minlength: 1,
         trim: true,
         unique: false,
@@ -12,14 +11,13 @@ const TweetSchema = new mongoose.Schema({
 	},
 	content: {
 		type: String,
-//		required: true,
-		minlegth: 1,
+		minlength: 1,
         unique: false,
         index: { unique: false, dropDups: false }
 	},
 });
 
-// make a model using the Tweet schema
-const Tweet = mongoose.model("Tweet", TweetSchema);
+// make a model using the ChatMessage schema
+const ChatMessage = mongoose.model("ChatMessage", ChatMessageSchema);
 
-module.exports = { Tweet }
+module.exports = { ChatMessage }
