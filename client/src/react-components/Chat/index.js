@@ -21,8 +21,9 @@ class ChatMessages extends React.Component {
         this.setState({
             maxId: this.state.maxId + 1,
         });
-        this.interval = setInterval(() => this.setState({ time: Date.now(), maxId: 0 }), 1000);
+        this.interval = setInterval(() => this.updateChatMessage(), 1000);
     }
+
     componentWillUnmount() {
         clearInterval(this.interval);
     }
@@ -55,13 +56,13 @@ class ChatMessages extends React.Component {
                 },
                 body: JSON.stringify(newChatMessage),
             }).then((res) => {
-                this.updateChatMessage(this);
+                this.updateChatMessage();
             });
         }
     }
 
     //get chatmessage from server
-    updateChatMessage(chatmessage) {
+    updateChatMessage() {
         fetch("/chatmessage")
             .then((res) => {
                 if (res.status === 200) {
@@ -70,7 +71,7 @@ class ChatMessages extends React.Component {
                 }
             })
             .then((json) => {
-                chatmessage.setState({
+                this.setState({
                     chatmessages: json.chatmessages.map((t) => {
                         return {
                             username: t.username.split("\\\\split@")[0], // Get rid of current time at end
