@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Colors } from "../../site-styles/Colors";
 import "./styles.css";
 
 /**
@@ -17,7 +18,7 @@ export class UserInfo extends Component {
     //render user info to display
     renderUserInfo() {
         return (
-            <div>
+            <div className="userInfo">
                 <div className="holder squareHolder">
                     {/* profile picture holder */}
                     this a pfp or something
@@ -40,7 +41,7 @@ export class UserInfo extends Component {
     //render shareables to display
     renderShareable(shareable, i) {
         return (
-            <div key={i} style={{ border: "1px solid white" }}>
+            <div className="userInfoShareable" key={i}> 
                 {shareable.date.split('T')[0]}: <br/>
                 {shareable.content}
             </div>
