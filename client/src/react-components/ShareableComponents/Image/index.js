@@ -79,28 +79,15 @@ class ImageMenu extends React.Component {
                         onChange={this.updateImageForm.bind(this)}
                     />
                 </form>
-                <div className="dateSection">
-                    <input
-                        title="Change the date you'd like to place this shareable for"
-                        type="date"
-                        min="2019-12-01"
-                        max="2020-12-31"
-                        onChange={(e) => {
-                            this.props.image.dateText = e.target.value;
-                            this.setState({ value: e.target.value });
-                            this.props.updateDate(e.target.valueAsDate);
-                            this.props.updateCurrentDate(e.target.valueAsDate);
-                        }}
-                    />
-                </div>
 
                 <div className="articleType">
                     <select
                         name="article"
                         title="Change the category you'd like to place this shareable in"
                         onChange={(e) => {
-                            this.props.updateArticleType(e.target.value);
-                            this.setState({ value: e.target.value });
+                            this.setState({ selectedArticle: e.target.value }, () =>
+                                this.props.updateSelectedShareable({ article: this.state.selectedArticle })
+                            );
                         }}>
                         <option value="News">News</option>
                         <option value="Vacation">Vacation</option>
