@@ -22,3 +22,7 @@
     top: 0;
     left: 0
 }
+
+.gm-control-active {
+    background-color: red;
+}

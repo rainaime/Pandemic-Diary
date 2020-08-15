@@ -18,7 +18,7 @@ class SiteHeader extends React.Component {
                 }}>
                 <Link
                     to="/">
-                {isBrowser && <h1 className="siteTitle">Pandemic 
+                {isBrowser && <h1 title="Return to landing page" className="siteTitle">Pandemic 
                     <i className="fas fa-virus"></i>
                 Diary</h1>}
                 </Link>

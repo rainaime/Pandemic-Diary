@@ -6,7 +6,7 @@ import "./styles.css";
  * A CollapsibleMenu, which can be used in any container to fill its full
  * height and 20% of its width when expanded, or no width when collapsed.
  *
- * Props: 
+ * Props:
  * - views:         the 'modes' this can display
  * - switchView:    callback function to handle switching of views
  * - position:      which side of the parent container this is placed on
@@ -37,29 +37,39 @@ class CollapsibleMenu extends React.Component {
     renderViews() {
         return this.props.views.map((view, i) => {
             let icon;
+            let title;
             switch (view) {
                 case "filter":
                     icon = <i className="fas fa-filter"></i>;
+                    title = "Filter the shareables displayed on the map by category";
                     break;
                 case "info":
                     icon = <i className="fas fa-info"></i>;
+                    title = "Show user info";
                     break;
                 case "tweets":
                     icon = <i className="fab fa-twitter"></i>;
+                    title = "Chat with other users";
                     break;
                 case "news":
                     icon = <i className="fas fa-newspaper"></i>;
+                    title = "View COVID-19 related news for the selected date";
                     break;
-                default: break;
+                default:
+                    break;
             }
             return (
                 <span
-                    style={{ color: view === this.props.currentView ? Colors.textAccent1 : "white" }}
+                    title={title}
+                    style={{
+                        color: view === this.props.currentView ? Colors.textAccent1 : "white",
+                    }}
                     key={i}
                     onClick={() => {
                         this.props.switchView(view);
                     }}>
-                    {icon}{view}
+                    {icon}
+                    {view}
                 </span>
             );
         });
@@ -76,9 +86,7 @@ class CollapsibleMenu extends React.Component {
 
         return (
             <div className="collapsible-menu" style={dynamicStyles.container}>
-                    <div className="menu-views">
-                    {this.renderViews()}
-                </div>
+                <div className="menu-views">{this.renderViews()}</div>
                 {this.props.children}
                 <CollapseButton
                     position={this.props.position === "left" ? "right" : "left"}
@@ -127,6 +135,7 @@ class CollapseButton extends React.Component {
 
         return (
             <div
+                title="Close this menu"
                 onClick={this.props.onClick}
                 className="collapse-button"
                 style={buttonStyle}

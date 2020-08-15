@@ -26,24 +26,28 @@ class ShareablePopup extends React.Component {
                     <h3 className="header-style">{user}</h3>
                     <button
                         className="deleteButton"
+                        title="Delete this shareable"
                         style={{visibility: this.props.editable ? "visible" : "hidden"}}
                         onClick={() => this.props.delete(this.props.shareable)}>
                         <i className="fas fa-trash-alt"></i>
                     </button>
                     <button
                         className="editButton"
+                        title="Edit this shareable"
                         style={{visibility: this.props.editable ? "visible" : "hidden"}}
                         onClick={this.props.edit}>
                         <i className="fas fa-edit"></i>
                     </button>
                     <button
                         className="shareButton"
+                        title="Share this shareable with another user"
                         style={{visibility: this.props.editable ? "visible" : "hidden"}}
                         onClick={this.props.share}>
                         <i className="fas fa-share-square"></i>
                     </button>
                     <button
                         className="reportButton"
+                        title="Report this shareable to the administrators. It will be reviewed"
                         style={{visibility: this.props.editable ? "visible" : "hidden"}}
                         onClick={this.props.report}>
                         <i className="fas fa-flag"></i>

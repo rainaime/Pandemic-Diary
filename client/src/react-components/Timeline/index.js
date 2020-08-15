@@ -81,6 +81,7 @@ class Timeline extends React.Component {
     render() {
         return (
             <div
+                title="Change the current date for the app. Refreshes shareables, news, and tweets."
                 style={{
                     position: 'relative',
                     height: "40px", 
@@ -89,7 +90,7 @@ class Timeline extends React.Component {
                         : Colors.backgroundDarkAccent,
                     transition: "all 0.3s",
                     flexGrow: 1,
-                    margin: "0px 10px 10px 25px",
+                    margin: "0px 10px 10px 10px",
                     borderRadius: "5px",
                     border: "solid 1px #002f44",
                 }}>

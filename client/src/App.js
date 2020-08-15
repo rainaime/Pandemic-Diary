@@ -175,11 +175,11 @@ class App extends React.Component {
             });
         }
 
-        if (option === "info" && this.state.currentUser === "admin"){
+        if (option === "info" && this.state.currentUser === "admin") {
             this.setState({
                 currentMode: "manageReports",
-                currentPopup: "manageReports"
-            })
+                currentPopup: "manageReports",
+            });
         }
     }
 
@@ -485,11 +485,11 @@ class App extends React.Component {
         });
     }
 
-    reportMarkerState(){
+    reportMarkerState() {
         this.setState({
             currentMode: "report",
             currentPopup: "report",
-        })
+        });
     }
 
     returnToApp(username) {
@@ -637,7 +637,6 @@ class App extends React.Component {
         const ManageReportsProps = {
             // TODO: Inside of ManageReports, make a call to the SERVER
             // deleteReportedShareable: this.deleteReportedShareable.bind(this),
-
             //add props here
         };
 
@@ -847,12 +846,16 @@ class App extends React.Component {
                     backgroundColor: Colors.backgroundDarkAccent,
                 }}>
                 <SiteHeader>
-                    <span className="current-date">
+                    <span
+                        title={`You are currently viewing the shareables placed by users for ${this.state.currentDate.toDateString()}`}
+                        className="current-date">
                         <i className="fas fa-calendar-alt"></i>
                         {new Date(this.state.currentDate).toDateString()}
                     </span>
                     {this.state.currentUser && (
-                        <button onClick={this.renderNotification.bind(this)}>
+                        <button
+                            title="View the shareables that were sent to you by other users"
+                            onClick={this.renderNotification.bind(this)}>
                             <i className="fas fa-bell"></i>
                             Notifications
                         </button>
@@ -905,9 +908,18 @@ class App extends React.Component {
                     </CollapsibleMenu>
                 </div>
                 <div className="footer">
+                    <div
+                        className="footer-sideitem footer-sideitem-left"
+                        title="Refresh all shareables currently displayed"
+                        onClick={() => {
+                            this.getShareablesForCurrentDate();
+                        }}>
+                        <i className="fas fa-sync-alt"></i>
+                    </div>
                     <Timeline {...TimelineProps} />
                     <div
                         className="footer-sideitem footer-sideitem-right"
+                        title="View all features of this website and get some help"
                         onClick={() =>
                             this.setState({ currentMode: "help", currentPopup: "help" })
                         }>
