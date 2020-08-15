@@ -87,6 +87,7 @@ class ManageReports extends React.Component {
     }
     
     ignoreReport = (report) => {
+        console.log(report)
         fetch(`/report`, {
             method: "delete",
             body: JSON.stringify({
@@ -113,6 +114,7 @@ class ManageReports extends React.Component {
             .then((res) => {
                 if (res.status === 200) {
                     this.ignoreReport(shareable);
+                    this.props.renderMap();
                 }
             })
             .catch((err) => console.log(err));
@@ -121,12 +123,12 @@ class ManageReports extends React.Component {
     renderReport(report) {
         return (
             <div>
-                <button id="remove" onClick={() => {
-                    this.ignoreReport(report)
-                    }}><i class="fas fa-trash"></i></button>
-                <button id="remove" onClick={() => {
+                <button id="remove" title="Delete the reported marker" onClick={() => {
                     this.deleteShareable(report.report)
-                    }}><i class="fas fa-ban"></i></button>
+                    }}><i class="fas fa-trash"></i></button>
+                <button id="remove" title="Remove report" onClick={() => {
+                    this.ignoreReport(report.report)
+                    }}><i class="fas fa-minus-circle"></i></button>
                 <div className="content">Marker Content: 
                     <p>
                         {report.report.content ||
