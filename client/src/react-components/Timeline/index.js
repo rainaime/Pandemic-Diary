@@ -83,12 +83,13 @@ class Timeline extends React.Component {
             <div
                 style={{
                     position: 'relative',
-                    height: isBrowser ? "40px" : "50px",
+                    height: "40px", 
                     backgroundColor: !this.state.hover
                         ? Colors.background
                         : Colors.backgroundDarkAccent,
                     transition: "all 0.3s",
-                    margin: "0px 25px 10px 25px",
+                    flexGrow: 1,
+                    margin: "0px 10px 10px 25px",
                     borderRadius: "5px",
                     border: "solid 1px #002f44",
                 }}>

@@ -3,6 +3,7 @@
     text-decoration: none;
     font-weight: 600;
     padding: 12px 0;
+    font-size: 1.5vw;
 }
 
 .menu-val{
@@ -12,5 +13,4 @@
     flex-direction: column;
     flex-wrap: nowrap;
     height: 90%;
-    font-size: 1.5vw;
 }

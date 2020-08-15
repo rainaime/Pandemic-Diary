@@ -1,4 +1,5 @@
 .news-container {
+    max-height: calc(100% - 60px);
     flex-grow: 1;
     overflow: scroll !important;
     -ms-overflow-style: none;

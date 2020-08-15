@@ -22,14 +22,15 @@ export class UserInfo extends Component {
                     {/* profile picture holder */}
                     this a pfp or something
                 </div>
-                <h3>Hello {this.props.shareables.username}</h3>
+                <h3>Hello {this.props.currentUser}</h3>
                 <div style={{ display: "left" }}>Content</div>
                 <div className="content_container">
                     {/* there is a bug here that when a shareable is deleted
                         the mutation does not affect this array as well which causes the render here to render deleted shareables*/}
                     {/* content_container does not scroll rn */}
                     {this.props.shareables.map((shareable, i) =>
-                        this.renderShareable(shareable, i)
+                        
+                        shareable.user == this.props.currentUser ? this.renderShareable(shareable, i) : null
                     )}
                 </div>
             </div>

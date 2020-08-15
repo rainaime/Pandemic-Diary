@@ -31,7 +31,7 @@ export class SignUp extends Component {
 
     //add new user if this is a new user
     addNewUser = async () => {
-        const response = await fetch("/register", {
+        fetch("/register", {
             method: "POST",
             mode: "cors",
             cache: "no-cache",
