@@ -396,6 +396,13 @@ class App extends React.Component {
                         shareablePopupPos: { x: -1000, y: -1000 },
                         shareables: this.state.shareables.filter((s) => s._id !== id),
                     });
+                } else {
+                    console.log(res)
+                    this.setState({
+                        currentMode: "error",
+                        currentPopup: "error",
+                        errorMessage: "You may not delete that shareable."
+                    })
                 }
             })
             .catch((err) => console.log(err));
@@ -709,8 +716,7 @@ class App extends React.Component {
             // 'editable' is NOT to be trusted; it's only used to decide
             // whether to include the shareable modification buttons or not.
             // The backend does the actual validation.
-            editable: this.state.selectedShareable.user === this.state.currentUser,
-            //editable: this.userCanEdit.bind(this),
+            editable: this.state.selectedShareable.user === this.state.currentUser || this.state.currentUser === "admin",
             edit: this.editShareable.bind(this),
             delete: this.deleteSelectedShareable.bind(this),
             share: this.shareSelectedShareable.bind(this),

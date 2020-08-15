@@ -109,7 +109,7 @@ class ManageUsers extends React.Component {
         //delete shareable
         shareables_arr.map(function (s) {
             if(s.user == deleteuser.username){
-                fetch(`/shareableAdmin/${s._id}`, {
+                fetch(`/shareable/${s._id}`, {
                     method: "delete",
                 })
                 .then((res) => {

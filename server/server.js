@@ -453,59 +453,42 @@ app.delete("/shareable/:id", (req, res) => {
         return;
     }
 
-    Shareable.findOneAndDelete(
-        {
-            // Check that user submitting request created the image.
-            user: req.session.username,
-            _id: id,
-        },
-        (err, s) => {
-            if (err || !s) {
-                res.status(404).send();
-            } else {
-                User.find({}, (err, users) => {
+    Shareable.findById(id, (err, shareable) => {
+        if (err) {
+            res.status(500).send();
+        } else if (!shareable) {
+            res.status(404).send();
+        } else {
+            if (shareable.user === req.session.username || req.session.username === "admin") {
+                shareable.remove((err, s) => {
                     if (err) {
                         res.status(500).send();
                     } else {
-                        users.forEach((user) => {
-                            user.shared = user.shared.filter((shared) => {
-                                return shared._id !== s._id.toString();
+                        User.find({}, (err, users) => {
+                            users.forEach((user) => {
+                                user.shared = user.shared.filter((shared) => {
+                                    return shared._id !== s._id.toString();
+                                });
+                                user.save().catch(() => res.status(500).send());
                             });
-                            user.save().catch(() => res.status(500).send());
                         });
                     }
+                    if (s.type === "image") {
+                        cloudinary.uploader.destroy(s.image_id, (result) => {
+                            if (result.result === "ok") {
+                                res.status(200).send();
+                            } else {
+                                res.status(500).send();
+                            }
+                        });
+                    } else {
+                        res.status(200).send();
+                    }
                 });
-                if (s.type === "image") {
-                    cloudinary.uploader.destroy(s.image_id, (result) => {
-                        if (result.result === "ok") {
-                            res.status(200).send();
-                        } else {
-                            res.status(500).send();
-                        }
-                    });
-                } else {
-                    res.status(200).send();
-                }
+            } else {
+                res.status(401).send();
             }
         }
-    );
-});
-
-// A route for admin to delete a shareable.
-app.delete("/shareableAdmin/:id", (req, res) => {
-    const id = req.params.id;
-
-    // Validate id
-    if (!ObjectID.isValid(id)) {
-        res.status(404).send();
-        return;
-    }
-
-    Shareable.findByIdAndDelete(id, function (err) {
-        if (err) {
-            console.log(err);
-        }
-        console.log("Successful deletion");
     });
 });
 
