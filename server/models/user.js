@@ -31,6 +31,9 @@ const UserSchema = new mongoose.Schema({
     shared: {
         type: Array,
         // required: true,
+    },
+    reports: {
+        type: Array,
     }
 });
 

@@ -94,6 +94,13 @@ class App extends React.Component {
                 currentLeftMenuView: option,
             });
         }
+
+        if (option === "info" && this.state.currentUser === "admin"){
+            this.setState({
+                currentMode: "manageReports",
+                currentPopup: "manageReports"
+            })
+        }
     }
 
     setRightView(option) {
@@ -389,6 +396,13 @@ class App extends React.Component {
         });
     }
 
+    reportMarkerState(){
+        this.setState({
+            currentMode: "report",
+            currentPopup: "report",
+        })
+    }
+
     returnToApp(username) {
         this.props.history.push("/App");
         if (this.state.currentMode === "editingShareable") {
@@ -513,6 +527,7 @@ class App extends React.Component {
 
         const NotificationIconProps = {
             user: this.state.currentUser,
+            returnToApp: this.returnToApp.bind(this),
         };
 
         const ReportMenuProps = {
@@ -531,6 +546,8 @@ class App extends React.Component {
         const ManageReportsProps = {
             // TODO: Inside of ManageReports, make a call to the SERVER
             // deleteReportedShareable: this.deleteReportedShareable.bind(this),
+
+            //add props here
         };
 
         switch (this.state.currentPopup) {
@@ -665,7 +682,7 @@ class App extends React.Component {
             edit: this.editShareable.bind(this),
             delete: this.deleteSelectedShareable.bind(this),
             share: this.shareSelectedShareable.bind(this),
-            //report: this.reportMarkerState.bind(this),
+            report: this.reportMarkerState.bind(this),
             position: this.state.shareablePopupPos,
         };
 

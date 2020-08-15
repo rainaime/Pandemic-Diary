@@ -18,6 +18,25 @@ class ReportMenu extends React.Component {
         }
     }
 
+    reportMarker = () => {
+        fetch(`/reports`, {
+            method: "post",
+            body: JSON.stringify({shareable: this.props.selectedShareable, 
+                reportMessage: this.state.reportMessage}),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((res) => {
+                if (res.status === 200) {
+                    //should set some kind of successful share on front end here
+                    console.log("success report")
+                    this.props.returnToApp();
+                }
+            })
+            .catch((err) => console.log(err));
+    }
+
     render() {
         return (
             <>
@@ -38,12 +57,7 @@ class ReportMenu extends React.Component {
                         onKeyPress={(event) => {
                             //should probably notify the user that the report has been sent
                             if (event.key === "Enter") {
-                                this.props.enterPressed();
-                                this.props.reportMarker(
-                                    this.state.reportMessage,
-                                    this.props.currentUserUsername,
-                                    this.props.shareable
-                                );
+                                this.reportMarker()
                             }
                         }}></textarea>
                 </form>
@@ -53,22 +67,82 @@ class ReportMenu extends React.Component {
 }
 
 class ManageReports extends React.Component {
+    state = {
+        reports: [],
+    }
+
+    componentDidMount(){
+        this.getReports()
+    }
+
+    getReports = () => {
+        fetch(`/reports`)
+            .then((res) => res.json())
+            .then((json) => {
+                this.setState({
+                    reports: json,
+                })
+            })
+            .catch((err) => console.log(err));
+    }
+    
+    ignoreReport = (report) => {
+        fetch(`/report`, {
+            method: "delete",
+            body: JSON.stringify({
+                reportID: report._id,
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((res) => {
+                if (res.status === 200) {
+                    this.getReports();
+                }
+            })
+            .catch((err) => console.log(err));
+    }
+
+    deleteShareable = (shareable) => {
+        const id = shareable._id;
+
+        fetch(`/shareable/${id}`, {
+            method: "delete",
+        })
+            .then((res) => {
+                if (res.status === 200) {
+                    this.ignoreReport(shareable);
+                }
+            })
+            .catch((err) => console.log(err));
+    }
+
     renderReport(report) {
         return (
             <div>
-                <div>Reported by {report.userReporting}</div>
-                <div>Report Message: {report.message}</div>
-                <div>Marker Content: {report.shareable.content}</div>
-                <button onClick={() => this.props.deleteReportedShareable(report.shareable)}>Delete Report</button>
+                <button id="remove" onClick={() => {
+                    this.ignoreReport(report)
+                    }}><i class="fas fa-trash"></i></button>
+                <button id="remove" onClick={() => {
+                    this.deleteShareable(report.report)
+                    }}><i class="fas fa-ban"></i></button>
+                <div className="content">Marker Content: 
+                    <p>
+                        {report.report.content ||
+                    <img style={{width: "100%"}} src={report.report.image_url} alt="User-submitted content"/>}
+                    </p></div>
+                <div className="content">Report Message: <p>{report.reportMessage}</p></div>
+                {/* <button onClick={() => this.props.deleteReportedShareable(report.shareable)}>Delete Report</button> */}
             </div>
         );
     }
     render() {
         return (
             <>
-                <h1 className="popupBox_title">Reports</h1>
-                <div className="reports">
-                {this.props.reports.map((report) => this.renderReport(report))}
+                <h3>Reports</h3>
+                <div className="content_container">
+                {this.state.reports.map((report) => this.renderReport(report))}
                 </div>
             </>
         );

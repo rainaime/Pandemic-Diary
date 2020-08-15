@@ -30,6 +30,7 @@ const { User } = require("./models/user");
 const { Tweet } = require("./models/tweet");
 const { Shareable } = require("./models/shareable");
 const shareable = require("./models/shareable");
+const { report } = require("process");
 
 // starting the express server
 app.use(express.static(path.join(__dirname, "build")));
@@ -211,7 +212,7 @@ app.post("/sharing", (req, res) => {
 
 });
 
-// A route to remove a specific shareable from calling user.
+// A route to remove a specific shared shareable from calling user.
 app.delete("/deleteShare", (req, res) => {
     const shareableID = req.body.shareableID;
     const user = req.body.user;
@@ -468,6 +469,110 @@ app.delete("/shareable/:id", (req, res) => {
         }
     );
 });
+
+
+// A route for admin to delete a shareable.
+app.delete("/shareableAdmin/:id", (req, res) => {
+    const id = req.params.id;
+
+    // Validate id
+    if (!ObjectID.isValid(id)) {
+        res.status(404).send();
+        return;
+    }
+
+    Shareable.findByIdAndDelete(id, function (err) {
+            if(err){
+                console.log(err);
+            }
+            console.log("Successful deletion");
+      });
+});
+
+// A route to add a shareable to the reports of admin
+app.post("/reports", (req, res) => {
+    const reportMessage = req.body.reportMessage
+    const report = req.body.shareable
+    console.log(reportMessage)
+
+    User.findOne({username: "admin"}).then((admin) => {
+        if (!admin) {
+            return Promise.reject("User doesn't exist"); // a rejected promise
+        } 
+
+        const reports = admin.reports;
+        reports.push({reportMessage: reportMessage, report: report});
+
+        //TODO: should check that report already is not reported or else this will
+        //      most likely cause an issue during deletion
+
+        admin.save()
+            .then(
+                res.status(200).send("Successful share")
+            )
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send("Could not save");
+            });
+    })
+
+});
+
+// A route to get all reports for admin
+app.get("/reports", (req, res) => {
+    User.findOne({username: "admin"}).then(admin => {
+        if (!admin) {
+            return Promise.reject("User doesn't exist"); // a rejected promise
+        } 
+
+        res.status(200).send(admin.reports);
+   })
+});
+
+// A route to delete a report from admin list.
+app.delete("/report", (req, res) => {
+    const reportID = req.body.reportID;
+    const user = req.body.user;
+    
+    User.findOne({username: "admin"}).then((admin) => {
+        //this should almost never happen but I'll keep in case
+        if (!admin) {
+            return Promise.reject("User doesn't exist"); // a rejected promise
+        } 
+
+        const reports = admin.reports;
+        let index = -1;
+        //find the index of shareable in order to pop it out
+        reports.forEach(report => {
+            if (report._id === reportID){
+                index = reports.indexOf(report);
+                // break; //might just change this from a for each to a for loop to allow breaking
+            }
+        })
+        //remove shareable from all shared
+        if (index !== -1){
+            reports.splice(index, 1);
+        } else {
+            return Promise.reject("Could not find shareable");
+        }
+
+        admin.reports = reports;
+
+        admin.save()
+            .then(
+                res.status(200).send()
+            )
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send("Could not save");
+            });
+        
+    })  
+
+});
+
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // IMAGE-RELATED ROUTES

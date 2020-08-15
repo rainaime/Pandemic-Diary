@@ -18,7 +18,7 @@ class NotificationMenu extends React.Component {
             .then((res) => {
                 if (res.status === 200) {
                     //should set some kind of successful share on front end here
-                    console.log("successful share");
+                    this.props.returnToApp();
                 }
             })
             .catch((err) => console.log(err));
