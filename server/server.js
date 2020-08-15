@@ -111,7 +111,7 @@ app.post("/login", (req, res) => {
             }
         })
         .catch((error) => {
-            res.status(401).send(error);
+            res.status(500).send();
         });
 });
 
@@ -141,7 +141,7 @@ app.post("/register", (req, res) => {
                 res.status(400).send("User already exists");
             } else {
                 console.log(err);
-                res.status(401).send("Passwords must contain at least 10 characters");
+                res.status(500).send();
             }
         });
 });
@@ -151,7 +151,7 @@ app.get("/logout", (req, res) => {
     // Remove the session
     req.session.destroy((error) => {
         if (error) {
-            res.status(500).send(error);
+            res.status(500).send();
         } else {
             res.status(200).send("Successful logout");
         }
@@ -255,20 +255,27 @@ app.post("/chatmessage", (req, res) => {
     const username = req.body.username;
     const content = req.body.content;
 
-    const chatmessage = new ChatMessage({
-        username: username,
-        content: content,
-    });
-
-    chatmessage
-        .save()
-        .then((chatmessages) => {
-            res.status(200).send({ chatmessages });
-        })
-        .catch((error) => {
-            console.log(error);
-            res.status(400).send("Bad request");
+    if (req.session.username === username) {
+        const chatmessage = new ChatMessage({
+            username: username,
+            content: content,
+        }).catch((err) => {
+            console.log(err);
+            res.status(400).send();
         });
+
+        chatmessage
+            .save()
+            .then((msg) => {
+                res.status(200).send({ msg });
+            })
+            .catch((error) => {
+                console.log(error);
+                res.status(500).send("Bad request");
+            });
+    } else {
+        res.status(401).send();
+    }
 });
 
 // A route to get all chatmessages saved.
@@ -477,30 +484,38 @@ app.delete("/shareable/:id", (req, res) => {
     });
 });
 
+///////////////////////////////////////////////////////////////////////////////
+// ADMIN-RELATED ROUTES
+///////////////////////////////////////////////////////////////////////////////
+
 // A route to add a shareable to the reports of admin
 app.post("/reports", (req, res) => {
     const reportMessage = req.body.reportMessage;
     const report = req.body.shareable;
 
-    User.findOne({ username: "admin" }).then((admin) => {
-        if (!admin) {
-            return Promise.reject("User doesn't exist"); // a rejected promise
-        }
+    if (req.session.username !== "admin") {
+        res.status(401).send();
+    } else {
+        User.findOne({ username: "admin" }).then((admin) => {
+            if (!admin) {
+                return Promise.reject("User doesn't exist"); // a rejected promise
+            }
 
-        const reports = admin.reports;
-        reports.push({ reportMessage: reportMessage, report: report });
+            const reports = admin.reports;
+            reports.push({ reportMessage: reportMessage, report: report });
 
-        //TODO: should check that report already is not reported or else this will
-        //      most likely cause an issue during deletion
+            //TODO: should check that report already is not reported or else this will
+            //      most likely cause an issue during deletion
 
-        admin
-            .save()
-            .then(res.status(200).send("Successful share"))
-            .catch((err) => {
-                console.log(err);
-                res.status(500).send("Could not save");
-            });
-    });
+            admin
+                .save()
+                .then(res.status(200).send("Successful share"))
+                .catch((err) => {
+                    console.log(err);
+                    res.status(500).send("Could not save");
+                });
+        });
+    }
 });
 
 // A route to get all reports for admin
