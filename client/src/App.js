@@ -433,8 +433,6 @@ class App extends React.Component {
             errorMessage: "",
         });
 
-        console.log(username)
-        console.log(username === false)
         if (this.state.currentUsername && !username) {
             fetch("/logout")
                 .then((res) => res)

@@ -297,7 +297,6 @@ app.get("/chatmessage", (req, res) => {
 // A route to create new shareable
 app.post("/shareable", (req, res) => {
     let shareable;
-    console.log(req.body)
 
     if (req.session.user) {
         shareable = new Shareable(Object.assign(req.body), req.session);
