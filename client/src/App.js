@@ -97,13 +97,6 @@ class App extends React.Component {
                 currentLeftMenuView: option,
             });
         }
-
-        if (option === "info" && this.state.currentUser === "admin") {
-            this.setState({
-                currentMode: "manageReports",
-                currentPopup: "manageReports",
-            });
-        }
     }
 
     setRightView(option) {
@@ -556,9 +549,7 @@ class App extends React.Component {
         };
 
         const ManageReportsProps = {
-            // TODO: Inside of ManageReports, make a call to the SERVER
-            // deleteReportedShareable: this.deleteReportedShareable.bind(this),
-            //add props here
+            renderMap: this.getShareablesForCurrentDate.bind(this)
         };
 
         switch (this.state.currentPopup) {

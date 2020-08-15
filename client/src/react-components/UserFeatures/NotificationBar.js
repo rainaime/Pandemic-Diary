@@ -86,7 +86,7 @@ class NotificationIcon extends React.Component {
             .catch((err) => console.log(err));
     };
 
-    removeShareable(shareable) {
+    removeShared(shareable) {
         fetch(`/deleteShare`, {
             method: "delete",
             body: JSON.stringify({
@@ -111,7 +111,7 @@ class NotificationIcon extends React.Component {
                 <button
                     id="remove"
                     onClick={() => {
-                        this.removeShareable(shareable);
+                        this.removeShared(shareable);
                     }}>
                     <i class="fas fa-check-square"></i>
                 </button>

@@ -196,7 +196,7 @@ app.post("/sharing", (req, res) => {
 
 // A route to remove a specific shared shareable from calling user.
 app.delete("/deleteShare", (req, res) => {
-    const shareableID = req.body.shareableID;
+    const shareableId = req.body.shareableID;
     const user = req.body.user;
 
     if (req.session.username === user || req.session.username === "admin") {
@@ -539,12 +539,11 @@ app.delete("/report", (req, res) => {
         res.status(401).send();
     } else {
         User.findOne({ username: "admin" }).then((admin) => {
-            //this should almost never happen but I'll keep in case
             if (!admin) {
                 return res.status(500).send();
             }
 
-            admin.reports = admin.reports.filter((r) => r._id !== reportID);
+            admin.reports = admin.reports.filter((r) => r.report._id !== reportID);
             admin
                 .save()
                 .then(res.status(200).send())
