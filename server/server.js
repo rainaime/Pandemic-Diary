@@ -255,13 +255,10 @@ app.post("/chatmessage", (req, res) => {
     const username = req.body.username;
     const content = req.body.content;
 
-    if (req.session.username === username) {
+    if (req.session.username === username.split("\\\\split@")[0]) {
         const chatmessage = new ChatMessage({
             username: username,
             content: content,
-        }).catch((err) => {
-            console.log(err);
-            res.status(400).send();
         });
 
         chatmessage
@@ -271,7 +268,7 @@ app.post("/chatmessage", (req, res) => {
             })
             .catch((error) => {
                 console.log(error);
-                res.status(500).send("Bad request");
+                res.status(500).send("Internal server error");
             });
     } else {
         res.status(401).send();
@@ -298,6 +295,7 @@ app.get("/chatmessage", (req, res) => {
 app.post("/shareable", (req, res) => {
     let shareable;
 
+    console.log(req.session)
     if (req.session.user) {
         shareable = new Shareable(Object.assign(req.body), req.session);
         shareable

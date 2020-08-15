@@ -48,15 +48,11 @@ class ChatMessages extends React.Component {
 
             const newChatMessage = { username: username, content: content };
 
-            fetch("http://localhost:5000/chatmessage", {
+            fetch("/chatmessage", {
                 method: "POST",
-                mode: "cors",
-                cache: "no-cache",
-                credentials: "same-origin",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                redirect: "manual",
                 body: JSON.stringify(newChatMessage),
             }).then((res) => {
                 this.updateChatMessage(this);
@@ -66,7 +62,7 @@ class ChatMessages extends React.Component {
 
     //get chatmessage from server
     updateChatMessage(chatmessage) {
-        fetch("http://localhost:5000/chatmessage")
+        fetch("/chatmessage")
             .then((res) => {
                 if (res.status === 200) {
                     // return a promise that resolves with the JSON body
