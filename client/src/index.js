@@ -27,7 +27,7 @@ const pandocFeatures = (
             <div>
                 <p>
                     Collapsing side menus: you can click the collapse button on the side menus to
-                    collapse them so that the map is larger.{" "}
+                    collapse them so that the map is larger.
                 </p>
             </div>
             <div>

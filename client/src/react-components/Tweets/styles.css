@@ -3,6 +3,8 @@
     padding: 12px;
     overflow: scroll !important;
     height: 50%;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .tweet_container::-webkit-scrollbar{

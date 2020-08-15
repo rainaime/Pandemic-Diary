@@ -30,6 +30,84 @@ const appSettings = {
     maxDate: new Date("December 31 2020"),
 };
 
+const HelpBox = () => (
+    <div style={{ height: "100%", width: "100%", padding: "0 20px", overflowY: "scroll" }}>
+        <h1>Instructions</h1>Welcome to Pandemic Diary! This is a website that was created to
+        interactively help users keep track of their plans during and after the 2019-20?? COVID-19
+        pandemic.
+        <p>Here are some examples of user interactions that are available:</p>
+        <div className="landingPage_features_flex">
+            <div>
+                <p>
+                    Collapsing side menus: you can click the collapse button on the side menus to
+                    collapse them so that the map is larger.
+                </p>
+            </div>
+            <div>
+                <p>
+                    Selecting a date to travel to: by clicking and dragging on the Timeline, you can
+                    see content specific to a certain day.
+                </p>
+                <div>
+                    <img alt="" src="/timeline.png" />
+                </div>
+            </div>
+
+            <div>
+                <p>Viewing News specific to a certain day</p>
+                <div>
+                    <img alt="" src="/news.png" />
+                </div>
+            </div>
+            <div>
+                <p>
+                    Adding a marker (text or image) to the map: when hovering over the PopoutButton,
+                    some shareables will show up. Click them to enable the adding mode, and click
+                    somewhere on the to place the marker. A popup window will appear, allowing you
+                    to modify the contents of the marker you placed.
+                </p>
+                <div>
+                    <img alt="" src="/addingmarkers.gif" />
+                </div>
+            </div>
+            <div>
+                <p>
+                    Categorizing markers: currently, we have certain groups you can place shareables
+                    in: news, vacation, and other. With this, you can describe the current state of
+                    affairs in the world or plan a vacation! Select from the filters on the left
+                    side to narrow down your search.
+                </p>
+            </div>
+            <div>
+                <p>
+                    Editing markers you’ve placed: currently, there is the option to share your
+                    marker, edit its contents, or delete it.
+                </p>
+                <div>
+                    <img alt="" src="/editingmarkers.png" />
+                </div>
+            </div>
+            <div>
+                <p>
+                    When a marker is shared with another user (by clicking the share button and
+                    typing in the user’s username), the other user will see the shareable pop up in
+                    their notifications box.
+                </p>
+                <div>
+                    <img alt="" src="/sharedmarkers.png" />
+                </div>
+            </div>
+            <div>
+                <p>
+                    When the admin is logged in, the “Info” box in the left menu panel contains an
+                    admin panel in which the administrator can view reported markers to moderate the
+                    content, or delete problematic users.
+                </p>
+            </div>
+        </div>
+    </div>
+);
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -74,7 +152,7 @@ class App extends React.Component {
                 content: "",
                 user: null,
                 type: null,
-                article: "", 
+                article: "",
             },
 
             // The location of the popup that appears on the map when hovering over a shareable.
@@ -82,9 +160,11 @@ class App extends React.Component {
 
             // Context for the Maps object, used for calculation of positions.
             mapCtx: null,
-            
+
             // Indicate which article to fillter out
-            articleType: "News"
+            articleType: "News",
+
+            errorMessage: "",
         };
     }
 
@@ -209,7 +289,7 @@ class App extends React.Component {
     }
 
     renderNotification() {
-        if (this.state.currentPopup === "notificationView"){
+        if (this.state.currentPopup === "notificationView") {
             this.setState({
                 currentMode: "normal",
                 currentPopup: "",
@@ -220,7 +300,6 @@ class App extends React.Component {
                 currentPopup: "notificationView",
             });
         }
-       
     }
 
     renderShareables() {
@@ -279,6 +358,9 @@ class App extends React.Component {
 
         this.setState(
             {
+                errorMessage: this.state.currentUser
+                    ? ""
+                    : "You are not currently logged in, so shareables placed will not be seen by anyone else and they will be erased when you leave the page. Please sign in if you'd like to use all features of the site.",
                 shareablePopupPos: { x: -1000, y: -1000 },
             },
             () => this.postShareable(shareableCopy)
@@ -314,13 +396,16 @@ class App extends React.Component {
                         },
                         () => this.computeXYOfSelectedShareable()
                     );
+                } else {
+                    throw new Error();
                 }
             })
             .catch((err) => {
-                // TODO: add visual feedback like an error box that transitions in to notify the user
-                // that guests cannot upload images, or that there was an error of some kind.
                 this.setState({
-                    currentMode: "normal",
+                    currentMode: "error",
+                    currentPopup: "error",
+                    errorMessage:
+                        "Guests may not upload images! Please sign in if you'd like to use all features of the site.",
                     selectedShareable: {
                         center: { lat: 1000, lng: 1000 },
                         content: "",
@@ -336,11 +421,14 @@ class App extends React.Component {
             method: "PATCH",
             headers: {
                 Accept: "application/json",
-                content: "application/json"
+                content: "application/json",
             },
         };
 
-        req.body = this.state.selectedShareable.type === "image" ? this.state.currentImageForm : new FormData();
+        req.body =
+            this.state.selectedShareable.type === "image"
+                ? this.state.currentImageForm
+                : new FormData();
         Object.entries(this.state.selectedShareable).forEach(([k, v]) =>
             req.body.append(k, typeof v === "object" ? JSON.stringify(v) : v)
         );
@@ -353,7 +441,8 @@ class App extends React.Component {
             })
             .then((json) => {
                 this.setState({ selectedShareable: json }, () => {
-                    if (Object.keys(this.state.selectedShareable)) this.addToShareableArray(this.state.selectedShareable);
+                    if (Object.keys(this.state.selectedShareable))
+                        this.addToShareableArray(this.state.selectedShareable);
                 });
             })
             .catch((err) => console.log(err));
@@ -382,7 +471,7 @@ class App extends React.Component {
             .catch((err) => console.log(err));
     }
 
-    shareSelectedShareable(){
+    shareSelectedShareable() {
         this.setState({
             currentMode: "notification",
             currentPopup: "notification",
@@ -397,6 +486,7 @@ class App extends React.Component {
         this.setState({
             currentMode: "normal",
             currentPopup: "",
+            errorMessage: "",
         });
 
         if (this.state.currentUsername && !username) {
@@ -412,23 +502,26 @@ class App extends React.Component {
 
     //filter all the article that is not type this.state.articleType
     selectArticleType() {
-        if (this.state.articleType != "All"){
-            const newShareables = []
-            this.state.shareables.map((shareable) => {
-                //try to find the reservation with same id
-                if(shareable.article == this.state.articleType){
-                    newShareables.push(shareable)
-                }
-            })
-
-            this.setState({
-                shareables: newShareables
-            });
+        if (this.state.articleType !== "All") {
+            this.setState(
+                {
+                    shareables: this.state.shareables.filter(
+                        (s) => s.article === this.state.articleType
+                    ),
+                    selectedShareable: {
+                        center: { lat: 1000, lng: 1000 },
+                        content: "",
+                        user: null,
+                        type: null,
+                        article: "",
+                    },
+                },
+                () => this.computeXYOfSelectedShareable()
+            );
         }
-        
     }
-    
-    setArticleType(type){
+
+    setArticleType(type) {
         this.setState({
             articleType: type,
         });
@@ -444,8 +537,6 @@ class App extends React.Component {
                     shareablePopupPos: { x: -1000, y: -1000 },
                 });
                 this.selectArticleType();
-                console.log(this.state.shareables)
-                console.log(this.state.articleType)
             });
     }
 
@@ -550,6 +641,14 @@ class App extends React.Component {
                 return <ManageUsers {...ManageUsersProps} />;
             case "manageReports":
                 return <ManageReports {...ManageReportsProps} />;
+            case "help":
+                return HelpBox();
+            case "error":
+                return (
+                    <div>
+                        <h1>Error!</h1>
+                    </div>
+                );
             default:
                 return null;
         }
@@ -635,7 +734,7 @@ class App extends React.Component {
         const FilterProps = {
             //selectType: this.selectCallback.bind(this),
             selectType: this.setArticleType.bind(this),
-            getShareable: this.getShareablesForCurrentDate.bind(this)
+            getShareable: this.getShareablesForCurrentDate.bind(this),
             //currentUser: this.state.currentUsername,
         };
 
@@ -746,6 +845,7 @@ class App extends React.Component {
                 <div className="mainBody">
                     <CollapsibleMenu
                         views={["filter", "info"]}
+                        currentView={this.state.currentLeftMenuView}
                         switchView={this.setLeftView.bind(this)}
                         position="left"
                         maxWidth="15%">
@@ -771,6 +871,7 @@ class App extends React.Component {
                                 <i className="fas fa-window-close"></i>
                             </span>
                             {this.renderPopup(this.state.currentPopup)}
+                            <div className="errorMessage">{this.state.errorMessage}</div>
                         </div>
                         <PopoutButton position="bottom-right">
                             <MarkerIcon {...PopoutButtonIconProps} />
@@ -779,13 +880,23 @@ class App extends React.Component {
                     </div>
                     <CollapsibleMenu
                         views={["news", "tweets"]}
+                        currentView={this.state.currentRightMenuView}
                         switchView={this.setRightView.bind(this)}
                         position="right"
                         maxWidth="25%">
                         {rightMenuView}
                     </CollapsibleMenu>
                 </div>
-                <Timeline {...TimelineProps} />
+                <div className="footer">
+                    <Timeline {...TimelineProps} />
+                    <div
+                        className="footer-sideitem footer-sideitem-right"
+                        onClick={() =>
+                            this.setState({ currentMode: "help", currentPopup: "help" })
+                        }>
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                </div>
             </div>
         );
     }

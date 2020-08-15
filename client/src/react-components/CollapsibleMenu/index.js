@@ -54,6 +54,7 @@ class CollapsibleMenu extends React.Component {
             }
             return (
                 <span
+                    style={{ color: view === this.props.currentView ? Colors.textAccent1 : "white" }}
                     key={i}
                     onClick={() => {
                         this.props.switchView(view);

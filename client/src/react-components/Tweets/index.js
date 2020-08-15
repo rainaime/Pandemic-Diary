@@ -1,5 +1,5 @@
 import "./styles.css";
-import React, { Component } from "react";
+import React from "react";
 
 import Tweet from "./Tweet";
 import TweetsForm from "./TweetsForm";
@@ -7,7 +7,7 @@ import TweetsForm from "./TweetsForm";
 /**
  * Used to display tweets
  *
- * Props: 
+ * Props:
  * - currentUser: user currently logged in otherwise null
  */
 class Tweets extends React.Component {
@@ -17,34 +17,34 @@ class Tweets extends React.Component {
     };
 
     componentDidMount() {
-      this.interval = setInterval(() => this.setState({ time: Date.now(), maxId: 0 }), 1000);
+        this.interval = setInterval(() => this.setState({ time: Date.now(), maxId: 0 }), 1000);
     }
     componentWillUnmount() {
-      clearInterval(this.interval);
+        clearInterval(this.interval);
     }
 
     //get current time in string
     getCurrentTime() {
-        const currTime = new Date().toLocaleString()
-        return currTime
+        const currTime = new Date().toLocaleString();
+        return currTime;
     }
 
     //add new tweet
-    addNewTweet(tweet){
+    addNewTweet(tweet) {
         if (this.props.user === null) {
             return;
         }
-        
-        const currentTime = this.getCurrentTime()
-        
-        if(this.props.user != null){
+
+        const currentTime = this.getCurrentTime();
+
+        if (this.props.user != null) {
             //add current time at the and to ensure every valuse is unique so we don't get E11000 error
-            const username = this.props.user.concat('\\\\split@' + currentTime)
-            const content = tweet.concat('\\\\split@' + currentTime)
+            const username = this.props.user.concat("\\\\split@" + currentTime);
+            const content = tweet.concat("\\\\split@" + currentTime);
 
-            const newTweet = {username: username, content: content}
+            const newTweet = { username: username, content: content };
 
-            const response = fetch("http://localhost:5000/tweet", {
+            fetch("http://localhost:5000/tweet", {
                 method: "POST",
                 mode: "cors",
                 cache: "no-cache",
@@ -56,40 +56,40 @@ class Tweets extends React.Component {
                 body: JSON.stringify(newTweet),
             }).then((res) => {
                 this.updateTweet(this);
-            })
+            });
         }
     }
 
     //get tweet from server
-    updateTweet(tweet){
-        const response = fetch("http://localhost:5000/tweet")
-            .then(res => {
+    updateTweet(tweet) {
+        fetch("http://localhost:5000/tweet")
+            .then((res) => {
                 if (res.status === 200) {
                     // return a promise that resolves with the JSON body
                     return res.json();
                 }
             })
-            .then(json => {
-                let newTweets = []; 
-                json.tweets.map(function (tweet) {
-                    const username = tweet.username.split('\\\\split@')[0];//get rid of currenttime at the end
-                    const content = tweet.content.split('\\\\split@')[0];//get rid of currenttime at the end
-                    
-                    const newTweet = {username: username, content: content}//the tweet we want user to see
-                    newTweets.push(newTweet)
-                })
-                tweet.setState({tweets: newTweets})
+            .then((json) => {
+                tweet.setState({
+                    tweets: json.tweets.map((t) => {
+                        return {
+                            username: t.username.split("\\\\split@")[0], // Get rid of current time at end
+                            content: t.content.split("\\\\split@")[0], // Get rid of current time at end
+                        };
+                    })
+                });
             })
-            .catch(error => {
+            .catch((error) => {
                 console.log(error);
             });
-        
     }
 
     render() {
-        if (this.props.user != null && this.state.maxId == 0) {
-            this.updateTweet(this)
-            this.state.maxId += 1
+        if (this.props.user !== null && this.state.maxId === 0) {
+            this.updateTweet(this);
+            this.setState({
+                maxId: this.state.maxId + 1,
+            })
         }
         return (
             <>
@@ -99,7 +99,7 @@ class Tweets extends React.Component {
                         <Tweet key={i} tweet={tweet} isLast={i === arr.length - 1} />
                     ))}
                 </div>
-                <TweetsForm addNewTweet={this.addNewTweet.bind(this)} />
+                {this.props.user ? <TweetsForm addNewTweet={this.addNewTweet.bind(this)} /> : <div style={{height: "60px", display: "flex", alignItems: "center", justifyContent: "center"}}>Please sign in to use this feature.</div>}
             </>
         );
     }
