@@ -159,42 +159,7 @@ app.get("/logout", (req, res) => {
 });
 
 ///////////////////////////////////////////////////////////////////////////////
-// USER-RELATED ROUTES
-///////////////////////////////////////////////////////////////////////////////
-
-// A route to get all users. TODO: I doubt this is a good idea
-app.get("/users", (req, res) => {
-    User.find().then(
-        (users) => {
-            //            res.render('index', chatmessages);
-            res.send({ users });
-        },
-        (error) => {
-            res.status(500).send(error); // server error
-        }
-    );
-});
-
-// A route for admin to delete a shareable.
-app.delete("/usersAdmin/:id", (req, res) => {
-    const id = req.params.id;
-
-    // Validate id
-    if (!ObjectID.isValid(id)) {
-        res.status(404).send();
-        return;
-    }
-
-    User.findByIdAndDelete(id, function (err) {
-        if (err) {
-            console.log(err);
-        }
-        console.log("Successful deletion");
-    });
-});
-
-///////////////////////////////////////////////////////////////////////////////
-// Sharing-related ROUTES
+// SHARING-RELATED ROUTES
 ///////////////////////////////////////////////////////////////////////////////
 
 // A route to push a shareable to a user's shared.
@@ -208,20 +173,25 @@ app.post("/sharing", (req, res) => {
     //TODO: currently only a shareable is stored, we should also share
     //      the username of the user who shared this marker
 
-    User.findOne({ username: receiverUser }).then((user) => {
-        if (!user) {
-            res.status(404).send("User doesn't exist");
-        }
+    User.findOne({ username: receiverUser })
+        .then((user) => {
+            if (!user) {
+                res.status(404).send("User doesn't exist");
+            }
 
-        //then the user exists and we add the shareable to it
-        user.shared.push(shareable);
-        user.save()
-            .then(res.status(200).send("Successful share"))
-            .catch((err) => {
-                console.log(err);
-                res.status(500).send("Could not save");
-            });
-    });
+            //then the user exists and we add the shareable to it
+            user.shared.push(shareable);
+            user.save()
+                .then(res.status(200).send("Successful share"))
+                .catch((err) => {
+                    console.log(err);
+                    res.status(500).send("Could not save");
+                });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send();
+        });
 });
 
 // A route to remove a specific shared shareable from calling user.
@@ -229,33 +199,50 @@ app.delete("/deleteShare", (req, res) => {
     const shareableID = req.body.shareableID;
     const user = req.body.user;
 
-    User.findOne({ username: user }).then((user) => {
-        //this should almost never happen but I'll keep in case
-        if (!user || user === null) {
-            res.status(404).send("User doesn't exist");
-        }
+    if (req.session.username === user || req.session.username === "admin") {
+        User.findOne({ username: user }).then((user) => {
+            //this should almost never happen but I'll keep in case
+            if (!user || user === null) {
+                res.status(404).send("User doesn't exist");
+            }
 
-        user.shared = user.shared.filter((s) => s._id !== shareableId);
-        user.save()
-            .then(res.status(200).send())
-            .catch((err) => {
-                console.log(err);
-                res.status(500).send("Could not save");
-            });
-    });
+            user.shared = user.shared.filter((s) => s._id !== shareableId);
+            user.save()
+                .then(res.status(200).send())
+                .catch((err) => {
+                    console.log(err);
+                    res.status(500).send("Could not save");
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(500).send();
+                });
+        });
+    } else {
+        res.status(401).send();
+    }
 });
 
 // A route to get the shared markers of a specific user.
 app.get("/shared/:user", (req, res) => {
     const user = req.params.user;
 
-    User.findOne({ username: user }).then((user) => {
-        if (!user) {
-            res.send(404).send("User doesn't exist");
-        } else {
-            res.status(200).send(user.shared);
-        }
-    });
+    if (req.session.username === user || req.session.username === "admin") {
+        User.findOne({ username: user })
+            .then((user) => {
+                if (!user) {
+                    res.send(404).send("User doesn't exist");
+                } else {
+                    res.status(200).send(user.shared);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send();
+            });
+    } else {
+        res.status(401).send();
+    }
 });
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -607,7 +594,8 @@ app.get(
                     };
                 });
                 res.status(200).send(obj);
-            }).catch((err) => console.log(err));
+            })
+            .catch((err) => console.log(err));
     }
 );
 
