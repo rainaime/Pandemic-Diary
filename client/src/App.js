@@ -555,6 +555,7 @@ class App extends React.Component {
         const ManageUsersProps = {
             // TODO: Inside of ManageUsers, make a call to the SERVER
             //deleteUser: this.deleteUser.bind(this), // TODO: This should really be a server call
+            updateShareable: this.getShareablesForCurrentDate.bind(this)
         };
 
         const ManageReportsProps = {
@@ -742,7 +743,7 @@ class App extends React.Component {
                 leftMenuView = <Filter {...FilterProps} />;
                 break;
             case "info":
-                if (this.state.currentUser && this.state.currentUser.username === "admin") {
+                if (this.state.currentUser && this.state.currentUser === "admin") {
                     leftMenuView = <Admin {...AdminProps} />;
                 } else {
                     leftMenuView = (

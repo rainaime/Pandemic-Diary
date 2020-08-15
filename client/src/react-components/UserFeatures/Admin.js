@@ -38,21 +38,104 @@ const stylePopup = {
  * An admin functionality to delete users
  *
  * Props: 
- * - users:     a list containing all the users
- * - deleteUser: a function to delete user and all its shareables
+ * - updateShareable: a function to update shareables in the app
  */
 class ManageUsers extends React.Component {
+    state = {
+        users: [],
+        shareables: []
+    };
+
+    componentDidMount() {
+        this.getUsers(this)
+        this.getShareables(this)
+    }
+
+    getShareables(manageUsers) {
+        fetch("/shareables")
+            .then(res => {
+                if (res.status === 200) {
+                    // return a promise that resolves with the JSON body
+                    return res.json();
+                }
+            })
+            .then(json => {
+                manageUsers.setState({shareables: json})
+            })
+            .catch((err) => console.log(err));
+    }
+    
+    getUsers(manageUsers){
+        fetch("/users")
+            .then(res => {
+                if (res.status === 200) {
+                    // return a promise that resolves with the JSON body
+                    return res.json();
+                }
+            })
+            .then(json => {
+                let users = []; 
+                json.users.map(function (user) {
+                    if(user.username !== 'admin'){
+                        users.push(user)
+                    }
+                })
+                manageUsers.setState({users: users})
+            })
+            .catch((err) => console.log(err));
+    }
+
+    //need to delete a user account and all the shareables here
+    deleteUser(deleteuser){
+        const users_arr = this.state.users
+        
+        //delete user
+        users_arr.map(function (user) {
+            if(user.username == deleteuser.username){
+                fetch(`/usersAdmin/${user._id}`, {
+                    method: "delete",
+                })
+                .then((res) => {
+                    if (res.status === 200) {
+                        this.getShareables(this)
+                    }
+                })
+                .catch((err) => console.log(err));
+            }
+        })
+        
+        const shareables_arr = this.state.shareables
+        
+        //delete shareable
+        shareables_arr.map(function (s) {
+            if(s.user == deleteuser.username){
+                fetch(`/shareableAdmin/${s._id}`, {
+                    method: "delete",
+                })
+                .then((res) => {
+                if (res.status === 200) {
+                    this.getUsers(this)
+                }
+            })
+            .catch((err) => console.log(err));
+            }
+        })
+        
+        this.props.updateShareable()
+    }
+    
     render() {
         return (
             <div>
                 <h1>Manage Users</h1>
                 <div className="userContainer">
                     {/* {this.generateUsers()} */}
-                    {this.props.users.map((user) => {
+                    {
+                        this.state.users.map((user) => {
                         if(user.username !== 'admin'){
                             return <div key ={user.username} className="user-val">
                                         <span>{user.username}</span>
-                                        <button onClick={(e)=>{this.props.deleteUser(e, user)}}>delete</button>
+                                        <button onClick={(e)=>{this.deleteUser(user)}}>delete</button>
                                     </div>
                         }
                         return null;

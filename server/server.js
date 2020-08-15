@@ -177,6 +177,24 @@ app.get("/users", (req, res) => {
     );
 });
 
+// A route for admin to delete a shareable.
+app.delete("/usersAdmin/:id", (req, res) => {
+    const id = req.params.id;
+
+    // Validate id
+    if (!ObjectID.isValid(id)) {
+        res.status(404).send();
+        return;
+    }
+
+    User.findByIdAndDelete(id, function (err) {
+        if (err) {
+            console.log(err);
+        }
+        console.log("Successful deletion");
+    });
+});
+
 ///////////////////////////////////////////////////////////////////////////////
 // Sharing-related ROUTES
 ///////////////////////////////////////////////////////////////////////////////
@@ -326,6 +344,18 @@ app.post("/shareable", (req, res) => {
             }
         });
     }
+});
+
+// A route to get all shareable saved.
+app.get("/shareables", (req, res) => {
+    Shareable.find().then(
+        (s) => {
+            res.send(s);
+        },
+        (error) => {
+            res.status(500).send(error); // server error
+        }
+    );
 });
 
 // A route to get shareables for a specific day.
