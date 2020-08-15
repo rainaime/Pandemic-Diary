@@ -21,6 +21,9 @@ Features hot-reloading of the server files but NOT the client files. Visit [loca
 npm install
 npm start
 ```
+## Server Routes
+See the README.md file in `./server`.
+
 ## Credentials & Permissions
 Users may create their own accounts, or preview the website as guests. There are other accounts that can be experimented with to explore app functionality:
 |Username|Password|
