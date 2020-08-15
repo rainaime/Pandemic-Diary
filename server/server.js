@@ -29,8 +29,6 @@ const { ObjectID } = require("mongodb");
 const { User } = require("./models/user");
 const { Tweet } = require("./models/tweet");
 const { Shareable } = require("./models/shareable");
-const shareable = require("./models/shareable");
-const { report } = require("process");
 
 // starting the express server
 app.use(express.static(path.join(__dirname, "build")));
@@ -382,10 +380,10 @@ app.patch("/shareable/:id", multipartMiddleware, (req, res) => {
                 res.status(404);
             }
 
-            // User who sent the request is the user who request. Notice that
-            // we are fetching the document from the database, not using
-            // user input.
-            if (s.user === req.session.username) {
+            // User who sent the request is the user who request or the admin.
+            // Notice that we are fetching the document from the database, not
+            // using user input.
+            if (s.user === req.session.username || req.session.username === "admin") {
                 // User is uploading an image. Handle it using Cloudinary.
                 if (req.body.type === "image") {
                     cloudinary.uploader
@@ -496,7 +494,6 @@ app.delete("/shareable/:id", (req, res) => {
 app.post("/reports", (req, res) => {
     const reportMessage = req.body.reportMessage;
     const report = req.body.shareable;
-    console.log(reportMessage);
 
     User.findOne({ username: "admin" }).then((admin) => {
         if (!admin) {
@@ -521,90 +518,42 @@ app.post("/reports", (req, res) => {
 
 // A route to get all reports for admin
 app.get("/reports", (req, res) => {
-    User.findOne({ username: "admin" }).then((admin) => {
-        if (!admin) {
-            return Promise.reject("User doesn't exist"); // a rejected promise
-        }
+    if (req.session.username !== "admin") {
+        res.status(401).send();
+    } else {
+        User.findOne({ username: "admin" }).then((admin) => {
+            if (!admin) {
+                return res.status(404).send();
+            }
 
-        res.status(200).send(admin.reports);
-    });
+            res.status(200).send(admin.reports);
+        });
+    }
 });
 
 // A route to delete a report from admin list.
 app.delete("/report", (req, res) => {
     const reportID = req.body.reportID;
-    const user = req.body.user;
 
-    User.findOne({ username: "admin" }).then((admin) => {
-        //this should almost never happen but I'll keep in case
-        if (!admin) {
-            return Promise.reject("User doesn't exist"); // a rejected promise
-        }
-
-        const reports = admin.reports;
-        let index = -1;
-        //find the index of shareable in order to pop it out
-        reports.forEach((report) => {
-            if (report._id === reportID) {
-                index = reports.indexOf(report);
-                // break; //might just change this from a for each to a for loop to allow breaking
+    if (req.session.username !== "admin") {
+        res.status(401).send();
+    } else {
+        User.findOne({ username: "admin" }).then((admin) => {
+            //this should almost never happen but I'll keep in case
+            if (!admin) {
+                return res.status(500).send();
             }
+
+            admin.reports = admin.reports.filter((r) => r._id !== reportID);
+            admin
+                .save()
+                .then(res.status(200).send())
+                .catch((err) => {
+                    console.log(err);
+                    res.status(500).send("Could not save");
+                });
         });
-        //remove shareable from all shared
-        if (index !== -1) {
-            reports.splice(index, 1);
-        } else {
-            return Promise.reject("Could not find shareable");
-        }
-
-        admin.reports = reports;
-
-        admin
-            .save()
-            .then(res.status(200).send())
-            .catch((err) => {
-                console.log(err);
-                res.status(500).send("Could not save");
-            });
-    });
-});
-
-///////////////////////////////////////////////////////////////////////////////
-// IMAGE-RELATED ROUTES
-///////////////////////////////////////////////////////////////////////////////
-
-// POST route to create an image.
-app.post("/images", multipartMiddleware, (req, res) => {
-    cloudinary.uploader.upload(req.files.image.path, (result) => {
-        const img = new Image({
-            image_url: result.url, // Image URL on Cloudinary server.
-        });
-
-        img.save()
-            .then((newImg) => res.send(newImg))
-            .catch((err) => res.status(400).send(err));
-    });
-});
-
-// GET route to get image by its unique ID.
-app.get("/images/:id", (req, res) => {
-    const id = req.params.id;
-
-    // Validate ID
-    if (!ObjectID.isValid(id)) {
-        res.status(404).send();
-        return;
     }
-    Image.findById(req.params.id, (err, savedImg) => {
-        if (err || !savedImg) {
-            res.status(404).send();
-        } else {
-            res.status(200).send(savedImg);
-        }
-    }).catch((err) => {
-        console.log(err);
-        res.status(500).send();
-    });
 });
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -645,6 +594,10 @@ app.get(
                 return res.json();
             })
             .then((json) => {
+                if (!json.value) {
+                    res.status(401).send();
+                }
+
                 const obj = json.value.map((a) => {
                     return {
                         title: a.title.replace(htmlRegex, ""),
@@ -654,7 +607,7 @@ app.get(
                     };
                 });
                 res.status(200).send(obj);
-            });
+            }).catch((err) => console.log(err));
     }
 );
 
