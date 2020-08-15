@@ -184,87 +184,62 @@ app.get("/users", (req, res) => {
 // A route to push a shareable to a user's shared.
 app.post("/sharing", (req, res) => {
     //should only be called with user logged in
-    //
     const receiverUser = req.body.receiverUser;
     const shareable = req.body.shareable;
-    
+
     //might need an undefined case
-    
+
     //TODO: currently only a shareable is stored, we should also share
     //      the username of the user who shared this marker
 
-    User.findOne({username: receiverUser}).then((user) => {
+    User.findOne({ username: receiverUser }).then((user) => {
         if (!user) {
-            return Promise.reject("User doesn't exist"); // a rejected promise
-        } 
+            res.status(404).send("User doesn't exist");
+        }
 
         //then the user exists and we add the shareable to it
         user.shared.push(shareable);
         user.save()
-            .then(
-                res.status(200).send("Successful share")
-            )
+            .then(res.status(200).send("Successful share"))
             .catch((err) => {
                 console.log(err);
                 res.status(500).send("Could not save");
             });
-    })
-
+    });
 });
 
 // A route to remove a specific shared shareable from calling user.
 app.delete("/deleteShare", (req, res) => {
     const shareableID = req.body.shareableID;
     const user = req.body.user;
-    
-    User.findOne({username: user}).then((user) => {
-        //this should almost never happen but I'll keep in case
-        if (!user) {
-            return Promise.reject("User doesn't exist"); // a rejected promise
-        } 
 
-        const shared = user.shared;
-        let index = -1;
-        //find the index of shareable in order to pop it out
-        shared.forEach(shareable => {
-            if (shareable._id === shareableID){
-                index = shared.indexOf(shareable);
-                // break; //might just change this from a for each to a for loop to allow breaking
-            }
-        })
-        //remove shareable from all shared
-        if (index !== -1){
-            shared.splice(index, 1);
-        } else {
-            return Promise.reject("Could not find shareable");
+    User.findOne({ username: user }).then((user) => {
+        //this should almost never happen but I'll keep in case
+        if (!user || user === null) {
+            res.status(404).send("User doesn't exist");
         }
 
-        user.shared = shared;
-
+        user.shared = user.shared.filter((s) => s._id !== shareableId);
         user.save()
-            .then(
-                res.status(200).send()
-            )
+            .then(res.status(200).send())
             .catch((err) => {
                 console.log(err);
                 res.status(500).send("Could not save");
             });
-        
-    })  
-
+    });
 });
 
 // A route to get the shared markers of a specific user.
 app.get("/shared/:user", (req, res) => {
     const user = req.params.user;
 
-    User.findOne({username: user}).then(user => {
+    User.findOne({ username: user }).then((user) => {
         if (!user) {
-            return Promise.reject("User doesn't exist"); // a rejected promise
-        } 
-
-        res.status(200).send(user.shared);
-   })
+            res.send(404).send("User doesn't exist");
+        } else {
+            res.status(200).send(user.shared);
+        }
+    });
 });
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -331,7 +306,7 @@ app.post("/shareable", (req, res) => {
         }
 
         const query = { username: "Guest" };
-        const newData = { username: "Guest", password: "Th3i41s2IhshA656Guie76s9t9Pas876s34wo1rd", };
+        const newData = { username: "Guest", password: "Th3i41s2IhshA656Guie76s9t9Pas876s34wo1rd" };
         User.findOneAndUpdate(query, newData, { upsert: true, new: true }, (err, user) => {
             if (err) {
                 res.status(500).send("Internal server error");
@@ -386,10 +361,10 @@ app.patch("/shareable/:id", multipartMiddleware, (req, res) => {
                     cloudinary.uploader
                         .upload(req.files.fileupload.path, (result) => {
                             Object.assign(s, req.body, {
-                                image_url: result.url
+                                image_id: result.public_id, // Cloudinary image id
+                                image_url: result.url, // Cloudinary image URL
                             });
-                            s
-                                .save()
+                            s.save()
                                 .then((s) => res.status(200).send(s))
                                 .catch(() => res.status(400).send("Bad request"));
                         })
@@ -458,18 +433,33 @@ app.delete("/shareable/:id", (req, res) => {
             if (err || !s) {
                 res.status(404).send();
             } else {
-                cloudinary.uploader.destroy(id, (result) => {
-                    if (result.status === 200) {
-                        res.status(200).send();
-                    } else {
+                User.find({}, (err, users) => {
+                    if (err) {
                         res.status(500).send();
+                    } else {
+                        users.forEach((user) => {
+                            user.shared = user.shared.filter((shared) => {
+                                return shared._id !== s._id.toString();
+                            });
+                            user.save().catch(() => res.status(500).send());
+                        });
                     }
                 });
+                if (s.type === "image") {
+                    cloudinary.uploader.destroy(s.image_id, (result) => {
+                        if (result.result === "ok") {
+                            res.status(200).send();
+                        } else {
+                            res.status(500).send();
+                        }
+                    });
+                } else {
+                    res.status(200).send();
+                }
             }
         }
     );
 });
-
 
 // A route for admin to delete a shareable.
 app.delete("/shareableAdmin/:id", (req, res) => {
@@ -482,75 +472,73 @@ app.delete("/shareableAdmin/:id", (req, res) => {
     }
 
     Shareable.findByIdAndDelete(id, function (err) {
-            if(err){
-                console.log(err);
-            }
-            console.log("Successful deletion");
-      });
+        if (err) {
+            console.log(err);
+        }
+        console.log("Successful deletion");
+    });
 });
 
 // A route to add a shareable to the reports of admin
 app.post("/reports", (req, res) => {
-    const reportMessage = req.body.reportMessage
-    const report = req.body.shareable
-    console.log(reportMessage)
+    const reportMessage = req.body.reportMessage;
+    const report = req.body.shareable;
+    console.log(reportMessage);
 
-    User.findOne({username: "admin"}).then((admin) => {
+    User.findOne({ username: "admin" }).then((admin) => {
         if (!admin) {
             return Promise.reject("User doesn't exist"); // a rejected promise
-        } 
+        }
 
         const reports = admin.reports;
-        reports.push({reportMessage: reportMessage, report: report});
+        reports.push({ reportMessage: reportMessage, report: report });
 
         //TODO: should check that report already is not reported or else this will
         //      most likely cause an issue during deletion
 
-        admin.save()
-            .then(
-                res.status(200).send("Successful share")
-            )
+        admin
+            .save()
+            .then(res.status(200).send("Successful share"))
             .catch((err) => {
                 console.log(err);
                 res.status(500).send("Could not save");
             });
-    })
-
+    });
 });
 
 // A route to get all reports for admin
 app.get("/reports", (req, res) => {
-    User.findOne({username: "admin"}).then(admin => {
+    User.findOne({ username: "admin" }).then((admin) => {
         if (!admin) {
             return Promise.reject("User doesn't exist"); // a rejected promise
-        } 
+        }
 
         res.status(200).send(admin.reports);
-   })
+    });
 });
 
 // A route to delete a report from admin list.
 app.delete("/report", (req, res) => {
     const reportID = req.body.reportID;
     const user = req.body.user;
-    
-    User.findOne({username: "admin"}).then((admin) => {
+
+    User.findOne({ username: "admin" }).then((admin) => {
         //this should almost never happen but I'll keep in case
         if (!admin) {
             return Promise.reject("User doesn't exist"); // a rejected promise
-        } 
+        }
 
         const reports = admin.reports;
         let index = -1;
         //find the index of shareable in order to pop it out
-        reports.forEach(report => {
-            if (report._id === reportID){
+        reports.forEach((report) => {
+            if (report._id === reportID) {
                 index = reports.indexOf(report);
                 // break; //might just change this from a for each to a for loop to allow breaking
             }
-        })
+        });
         //remove shareable from all shared
-        if (index !== -1){
+        if (index !== -1) {
             reports.splice(index, 1);
         } else {
             return Promise.reject("Could not find shareable");
@@ -558,21 +546,15 @@ app.delete("/report", (req, res) => {
 
         admin.reports = reports;
 
-        admin.save()
-            .then(
-                res.status(200).send()
-            )
+        admin
+            .save()
+            .then(res.status(200).send())
             .catch((err) => {
                 console.log(err);
                 res.status(500).send("Could not save");
             });
-        
-    })  
-
+    });
 });
-
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // IMAGE-RELATED ROUTES
@@ -663,9 +645,27 @@ app.get(
     }
 );
 
-/*************************************************/
+///////////////////////////////////////////////////////////////////////////////
 // Express server listening...
-// Serve built create-react-app on port.
+// Serves built create-react-app on port.
+//
+// Also, creates the required admin and user accounts if they don't exist.
+///////////////////////////////////////////////////////////////////////////////
+
+[
+    { username: "admin", password: "admin", shared: [] },
+    { username: "user", password: "user", shared: [] },
+    { username: "user1", password: "user1", shared: [] },
+    { username: "user2", password: "user2", shared: [] },
+    { username: "user3", password: "user3", shared: [] },
+].forEach((o) => {
+    User.findOne({ username: o.username }, (err, res) => {
+        if (!res) {
+            new User(o).save();
+        }
+    });
+});
+
 const port = process.env.PORT || 5000;
 
 app.get("*", function (req, res) {

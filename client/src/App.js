@@ -911,7 +911,7 @@ class App extends React.Component {
                         onClick={() =>
                             this.setState({ currentMode: "help", currentPopup: "help" })
                         }>
-                        <i class="fas fa-question-circle"></i>
+                        <i className="fas fa-question-circle"></i>
                     </div>
                 </div>
             </div>

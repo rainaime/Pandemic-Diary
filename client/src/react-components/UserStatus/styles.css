@@ -10,10 +10,6 @@ button {
     outline: inherit;
 }
 
-.userStatus {
-    margin-right: 25px;
-}
-
 .login {
     min-width: 250px;
     width: 20%;

@@ -9,8 +9,10 @@ class NotificationMenu extends React.Component {
     submit(e) {
         fetch(`/sharing`, {
             method: "post",
-            body: JSON.stringify({shareable: this.props.selectedShareable, 
-                receiverUser: this.state.searchingUsername}),
+            body: JSON.stringify({
+                shareable: this.props.selectedShareable,
+                receiverUser: this.state.searchingUsername,
+            }),
             headers: {
                 "Content-Type": "application/json",
             },
@@ -40,7 +42,7 @@ class NotificationMenu extends React.Component {
     render() {
         return (
             <div>
-                <h1 className="popupBox_title">Share/Invite!</h1>
+                <h1 className="popupBox_title">Share</h1>
                 <span className="greeting">Enter the user you'd like to share this with!</span>
                 <form>
                     <input
@@ -65,10 +67,10 @@ class NotificationMenu extends React.Component {
 class NotificationIcon extends React.Component {
     state = {
         shared: [],
-    }
+    };
 
-    componentDidMount(){
-        this.getShared()
+    componentDidMount() {
+        this.getShared();
     }
 
     getShared = () => {
@@ -79,12 +81,12 @@ class NotificationIcon extends React.Component {
             .then((json) => {
                 this.setState({
                     shared: json,
-                })
+                });
             })
             .catch((err) => console.log(err));
-    }
-    
-    removeShareable(shareable){
+    };
+
+    removeShareable(shareable) {
         fetch(`/deleteShare`, {
             method: "delete",
             body: JSON.stringify({
@@ -103,16 +105,27 @@ class NotificationIcon extends React.Component {
             .catch((err) => console.log(err));
     }
 
-    renderShared(shareable) {
+    renderShared(shareable, i) {
         return (
-            <div className="sharedContainer">
-                <button id="remove" onClick={() => {
-                    this.removeShareable(shareable)
-                    }}><i class="fas fa-check-square"></i></button>
+            <div className="sharedContainer" key={i}>
+                <button
+                    id="remove"
+                    onClick={() => {
+                        this.removeShareable(shareable);
+                    }}>
+                    <i class="fas fa-check-square"></i>
+                </button>
                 <div className="content">
-                    <p>{shareable.user} - {new Date(shareable.date).toDateString()}:</p>
-                    {shareable.content || 
-                    <img style={{width: "100%"}} src={shareable.image_url} alt="User-submitted content"/>}
+                    <p>
+                        {shareable.user} - {new Date(shareable.date).toDateString()}:
+                    </p>
+                    {shareable.content || (
+                        <img
+                            style={{ width: "100%" }}
+                            src={shareable.image_url}
+                            alt=""
+                        />
+                    )}
                 </div>
             </div>
         );
@@ -121,14 +134,13 @@ class NotificationIcon extends React.Component {
     render() {
         return (
             <>
-            <h3>Markers Shared:</h3>
-            <div className="content_container">
-                {this.state.shared && this.state.shared.map((shareable) =>
-                    this.renderShared(shareable)
-                )}
-            </div>
+                <h3>Markers Shared:</h3>
+                <div className="content_container">
+                    {this.state.shared &&
+                        this.state.shared.map((shareable, i) => this.renderShared(shareable, i))}
+                </div>
             </>
-        )
+        );
     }
 }
 

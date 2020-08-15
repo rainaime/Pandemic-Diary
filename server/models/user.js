@@ -2,12 +2,6 @@ const mongoose = require("mongoose");
 //const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
-// Password validation function
-const passwordValidator = (password) => {
-    // TODO: Check criteria
-    return true;
-};
-
 // Making a Mongoose model a little differently: a Mongoose Schema
 // Allows us to add additional functionality.
 const UserSchema = new mongoose.Schema({
@@ -21,12 +15,10 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlength: 10,
         trim: true,
-        validate: {
-            validator: passwordValidator,
-            message: "Invalid password. Passwords must...", // TODO: Replace with criteria
-        },
+        //validate: { // We can't use a validator here because we need the default admin and user accounts...it hurts
+        //    validator: passwordValidator,
+        //},
     },
     shared: {
         type: Array,

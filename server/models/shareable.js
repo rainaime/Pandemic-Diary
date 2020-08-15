@@ -6,6 +6,10 @@ const ShareableSchema = new mongoose.Schema({
         type: String,
         unique: false,
     },
+    image_id: {
+        type: String,
+        unique: false,
+    },
     image_url: {
         type: String,
         unique: false,

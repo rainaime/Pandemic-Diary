@@ -30,7 +30,7 @@ export class UserInfo extends Component {
                     {/* content_container does not scroll rn */}
                     {this.props.shareables.map((shareable, i) =>
                         
-                        shareable.user == this.props.currentUser ? this.renderShareable(shareable, i) : null
+                        shareable.user === this.props.currentUser ? this.renderShareable(shareable, i) : null
                     )}
                 </div>
             </div>

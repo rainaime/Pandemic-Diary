@@ -17,6 +17,10 @@ class Tweets extends React.Component {
     };
 
     componentDidMount() {
+        this.updateTweet(this);
+        this.setState({
+            maxId: this.state.maxId + 1,
+        });
         this.interval = setInterval(() => this.setState({ time: Date.now(), maxId: 0 }), 1000);
     }
     componentWillUnmount() {
@@ -76,7 +80,7 @@ class Tweets extends React.Component {
                             username: t.username.split("\\\\split@")[0], // Get rid of current time at end
                             content: t.content.split("\\\\split@")[0], // Get rid of current time at end
                         };
-                    })
+                    }),
                 });
             })
             .catch((error) => {
@@ -85,12 +89,6 @@ class Tweets extends React.Component {
     }
 
     render() {
-        if (this.props.user !== null && this.state.maxId === 0) {
-            this.updateTweet(this);
-            this.setState({
-                maxId: this.state.maxId + 1,
-            })
-        }
         return (
             <>
                 <div className="tweet_container">
@@ -99,7 +97,19 @@ class Tweets extends React.Component {
                         <Tweet key={i} tweet={tweet} isLast={i === arr.length - 1} />
                     ))}
                 </div>
-                {this.props.user ? <TweetsForm addNewTweet={this.addNewTweet.bind(this)} /> : <div style={{height: "60px", display: "flex", alignItems: "center", justifyContent: "center"}}>Please sign in to use this feature.</div>}
+                {this.props.user ? (
+                    <TweetsForm addNewTweet={this.addNewTweet.bind(this)} />
+                ) : (
+                    <div
+                        style={{
+                            height: "60px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}>
+                        Please sign in to use this feature.
+                    </div>
+                )}
             </>
         );
     }

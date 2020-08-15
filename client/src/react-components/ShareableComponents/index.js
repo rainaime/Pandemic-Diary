@@ -53,7 +53,7 @@ class ShareablePopup extends React.Component {
                     <span>
                         <span className="content">{new Date(date).toDateString()}</span>
                         <br></br>
-                        {content || <img style={{width: "100%"}} src={image_url} alt="User-submitted content"/>}
+                        {content || <img style={{width: "100%"}} src={image_url} alt=""/>}
                     </span>
                 </div>
             </div>

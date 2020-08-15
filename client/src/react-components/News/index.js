@@ -17,7 +17,13 @@ class NewsArticle extends React.Component {
             <a href={a.url} className="news-article">
                 <p className="news-article-title">{a.title}</p>
                 {a.description}
-                {a.urlToImage ? <img src={a.urlToImage} alt={a.description} onError={(e) => e.preventDefault()}/> : null}
+                {a.urlToImage ? (
+                    <img
+                        src={a.urlToImage}
+                        alt={a.description}
+                        onError={(e) => e.preventDefault()}
+                    />
+                ) : null}
             </a>
         );
     }
@@ -37,10 +43,16 @@ class News extends React.Component {
             articles: [],
             statusString: "Loading news for the day...",
         };
+
+        this.abortFetch = new AbortController();
     }
 
     componentDidMount() {
         this.getArticles(this.props.currentDate);
+    }
+
+    componentWillUnmount() {
+        this.abortFetch.abort();
     }
 
     componentDidUpdate(prevProps) {
@@ -49,19 +61,23 @@ class News extends React.Component {
                 this.setState({
                     statusString: "Loading news for the day...",
                     articles: [],
-                })
+                });
                 this.getArticles(this.props.currentDate);
             }
         }
     }
 
     getArticles(date) {
-        fetch(`/news?date=${date}`, {
-            method: "GET",
-            mode: "cors",
-            cache: "no-cache",
-            credentials: "same-origin",
-        })
+        fetch(
+            `/news?date=${date}`,
+            { signal: this.abortFetch.signal },
+            {
+                method: "GET",
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+            }
+        )
             .then((res) => {
                 if (res.status === 200) {
                     this.setState({ statusString: "" });
@@ -73,7 +89,9 @@ class News extends React.Component {
                     });
                     return [];
                 } else {
-                    this.setState({ statusString: "Some error occurred :( Please try again later." });
+                    this.setState({
+                        statusString: "Some error occurred :( Please try again later.",
+                    });
                     return [];
                 }
             })
@@ -81,7 +99,7 @@ class News extends React.Component {
                 this.setState({
                     articles: val,
                 });
-            });
+            }).catch(err => {});
     }
 
     render() {
