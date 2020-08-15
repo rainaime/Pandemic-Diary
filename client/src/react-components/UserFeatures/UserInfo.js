@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Colors } from "../../site-styles/Colors";
 import "./styles.css";
 
 /**
@@ -18,13 +17,8 @@ export class UserInfo extends Component {
     //render user info to display
     renderUserInfo() {
         return (
-            <div className="userInfo">
-                <div className="holder squareHolder">
-                    {/* profile picture holder */}
-                    this a pfp or something
-                </div>
-                <h3>Hello {this.props.currentUser}</h3>
-                <div style={{ display: "left" }}>Content</div>
+            <div>
+                <h3>Hello, {this.props.currentUser}! You're viewing the shareables that you've placed.</h3>
                 <div className="content_container">
                     {/* there is a bug here that when a shareable is deleted
                         the mutation does not affect this array as well which causes the render here to render deleted shareables*/}
