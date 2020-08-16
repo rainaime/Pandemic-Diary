@@ -87,7 +87,6 @@ class ManageReports extends React.Component {
     }
     
     ignoreReport = (report) => {
-        console.log(report)
         fetch(`/report`, {
             method: "delete",
             body: JSON.stringify({
