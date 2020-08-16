@@ -18,10 +18,6 @@ export class UserInfo extends Component {
     renderUserInfo() {
         return (
             <div>
-                <div className="holder squareHolder">
-                    {/* profile picture holder */}
-                    this a pfp or something
-                </div>
                 <h3>Hello {this.props.currentUser}</h3>
                 <div style={{ display: "left" }}>Content</div>
                 <div className="content_container">
