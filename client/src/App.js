@@ -461,7 +461,7 @@ class App extends React.Component {
 
     getShareablesForCurrentDate(type, change) {
         // Fetch shareables for current date and update this.state.shareables
-        fetch(`/shareables/${this.state.currentDate.toDateString()}`)
+        fetch(`/shareables/${this.state.currentDate.toDateString()}`, { cache: "no-store" })
             .then((res) => res.json())
             .then((json) => {
                 if (change === 1) {
