@@ -63,6 +63,11 @@
 .content{
     text-align: left;
     padding-left: 1vw;
+    border: solid lightblue;
+    border-radius: 25px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: 10px;
 }
 
 .reports {
