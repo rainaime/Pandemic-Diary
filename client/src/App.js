@@ -459,7 +459,7 @@ class App extends React.Component {
         }
     }
 
-    getShareablesForCurrentDate(type = null, change = 1) {
+    getShareablesForCurrentDate(type, change) {
         // Fetch shareables for current date and update this.state.shareables
         fetch(`/shareables/${this.state.currentDate.toDateString()}`)
             .then((res) => res.json())
@@ -471,7 +471,7 @@ class App extends React.Component {
                     });
                 } else {
                     this.setState({
-                        shareables: json.filter((s) => s.article === type),
+                        shareables: type ? json.filter((s) => s.article === type) : json,
                         shareablePopupPos: { x: -1000, y: -1000 },
                         selectedShareable: {
                             center: { lat: 1000, lng: 1000 },
