@@ -3,7 +3,7 @@
 Here is an overview of the routes served and the corresponding HTTP status codes/response values:
 ### Session
 - `GET /check-session`: Used for checking the status of a connection; checks whether there is saved data by the caller.
-    - 200: there is an active connection; sends the username associated with the connection
+    - 200: there is an active connection; sends the username associated with the connection and the preferences this user has saved.
     - 401: there is no active connection
 - `POST /login`: Login with the `username` and `password` fields in the request body.
     - 200: the login was successful. Sends the username back in the response body.
@@ -15,6 +15,11 @@ Here is an overview of the routes served and the corresponding HTTP status codes
     - 500: internal server error
 - `POST /logout`: Destroy an existing session, if one exists.
     - 200: logout was successful
+    - 500: internal server error
+- `PATCH /preference`: Save preferences for the user with the current session for later retrieval. Supported preferences are `leftMenuCollapsed`, `rightMenuCollapsed`, `currentLeftMenuView`, `currentRightMenuView`
+    - 200: preferences were successfully saved
+    - 401: no session is currently open
+    - 404: no user with the given username exists
     - 500: internal server error
 ### Chat
 - `POST /chatmessage`: Send a chat message.
@@ -59,6 +64,20 @@ Shareables are the markers and images that logged in users may place on the map.
     - 200: the deletion was successful
     - 401: user who sent the request is neither the administrator nor the user who created the shareable
     - 404: there is no shareable with the given `id`
+    - 500: internal server error
+### Sharing Functionality
+Shareables can be shared with other users; here are the routes that accomplish this.
+- `POST /sharing`: `shareable` is added to `receiverUser`'s (both in the body of the request) shared list.
+    - 200: sharing was successful
+    - 404: `receiverUser` doesn't exist
+    - 500: internal server error
+- `DELETE /sharing`: shareable with id `shareableID` is removed from `user`'s (both in the body of the request) shared list
+    - 200: deletion was successful
+    - 404: `user` doesn't exist
+    - 500: internal server error
+- `GET /shared/:user`: a route to allow the user with the currently open session to get the shareables that were shared with them
+    - 200: response contains an array with the shareables
+    - 401: the caller isn't the user they're trying to query
     - 500: internal server error
 ### Admin Functionality
 - `POST /reports`: report a shareable to the administrator

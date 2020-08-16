@@ -167,6 +167,7 @@ app.get("/logout", (req, res) => {
     });
 });
 
+// A route to save preferences for the currently signed in user.
 app.patch("/preference", (req, res) => {
     if (req.session.username) {
         User.findOne({ username: req.session.username }, (err, result) => {

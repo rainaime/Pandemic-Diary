@@ -4,6 +4,11 @@ Welcome to our completed Pandemic Diary project! It unifies the work we did in P
 ## Demo
 A live instance of the site is running [here](https://morning-sands-10234.herokuapp.com/); there are some example user interactions already available. It may take a few seconds for the Heroku server to spin up.
 
+### IMPORTANT! Hard-Coded Data
+We have hardcoded data from **August 12-August 20** in the above live instance. If you visit other dates, you may not see much content.
+
+Additionally, if you hover over any element, you will see a tooltip explaining how the app works. There is also a help button on the bottom right.
+
 ## Usage
 The `package.json` files defines various scripts. Defined in the project root `package.json` file are server-related dependencies and it includes a `postinstall` script that also installs the client dependencies. In `client/package.json`, you'll see client-related dependencies.
 
