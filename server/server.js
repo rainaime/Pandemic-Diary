@@ -482,9 +482,40 @@ app.delete("/shareable/:id", (req, res) => {
     });
 });
 
+
 ///////////////////////////////////////////////////////////////////////////////
 // ADMIN-RELATED ROUTES
 ///////////////////////////////////////////////////////////////////////////////
+
+//route to get all the user
+app.get("/users", (req, res) => {
+    User.find().then(
+        (users) => {
+            //            res.render('index', chatmessages);
+            res.send({ users });
+        },
+        (error) => {
+            res.status(500).send(error); // server error
+        }
+    );
+});
+
+app.delete("/usersAdmin/:id", (req, res) => {
+    const id = req.params.id;
+
+    // Validate id
+    if (!ObjectID.isValid(id)) {
+        res.status(404).send();
+        return;
+    }
+
+    User.findByIdAndDelete(id, function (err) {
+        if (err) {
+            console.log(err);
+        }
+        console.log("Successful deletion");
+    });
+});
 
 // A route to add a shareable to the reports of admin
 app.post("/reports", (req, res) => {
