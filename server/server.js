@@ -82,7 +82,16 @@ app.get("/", sessionChecker, (req, res) => {
 
 app.get("/check-session", (req, res) => {
     if (req.session.user) {
-        res.status(200).send({ currentUser: req.session.username });
+        User.findOne({ username: req.session.username })
+            .then((user) => {
+                res.status(200).send({
+                    currentUser: req.session.username,
+                    preferences: user.preferences,
+                });
+            })
+            .catch(() => {
+                res.status(500).send();
+            });
     } else {
         res.status(401).send();
     }
@@ -156,6 +165,25 @@ app.get("/logout", (req, res) => {
             res.status(200).send("Successful logout");
         }
     });
+});
+
+app.patch("/preference", (req, res) => {
+    if (req.session.username) {
+        User.findOne({ username: req.session.username }, (err, result) => {
+            if (err) {
+                res.status(500).send();
+            } else if (!result) {
+                res.status(404).send();
+            } else {
+                result.preferences = Object.assign(result.preferences, req.body);
+                result.save()
+                    .then(() => res.status(200).send())
+                    .catch(() => res.status(500).send())
+            }
+        });
+    } else {
+        res.status(401).send();
+    }
 });
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -295,7 +323,7 @@ app.get("/chatmessage", (req, res) => {
 app.post("/shareable", (req, res) => {
     let shareable;
 
-    console.log(req.session)
+    console.log(req.session);
     if (req.session.user) {
         shareable = new Shareable(Object.assign(req.body), req.session);
         shareable
@@ -481,7 +509,6 @@ app.delete("/shareable/:id", (req, res) => {
         }
     });
 });
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // ADMIN-RELATED ROUTES

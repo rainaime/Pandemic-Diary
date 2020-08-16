@@ -14,7 +14,7 @@ import "./styles.css";
  */
 class CollapsibleMenu extends React.Component {
     state = {
-        collapsed: false,
+        collapsed: this.props.collapsed,
         maximizedSize: this.props.maxWidth || "20%",
         width: this.props.maxWidth || "20%",
     };
@@ -28,7 +28,14 @@ class CollapsibleMenu extends React.Component {
         } else {
             this.setState({ width: 0 });
         }
-        this.setState({ collapsed: !this.state.collapsed });
+
+        const pref =
+            this.props.position === "left"
+                ? { leftMenuCollapsed: !this.state.collapsed }
+                : { rightMenuCollapsed: !this.state.collapsed };
+        this.setState({ collapsed: !this.state.collapsed }, () =>
+            this.props.saveUserPreferences(pref)
+        );
     }
 
     /**
@@ -48,7 +55,7 @@ class CollapsibleMenu extends React.Component {
                     title = "Show user info";
                     break;
                 case "chat":
-                    icon = <i className="fas fa-comments"></i>
+                    icon = <i className="fas fa-comments"></i>;
                     title = "Chat with other users";
                     break;
                 case "news":
@@ -78,7 +85,7 @@ class CollapsibleMenu extends React.Component {
     render() {
         const dynamicStyles = {
             container: {
-                width: this.state.width,
+                width: this.props.collapsed ? 0 : this.state.maximizedSize,
                 backgroundColor: "#416E8E", //Colors.background,
                 color: Colors.textColorLight,
             },

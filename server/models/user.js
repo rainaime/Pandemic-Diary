@@ -26,6 +26,12 @@ const UserSchema = new mongoose.Schema({
     },
     reports: {
         type: Array,
+    },
+    preferences: {
+        currentLeftMenuView: String,
+        currentRightMenuView: String,
+        leftMenuCollapsed: Boolean,
+        rightMenuCollapsed: Boolean
     }
 });
 

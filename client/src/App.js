@@ -39,6 +39,8 @@ class App extends React.Component {
             // What's currently being displayed on the left and right menus
             currentLeftMenuView: "filter",
             currentRightMenuView: "news",
+            leftMenuCollapsed: false,
+            rightMenuCollapsed: false,
 
             // Mode: One of:
             //  - "normal"; interacting with the app without adding anything
@@ -48,7 +50,7 @@ class App extends React.Component {
 
             // The user currently logged in and interacting with the website.
             // ONLY used for stylistic purposes. Session should be used to validate requests.
-            currentUsername: null,
+            currentUser: null,
 
             currentDate: new Date(),
 
@@ -91,19 +93,40 @@ class App extends React.Component {
         };
     }
 
+    saveUserPreferences(preferences) {
+        if (preferences.hasOwnProperty("rightMenuCollapsed")) {
+            this.setState({
+                rightMenuCollapsed: !this.state.rightMenuCollapsed,
+            })
+        }
+        if (preferences.hasOwnProperty("leftMenuCollapsed")) {
+            this.setState({
+                leftMenuCollapsed: !this.state.leftMenuCollapsed,
+            })
+        }
+        if (this.state.currentUser) {
+            fetch("/preference", {
+                method: "PATCH",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(preferences),
+            }).catch((err) => console.log(err));
+        }
+    }
+
     setLeftView(option) {
         if (option === "filter" || option === "info") {
-            this.setState({
-                currentLeftMenuView: option,
-            });
+            const pref = { currentLeftMenuView: option };
+            this.setState(pref, () => this.saveUserPreferences(pref));
         }
     }
 
     setRightView(option) {
         if (option === "chat" || option === "news") {
-            this.setState({
-                currentRightMenuView: option,
-            });
+            const pref = { currentRightMenuView: option };
+            this.setState(pref, () => this.saveUserPreferences(pref));
         }
     }
 
@@ -390,12 +413,12 @@ class App extends React.Component {
                         shareables: this.state.shareables.filter((s) => s._id !== id),
                     });
                 } else {
-                    console.log(res)
+                    console.log(res);
                     this.setState({
                         currentMode: "error",
                         currentPopup: "error",
-                        errorMessage: "You may not delete that shareable."
-                    })
+                        errorMessage: "You may not delete that shareable.",
+                    });
                 }
             })
             .catch((err) => console.log(err));
@@ -426,7 +449,7 @@ class App extends React.Component {
             errorMessage: "",
         });
 
-        if (this.state.currentUsername && !username) {
+        if (this.state.currentUser && !username) {
             fetch("/logout")
                 .then((res) => res)
                 .catch((err) => console.log(err));
@@ -442,17 +465,14 @@ class App extends React.Component {
         fetch(`/shareables/${this.state.currentDate.toDateString()}`)
             .then((res) => res.json())
             .then((json) => {
-                if(change == 1){
+                if (change == 1) {
                     this.setState({
                         shareables: json,
                         shareablePopupPos: { x: -1000, y: -1000 },
                     });
-                }
-                else{
+                } else {
                     this.setState({
-                        shareables: json.filter(
-                            (s) => s.article == type
-                        ),
+                        shareables: json.filter((s) => s.article == type),
                         shareablePopupPos: { x: -1000, y: -1000 },
                         selectedShareable: {
                             center: { lat: 1000, lng: 1000 },
@@ -462,7 +482,6 @@ class App extends React.Component {
                             article: "",
                         },
                     });
-                    
                 }
             });
     }
@@ -477,7 +496,8 @@ class App extends React.Component {
             })
             .then((json) => {
                 if (json && json.currentUser) {
-                    this.setState({ currentUser: json.currentUser });
+                    console.log(json)
+                    this.setState({ currentUser: json.currentUser, ...json.preferences }, () => console.log(this.state));
                 }
             })
             .catch((err) => {
@@ -546,11 +566,11 @@ class App extends React.Component {
         const ManageUsersProps = {
             // TODO: Inside of ManageUsers, make a call to the SERVER
             //deleteUser: this.deleteUser.bind(this), // TODO: This should really be a server call
-            updateShareable: this.getShareablesForCurrentDate.bind(this)
+            updateShareable: this.getShareablesForCurrentDate.bind(this),
         };
 
         const ManageReportsProps = {
-            renderMap: this.getShareablesForCurrentDate.bind(this)
+            renderMap: this.getShareablesForCurrentDate.bind(this),
         };
 
         switch (this.state.currentPopup) {
@@ -671,10 +691,7 @@ class App extends React.Component {
         };
 
         const FilterProps = {
-            //selectType: this.selectCallback.bind(this),
-//            selectType: this.setArticleType.bind(this),
             getShareable: this.getShareablesForCurrentDate.bind(this),
-            //currentUser: this.state.currentUsername,
         };
 
         const MapsProps = {
@@ -698,7 +715,9 @@ class App extends React.Component {
             // 'editable' is NOT to be trusted; it's only used to decide
             // whether to include the shareable modification buttons or not.
             // The backend does the actual validation.
-            editable: this.state.selectedShareable.user === this.state.currentUser || this.state.currentUser === "admin",
+            editable:
+                this.state.selectedShareable.user === this.state.currentUser ||
+                this.state.currentUser === "admin",
             edit: this.editShareable.bind(this),
             delete: this.deleteSelectedShareable.bind(this),
             share: this.shareSelectedShareable.bind(this),
@@ -789,7 +808,9 @@ class App extends React.Component {
                         views={["filter", "info"]}
                         currentView={this.state.currentLeftMenuView}
                         switchView={this.setLeftView.bind(this)}
+                        saveUserPreferences={this.saveUserPreferences.bind(this)}
                         position="left"
+                        collapsed={this.state.leftMenuCollapsed}
                         maxWidth="15%">
                         {leftMenuView}
                     </CollapsibleMenu>
@@ -824,7 +845,9 @@ class App extends React.Component {
                         views={["news", "chat"]}
                         currentView={this.state.currentRightMenuView}
                         switchView={this.setRightView.bind(this)}
+                        saveUserPreferences={this.saveUserPreferences.bind(this)}
                         position="right"
+                        collapsed={this.state.rightMenuCollapsed}
                         maxWidth="25%">
                         {rightMenuView}
                     </CollapsibleMenu>
