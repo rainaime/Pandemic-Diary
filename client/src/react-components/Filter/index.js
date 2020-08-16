@@ -12,7 +12,7 @@ import "./styles.css";
 class Menu extends React.Component {
     updateSelection(selectedType) {
 //        this.props.selectType(selectedType);
-        if(selectedType == "All"){
+        if(selectedType === "All"){
             this.props.getShareable(selectedType,1);
         }
         else{

@@ -30,7 +30,6 @@ class ReportMenu extends React.Component {
             .then((res) => {
                 if (res.status === 200) {
                     //should set some kind of successful share on front end here
-                    console.log("success report")
                     this.props.returnToApp();
                 }
             })

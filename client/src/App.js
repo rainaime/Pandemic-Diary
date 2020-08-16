@@ -448,7 +448,7 @@ class App extends React.Component {
             errorMessage: "",
         });
 
-        if (this.state.currentUser && !username) {
+        if (this.state.currentUser && username === "_") {
             fetch("/logout")
                 .then((res) => this.setState({ currentUser: null }))
                 .catch((err) => console.log(err));
@@ -464,14 +464,14 @@ class App extends React.Component {
         fetch(`/shareables/${this.state.currentDate.toDateString()}`)
             .then((res) => res.json())
             .then((json) => {
-                if (change == 1) {
+                if (change === 1) {
                     this.setState({
                         shareables: json,
                         shareablePopupPos: { x: -1000, y: -1000 },
                     });
                 } else {
                     this.setState({
-                        shareables: json.filter((s) => s.article == type),
+                        shareables: json.filter((s) => s.article === type),
                         shareablePopupPos: { x: -1000, y: -1000 },
                         selectedShareable: {
                             center: { lat: 1000, lng: 1000 },
@@ -683,7 +683,7 @@ class App extends React.Component {
                 this.props.history.push("/App/login");
                 this.setState({ currentMode: "login", currentPopup: "login" });
             },
-            logout: () => this.returnToApp(null),
+            logout: () => this.returnToApp("_"),
             shouldClear: this.state.popupExit,
             onPopupExit: () => this.setState({ popupExit: false }),
         };
