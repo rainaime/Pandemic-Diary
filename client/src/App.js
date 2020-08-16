@@ -505,6 +505,7 @@ class App extends React.Component {
             currentShareable: this.state.currentShareable,
             updateCurrentDate: this.updateCurrentDate.bind(this),
             updateImageForm: this.updateImageForm.bind(this),
+            updateSelectedShareable: this.updateSelectedShareable.bind(this),
 
             minDate: appSettings.minDate,
             maxDate: appSettings.maxDate,

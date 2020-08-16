@@ -90,14 +90,6 @@ class MarkerMenu extends React.Component {
                     }}
                 />
 
-                <div className="dateSection">
-                    <input
-                        type="date"
-                        min={this.props.minDate}
-                        max={this.props.maxDate}
-                        onChange={(e) => this.setState({ selectedDate: e.target.value })}
-                    />
-                </div>
                 <div className="articleType">
                     <select
                         name="article"
