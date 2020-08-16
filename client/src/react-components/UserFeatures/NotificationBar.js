@@ -115,7 +115,7 @@ class NotificationIcon extends React.Component {
                     }}>
                     <i class="fas fa-check-square"></i>
                 </button>
-                <div className="content">
+                <div className="reportContent">
                     <p>
                         {shareable.user} - {new Date(shareable.date).toDateString()}:
                     </p>
