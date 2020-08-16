@@ -69,7 +69,7 @@ class News extends React.Component {
 
     getArticles(date) {
         fetch(
-            `/news?date=${date}`,
+            `/news?date=${new Date(date.toDateString())}`,
             { signal: this.abortFetch.signal },
             {
                 method: "GET",

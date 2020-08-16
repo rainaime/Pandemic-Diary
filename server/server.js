@@ -176,9 +176,10 @@ app.patch("/preference", (req, res) => {
                 res.status(404).send();
             } else {
                 result.preferences = Object.assign(result.preferences, req.body);
-                result.save()
+                result
+                    .save()
                     .then(() => res.status(200).send())
-                    .catch(() => res.status(500).send())
+                    .catch(() => res.status(500).send());
             }
         });
     } else {
@@ -639,6 +640,7 @@ app.get(
         end.setTime(start.getTime() + 86400000);
 
         const reqUrl = `https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/NewsSearchAPI?autoCorrect=false&pageNumber=1&pageSize=10&q=covid%20canada&safeSearch=true&fromPublishedDate=${start.toISOString()}&toPublishedDate=${end.toISOString()}`;
+        console.log(reqUrl)
         // Perform call
         fetch(reqUrl, {
             method: "GET",
@@ -654,6 +656,7 @@ app.get(
                 if (!json.value) {
                     res.status(401).send();
                 }
+                console.log(json)
 
                 const obj = json.value.map((a) => {
                     return {

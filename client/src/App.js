@@ -413,7 +413,6 @@ class App extends React.Component {
                         shareables: this.state.shareables.filter((s) => s._id !== id),
                     });
                 } else {
-                    console.log(res);
                     this.setState({
                         currentMode: "error",
                         currentPopup: "error",
@@ -451,7 +450,7 @@ class App extends React.Component {
 
         if (this.state.currentUser && !username) {
             fetch("/logout")
-                .then((res) => res)
+                .then((res) => this.setState({ currentUser: null }))
                 .catch((err) => console.log(err));
         } else if ((username && typeof username === "string") || username === null) {
             this.setState({
@@ -496,8 +495,7 @@ class App extends React.Component {
             })
             .then((json) => {
                 if (json && json.currentUser) {
-                    console.log(json)
-                    this.setState({ currentUser: json.currentUser, ...json.preferences }, () => console.log(this.state));
+                    this.setState({ currentUser: json.currentUser, ...json.preferences });
                 }
             })
             .catch((err) => {
