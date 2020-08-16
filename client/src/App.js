@@ -446,43 +446,33 @@ class App extends React.Component {
         }
     }
 
-    //filter all the article that is not type this.state.articleType
-    selectArticleType() {
-        if (this.state.articleType !== "All") {
-            this.setState(
-                {
-                    shareables: this.state.shareables.filter(
-                        (s) => s.article === this.state.articleType
-                    ),
-                    selectedShareable: {
-                        center: { lat: 1000, lng: 1000 },
-                        content: "",
-                        user: null,
-                        type: null,
-                        article: "",
-                    },
-                },
-                () => this.computeXYOfSelectedShareable()
-            );
-        }
-    }
-
-    setArticleType(type) {
-        this.setState({
-            articleType: type,
-        });
-    }
-
-    getShareablesForCurrentDate() {
+    getShareablesForCurrentDate(type = null, change = 1) {
         // Fetch shareables for current date and update this.state.shareables
         fetch(`/shareables/${this.state.currentDate.toDateString()}`)
             .then((res) => res.json())
             .then((json) => {
-                this.setState({
-                    shareables: json,
-                    shareablePopupPos: { x: -1000, y: -1000 },
-                });
-                this.selectArticleType();
+                if(change == 1){
+                    this.setState({
+                        shareables: json,
+                        shareablePopupPos: { x: -1000, y: -1000 },
+                    });
+                }
+                else{
+                    this.setState({
+                        shareables: json.filter(
+                            (s) => s.article == type
+                        ),
+                        shareablePopupPos: { x: -1000, y: -1000 },
+                        selectedShareable: {
+                            center: { lat: 1000, lng: 1000 },
+                            content: "",
+                            user: null,
+                            type: null,
+                            article: "",
+                        },
+                    });
+                    
+                }
             });
     }
 
@@ -692,7 +682,7 @@ class App extends React.Component {
 
         const FilterProps = {
             //selectType: this.selectCallback.bind(this),
-            selectType: this.setArticleType.bind(this),
+//            selectType: this.setArticleType.bind(this),
             getShareable: this.getShareablesForCurrentDate.bind(this),
             //currentUser: this.state.currentUsername,
         };
